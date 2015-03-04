@@ -2,24 +2,39 @@
 #include <SFML/Window.hpp>
 #include <iostream>
 #include <ant.h>
-
+#include "circle.h"
+#include "AABB.h"
+#include "OBB.h"
+#include "Shape.h"
+#include "CollisionsManager.h"
 
 using namespace std;
 
 int main()
 {
-
+	sf::Clock clock;//clock for updating frames
 	sf::RenderWindow Game(sf::VideoMode(800,600,32), "ALIEN ANT FARM");
 	int i = 0; //value for switch statement, 0 - 5 represent different states, to be tidied up x
 
-	Ant ant1(Ant(sf::Vector2f(100, 100), sf::Vector2f(20, 50), sf::Color::Red)), //controlled character
-		ant2(Ant(sf::Vector2f(50, 50), sf::Vector2f(20, 50), sf::Color::Blue)),	// leaf npc
-		hill(Ant(sf::Vector2f(500, 500), sf::Vector2f(100, 100), sf::Color::Green)); //ant hill
+	Ant* ant1 = new Ant(sf::Vector2f(100, 100),20,50,sf::Color::Red); //controlled character
+	Ant* ant2 = new Ant(sf::Vector2f(50, 50), 20,50,sf::Color::Green);	// leaf npc
+	Ant* hill = new Ant(sf::Vector2f(500, 500),100,100,sf::Color::Blue); //ant hill
+
+	//Tanveer's Shapes for testing collisions
+	Circle* m_circle = new Circle(sf::Vector2f(50,50), 50); //top left circle
+	Circle* m_circle2 = new Circle(sf::Vector2f(50,151), 50); //circle underneath other circle. chamge ypos to 150 for circle circle test
+	AABB* m_AABB = new AABB(sf::Vector2f(126,50),50,50); //first rectangle to the left of the circle. change xpos to 125 for circle aabb test
+	AABB* m_AABB2 = new AABB(sf::Vector2f(177,50),50,50); //rectangle to the right of the first rectangle. change xpos to 176 for aabb aabb test
+	OBB* m_OBB = new OBB(sf::Vector2f(136,150),50,50,45); //rotated aabb next to bottom circle. xpos to 135 for obb circle text
+	//Collision Manager for testing collisions
+	CollisionsManager* m_CollisionsManager = new CollisionsManager();
+
 
 	while(Game.isOpen()) //game loop
 	{
 		sf::Event event;
-
+		//find out elapsed time
+		float fElapsedTime = clock.getElapsedTime().asSeconds();
 		switch(Game.pollEvent(event))
 		{
 			if(event.type == sf::Event::Closed)
@@ -28,19 +43,21 @@ int main()
 
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 		{
-			ant1.rect.move(0, -0.1f);
+			std::cout<<"hi";
+			ant1->getRectangle()->move(0, -0.1f);
+			ant1->getRectangle()->setFillColor(sf::Color::White);
 		}
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 		{
-			ant1.rect.move(0, 0.1f);
+			ant1->getRectangle()->move(0, 0.1f);
 		}
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 		{
-			ant1.rect.move(-0.1f, 0);
+			ant1->getRectangle()->move(-0.1f, 0);
 		}
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 		{
-			ant1.rect.move(0.1f, 0);
+			ant1->getRectangle()->move(0.1f, 0);
 		}
 
 		// ^ movement controls for testing, unless people want I'm not going to try to implement AI movement until we have an adjancency matrix implemented
@@ -55,7 +72,30 @@ int main()
 		}
 
 		// ^ Q and E reset states to 1 and 2 for vague debugging reasons, needed to make sure switch worked
+		if(fElapsedTime>0.017)
+		{
+			if (m_CollisionsManager->CircletoCircleCollision(*m_circle,*m_circle2) ==true)
+			{
+				std::cout<<"i collided"<<endl; //circle with circle collision test
+			}
 
+			if (m_CollisionsManager->OBBtoCircleCollision(*m_OBB,*m_circle2) ==true)
+			{
+				std::cout<<"i collided"<<endl; //obb to circle collision text
+			}
+
+			if (m_CollisionsManager->AABBtoCircleCollision(*m_AABB,*m_circle) ==true)
+			{
+				std::cout<<"i collided"<<endl; //aabb to circle collision text
+			}
+			if (m_CollisionsManager->AABBtoAABBCollision(*m_AABB,*m_AABB2) ==true)
+			{
+				std::cout<<"i collided"<<endl; //aabb to aabb collision test
+			}
+
+			clock.restart(); //restart the clock to update frames	
+		}
+		/*
 		if(ant1.Collision(ant2)) //for time being, used 'ant2' to represent a leaf
 		{
 			ant1.rect.setFillColor(sf::Color::Magenta); //this runs on the first loop round and changes i to 3... can't figure out why, probably simple fix
@@ -70,7 +110,7 @@ int main()
 		{
 			ant1.rect.setFillColor(sf::Color::Red); // visual indicator of collision
 		}
-
+		*/
 		switch(i) // state change statement
 		{
 		case 0:
@@ -92,14 +132,14 @@ int main()
 			cout << "Default"; //default game state, probably seek as well, it's just there in case anything breaks 
 		}
 
-		ant1.Update();
-		ant2.Update();
-		hill.Update();
+		ant1->Update();
+		ant2->Update();
+		hill->Update();
 
 		Game.clear(sf::Color::Black);
-		Game.draw(ant1.rect);
-		Game.draw(ant2.rect);
-		Game.draw(hill.rect);
+		Game.draw(*ant1->getRectangle());
+		Game.draw(*ant2->getRectangle());
+		Game.draw(*hill->getRectangle());
 		Game.display();
 
 	}

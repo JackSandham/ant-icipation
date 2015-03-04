@@ -71,10 +71,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\AABB.h" />
     <ClInclude Include="..\include\ant.h" />
+    <ClInclude Include="..\include\Circle.h" />
+    <ClInclude Include="..\include\CollisionsManager.h" />
+    <ClInclude Include="..\include\OBB.h" />
+    <ClInclude Include="..\include\Shape.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\AABB.cpp" />
+    <ClCompile Include="..\src\ant.cpp" />
+    <ClCompile Include="..\src\Circle.cpp" />
+    <ClCompile Include="..\src\CollisionsManager.cpp" />
     <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\OBB.cpp" />
+    <ClCompile Include="..\src\Shape.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,42 +1,23 @@
 #include <SFML/Graphics.hpp>
 #include <cmath>
 #include <iostream>
+#include "AABB.h"
 
 using namespace std;
 
 
-class Ant
+class Ant : public AABB
 {
+private:
+	float m_fBottom, m_fLeft, m_fRight, m_fTop;
 public:
-	sf::RectangleShape rect;
-	float bottom, left, right, top;
 	
-
-	Ant(sf::Vector2f position, sf::Vector2f size, sf::Color color)
-	{
-		rect.setPosition(position);
-		rect.setSize(size);
-		rect.setFillColor(color);
-	}
-
-	void Update()
-	{
-		bottom = rect.getPosition().y + rect.getSize().y;
-		left = rect.getPosition().x;
-		right = rect.getPosition().x + rect.getSize().x;
-		top = rect.getPosition().y;
-	}
-
-	bool Collision(Ant ant)
-	{
-		if(right < ant.left || left > ant.right ||
-			top > ant.bottom || bottom < ant.top)
-		{
-			return false;
-		}
-		return true;
-	}
-
+	Ant();
+	Ant(sf::Vector2f passedPosition, int width, int height) : AABB(passedPosition,  width,  height){}
+	Ant(sf::Vector2f passedPosition, int width, int height, sf::Color passedColor) : AABB(passedPosition,  width,  height,passedColor){}
+	void Update();
+	bool Collision(Ant ant);
+	
 //Ryan Wilson 23/02/15 ant-icipation
 
 
