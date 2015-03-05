@@ -20,6 +20,9 @@ public:
 	AABB();
 	AABB(sf::Vector2f position, float width, float height);
 	AABB(sf::Vector2f position, float width, float height, sf::Color passedColor);
+	void setMin();
+	void setMax();
+	void setPosition(sf::Vector2f passedVector);
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 	float getHalfWidth();
 	float getHalfHeight();

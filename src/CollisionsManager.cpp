@@ -1,5 +1,5 @@
 #include "collisionsmanager.h"
-
+#include <iostream>
 
 
 CollisionsManager::CollisionsManager()

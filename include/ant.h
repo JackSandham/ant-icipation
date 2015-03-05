@@ -1,3 +1,7 @@
+#ifndef ANT_H
+#define ANT_H
+
+
 #include <SFML/Graphics.hpp>
 #include <cmath>
 #include <iostream>
@@ -27,7 +31,7 @@ public:
 
 
 };
-
+#endif
 
 
 

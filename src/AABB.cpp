@@ -37,6 +37,20 @@ AABB::AABB(sf::Vector2f position, float width, float height, sf::Color passedCol
 	Rectangle.setOrigin(m_vOrigin);
 	Rectangle.setPosition(m_vPosition);
 }
+void AABB::setPosition(sf::Vector2f passedVector)
+{
+	m_vPosition = passedVector;
+	Rectangle.setPosition(passedVector);
+}
+void AABB::setMin()
+{
+	m_vMin = sf::Vector2f(m_vPosition.x-m_fWidth/2,m_vPosition.y-m_fHeight/2);
+	
+}
+void AABB::setMax()
+{
+	m_vMax = sf::Vector2f(m_vPosition.x+m_fWidth/2,m_vPosition.y+m_fHeight/2);
+}
 void AABB::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(Rectangle);

@@ -43,21 +43,22 @@ int main()
 
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 		{
-			std::cout<<"hi";
-			ant1->getRectangle()->move(0, -0.1f);
-			ant1->getRectangle()->setFillColor(sf::Color::White);
+			ant1->setPosition(sf::Vector2f(ant1->getPosition().x,ant1->getPosition().y-0.1));	
 		}
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 		{
-			ant1->getRectangle()->move(0, 0.1f);
+			ant1->setPosition(sf::Vector2f(ant1->getPosition().x,ant1->getPosition().y+0.1));
+			
 		}
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 		{
-			ant1->getRectangle()->move(-0.1f, 0);
+			ant1->setPosition(sf::Vector2f(ant1->getPosition().x-0.1,ant1->getPosition().y));
+			
 		}
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 		{
-			ant1->getRectangle()->move(0.1f, 0);
+			ant1->setPosition(sf::Vector2f(ant1->getPosition().x+0.1,ant1->getPosition().y));
+			
 		}
 
 		// ^ movement controls for testing, unless people want I'm not going to try to implement AI movement until we have an adjancency matrix implemented
@@ -74,6 +75,7 @@ int main()
 		// ^ Q and E reset states to 1 and 2 for vague debugging reasons, needed to make sure switch worked
 		if(fElapsedTime>0.017)
 		{
+			/*
 			if (m_CollisionsManager->CircletoCircleCollision(*m_circle,*m_circle2) ==true)
 			{
 				std::cout<<"i collided"<<endl; //circle with circle collision test
@@ -89,6 +91,11 @@ int main()
 				std::cout<<"i collided"<<endl; //aabb to circle collision text
 			}
 			if (m_CollisionsManager->AABBtoAABBCollision(*m_AABB,*m_AABB2) ==true)
+			{
+				std::cout<<"i collided"<<endl; //aabb to aabb collision test
+			}
+			*/
+			if (m_CollisionsManager->AABBtoAABBCollision(*ant1,*m_AABB2) == true)
 			{
 				std::cout<<"i collided"<<endl; //aabb to aabb collision test
 			}
@@ -137,6 +144,8 @@ int main()
 		hill->Update();
 
 		Game.clear(sf::Color::Black);
+		Game.draw(*m_AABB->getRectangle());
+		Game.draw(*m_AABB2->getRectangle());
 		Game.draw(*ant1->getRectangle());
 		Game.draw(*ant2->getRectangle());
 		Game.draw(*hill->getRectangle());
