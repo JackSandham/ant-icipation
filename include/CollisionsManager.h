@@ -5,20 +5,22 @@
 #include "AABB.h"
 #include "Circle.h"
 
+
 class CollisionsManager
 {
-	public:
-		CollisionsManager();
+protected:
 
-		bool AABBtoCircleCollision(AABB &aabb,Circle &circle);
-		bool AABBtoAABBCollision(AABB &aabb,AABB &aabb2);
-		bool OBBtoCircleCollision(OBB &obb, Circle &circle);
-		bool CircletoCircleCollision(Circle &circle, Circle &circle2);
 
-	protected:
+private:
 
-	private:
+
+public:
+	CollisionsManager();
+	bool AABBtoCircleCollision(AABB &aabb,Circle &circle);
+	bool AABBtoAABBCollision(AABB &aabb,AABB &aabb2);
+	bool OBBtoCircleCollision(OBB &obb, Circle &circle);
+	bool CircletoCircleCollision(Circle &circle, Circle &circle2);
+
 
 };
-
 #endif

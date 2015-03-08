@@ -16,7 +16,7 @@ int main()
 	sf::RenderWindow Game(sf::VideoMode(800,600,32), "ALIEN ANT FARM");
 	int i = 0; //value for switch statement, 0 - 5 represent different states, to be tidied up x
 
-	Ant* ant1 = new Ant(sf::Vector2f(100, 100),20,50,sf::Color::Red); //controlled character
+	Ant* ant1 = new Ant(sf::Vector2f(400, 300),20,50,sf::Color::Red); //controlled character
 	Ant* ant2 = new Ant(sf::Vector2f(50, 50), 20,50,sf::Color::Green);	// leaf npc
 	Ant* hill = new Ant(sf::Vector2f(500, 500),100,100,sf::Color::Blue); //ant hill
 
@@ -29,13 +29,14 @@ int main()
 	//Collision Manager for testing collisions
 	CollisionsManager* m_CollisionsManager = new CollisionsManager();
 
+	bool move=true;
 
 	while(Game.isOpen()) //game loop
 	{
 		sf::Event event;
 		//find out elapsed time
 		float fElapsedTime = clock.getElapsedTime().asSeconds();
-		switch(Game.pollEvent(event))
+		while(Game.pollEvent(event))
 		{
 			if(event.type == sf::Event::Closed)
 				Game.close();
@@ -75,6 +76,8 @@ int main()
 		// ^ Q and E reset states to 1 and 2 for vague debugging reasons, needed to make sure switch worked
 		if(fElapsedTime>0.017)
 		{
+			ant1->move();
+			
 			/*
 			if (m_CollisionsManager->CircletoCircleCollision(*m_circle,*m_circle2) ==true)
 			{
@@ -140,15 +143,21 @@ int main()
 		}
 
 		ant1->Update();
+		if(move==true)
+		{
+			move=false;
+			ant1->randomMovement();
+		}
+		ant1->WallCollision(*ant1);
 		ant2->Update();
 		hill->Update();
 
 		Game.clear(sf::Color::Black);
 		Game.draw(*m_AABB->getRectangle());
 		Game.draw(*m_AABB2->getRectangle());
-		Game.draw(*ant1->getRectangle());
 		Game.draw(*ant2->getRectangle());
 		Game.draw(*hill->getRectangle());
+		Game.draw(*ant1->getRectangle());
 		Game.display();
 
 	}

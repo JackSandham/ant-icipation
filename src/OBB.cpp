@@ -1,6 +1,8 @@
 #include "OBB.h"
 #include "shape.h"
 
+
+
 OBB::OBB(sf::Vector2f position, float width, float height,float angle)
 {
 	m_vPosition = position;
@@ -8,6 +10,7 @@ OBB::OBB(sf::Vector2f position, float width, float height,float angle)
 	m_fHeight = height;
 	m_fAngle = angle;
 	m_vOrigin = (sf::Vector2f(m_fWidth/2,m_fHeight/2));
+
 }
 
 void OBB::draw(sf::RenderTarget& target, sf::RenderStates states) const
@@ -24,7 +27,6 @@ float OBB::getHalfWidth()
 {
 	return m_fWidth/2;
 }
-
 float OBB::getHalfHeight()
 {
 	return m_fHeight/2;
