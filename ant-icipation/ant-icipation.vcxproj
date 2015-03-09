@@ -73,6 +73,7 @@
   <ItemGroup>
     <ClInclude Include="..\include\AABB.h" />
     <ClInclude Include="..\include\ant.h" />
+    <ClInclude Include="..\include\Behaviour.h" />
     <ClInclude Include="..\include\Circle.h" />
     <ClInclude Include="..\include\CollisionsManager.h" />
     <ClInclude Include="..\include\OBB.h" />
@@ -81,6 +82,7 @@
   <ItemGroup>
     <ClCompile Include="..\src\AABB.cpp" />
     <ClCompile Include="..\src\ant.cpp" />
+    <ClCompile Include="..\src\Behaviour.cpp" />
     <ClCompile Include="..\src\Circle.cpp" />
     <ClCompile Include="..\src\CollisionsManager.cpp" />
     <ClCompile Include="..\src\main.cpp" />

@@ -1,19 +1,15 @@
 #include "ant.h"
 
-
 Ant::Ant()
 {
 	
 }
 void Ant::Update()
 {
-	
-
-	m_fBottom = Rectangle.getPosition().y + Rectangle.getSize().y; //calculates the bottom edge
-	m_fLeft = Rectangle.getPosition().x; //calculates the left edge
-	m_fRight = Rectangle.getPosition().x + Rectangle.getSize().x;//calculates the right edge
-	m_fTop = Rectangle.getPosition().y;//calculates the top edge
-
+	m_fBottom = rectangle.getPosition().y + rectangle.getSize().y; //calculates the bottom edge
+	m_fLeft = rectangle.getPosition().x; //calculates the left edge
+	m_fRight = rectangle.getPosition().x + rectangle.getSize().x;//calculates the right edge
+	m_fTop = rectangle.getPosition().y;//calculates the top edge
 }
 
 
@@ -39,25 +35,21 @@ void Ant::WallCollision(Ant ant)
 
 void Ant::randomMovement()
 {
-
 	float xNum = -1+2*((float)rand())/RAND_MAX;//picks a random number between -1 and 1 for x
 	float yNum = -1+2*((float)rand())/RAND_MAX;//picks a random number between -1 and 1 for y
 
-	direction.x=xNum;
-	direction.y=yNum;
-
+	m_vDirection.x=xNum;
+	m_vDirection.y=yNum;
 }
 
 void Ant::move()
 {
-	m_vPosition.x+=direction.x;
-	m_vPosition.y+=direction.y;
+	m_vPosition.x+=m_vDirection.x;
+	m_vPosition.y+=m_vDirection.y;
 
 	//moves the ant based on the direction of the numers generated
 
-	Rectangle.setPosition(m_vPosition);
-
-
+	rectangle.setPosition(m_vPosition);
 }
 
 
@@ -66,30 +58,30 @@ void Ant::movedown()
 	float xNum = -1+2*((float)rand())/RAND_MAX;//picks a random number between -1 and 1 for x
 	float yNum = ((float)rand())/RAND_MAX;//picks a random number between 0 and 1 for y
 
-	direction.x=xNum;
-	direction.y=yNum;
+	m_vDirection.x=xNum;
+	m_vDirection.y=yNum;
 }
 void Ant::moveup()
 {
 	float xNum = -1+2*((float)rand())/RAND_MAX;//picks a random number between -1 and 1 for x
 	float yNum = -1*((float)rand())/RAND_MAX;//picks a random number between -1 and 0 for y
 
-	direction.x=xNum;
-	direction.y=yNum;
+	m_vDirection.x=xNum;
+	m_vDirection.y=yNum;
 }
 void Ant::moveleft()
 {
 	float xNum = -1*((float)rand())/RAND_MAX;//picks a random number between -1 and 0 for x
 	float yNum = -1+2*((float)rand())/RAND_MAX;;//picks a random number between -1 and 1 for y
 
-	direction.x=xNum;
-	direction.y=yNum;
+	m_vDirection.x=xNum;
+	m_vDirection.y=yNum;
 }
 void Ant::moveright()
 {
 	float xNum = ((float)rand())/RAND_MAX;//picks a random number between 0 and 1 for x
 	float yNum = -1+2*((float)rand())/RAND_MAX;//picks a random number between -1 and 1 for y
 
-	direction.x=xNum;
-	direction.y=yNum;
+	m_vDirection.x=xNum;
+	m_vDirection.y=yNum;
 }

@@ -7,7 +7,6 @@ CollisionsManager::CollisionsManager()
 	//default constructor
 }
 
-
 bool CollisionsManager::AABBtoCircleCollision(AABB &aabb,Circle &circle)
 {
 
@@ -39,8 +38,7 @@ bool CollisionsManager::AABBtoCircleCollision(AABB &aabb,Circle &circle)
 	if (fDistance <=0) //if distance <= 0, a collision has happened
 	{
 		return true;
-	}
-	
+	}	
 	else
 	{
 		return false;
@@ -109,10 +107,9 @@ bool CollisionsManager::OBBtoCircleCollision(OBB &obb, Circle &circle)
 
 
 	if (fDistance <=0) //if distance <= 0, a collision had happened
-		{
-			return true;			
-		}
-	
+	{
+		return true;			
+	}
 	else
 	{
 		return false;
