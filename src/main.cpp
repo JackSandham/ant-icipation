@@ -1,6 +1,9 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <iostream>
+#include <fstream>
+#include "Tiles.h"
+#include "Background.h"
 #include <ant.h>
 #include "circle.h"
 #include "AABB.h"
@@ -17,6 +20,7 @@ int main()
 	int i = 0; //value for switch statement, 0 - 5 represent different states, to be tidied up x
 
 	Ant* ant1 = new Ant(sf::Vector2f(400, 300),20,50,sf::Color::Red); //controlled character
+	Circle* antRadius = new Circle(ant1->getPosition(), 50,sf::Color::Green);// ant detection radius
 	Ant* ant2 = new Ant(sf::Vector2f(50, 50), 20,50,sf::Color::Green);	// leaf npc
 	Ant* hill = new Ant(sf::Vector2f(500, 500),100,100,sf::Color::Blue); //ant hill
 
@@ -30,6 +34,30 @@ int main()
 	CollisionsManager* m_CollisionsManager = new CollisionsManager();
 
 	bool move=true;
+	Background back;
+	fstream grid;
+	const static int gridX = 50;
+	const static int gridY = 50;
+	char arrayMatrix[gridX][gridY];
+	bool bMapLoaded = false;
+
+	for(int i = 0; i < gridX; i++){
+		for(int j = 0; j < gridY; j++){
+			arrayMatrix[i][j] = 0;
+		}
+	}
+	grid.open("../Maps/Map1.txt", ios_base::in);
+	if(grid.is_open()){
+			for(int i = 0; i < gridX; i++){
+				for(int j = 0; j < gridY; j++){
+					grid>>arrayMatrix[i][j];
+				}
+			}
+		grid.close();
+	}
+	else{
+		cout<<"error";
+	}
 
 	while(Game.isOpen()) //game loop
 	{
@@ -72,12 +100,28 @@ int main()
 		{
 			i = 2;
 		}
-
+		if(bMapLoaded == false){
+			int k = 0;
+			for(int i = 0; i < gridX; i++){
+				for(int j = 0; j < gridY; j++){
+					switch(arrayMatrix[i][j]){
+					case '.':
+						back.setColour(sf::Color::White,k); //Free Space
+						break;
+					case '1':
+						back.setColour(sf::Color::Magenta,k); //Change to brown for walls
+						break;
+				}
+					k++;
+			}
+			bMapLoaded = true;
+			}
+		}
 		// ^ Q and E reset states to 1 and 2 for vague debugging reasons, needed to make sure switch worked
 		if(fElapsedTime>0.017)
 		{
 			ant1->move();
-			
+			antRadius->move(ant1->getPosition()); //update detection radius to ant
 			/*
 			if (m_CollisionsManager->CircletoCircleCollision(*m_circle,*m_circle2) ==true)
 			{
@@ -88,21 +132,23 @@ int main()
 			{
 				std::cout<<"i collided"<<endl; //obb to circle collision text
 			}
-
-			if (m_CollisionsManager->AABBtoCircleCollision(*m_AABB,*m_circle) ==true)
+			*/
+			//if aabb within radius
+			if (m_CollisionsManager->AABBtoCircleCollision(*m_AABB,*antRadius) ==true)
 			{
 				std::cout<<"i collided"<<endl; //aabb to circle collision text
 			}
+			/*
 			if (m_CollisionsManager->AABBtoAABBCollision(*m_AABB,*m_AABB2) ==true)
 			{
 				std::cout<<"i collided"<<endl; //aabb to aabb collision test
 			}
-			*/
+			
 			if (m_CollisionsManager->AABBtoAABBCollision(*ant1,*m_AABB2) == true)
 			{
 				std::cout<<"i collided"<<endl; //aabb to aabb collision test
 			}
-
+			*/
 			clock.restart(); //restart the clock to update frames	
 		}
 		/*
@@ -153,11 +199,14 @@ int main()
 		hill->Update();
 
 		Game.clear(sf::Color::Black);
+		back.drawBackground(Game);
 		Game.draw(*m_AABB->getRectangle());
 		Game.draw(*m_AABB2->getRectangle());
 		Game.draw(*ant2->getRectangle());
 		Game.draw(*hill->getRectangle());
+		Game.draw(*antRadius);
 		Game.draw(*ant1->getRectangle());
+		
 		Game.display();
 
 	}

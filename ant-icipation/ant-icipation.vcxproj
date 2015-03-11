@@ -73,21 +73,29 @@
   <ItemGroup>
     <ClInclude Include="..\include\AABB.h" />
     <ClInclude Include="..\include\ant.h" />
+    <ClInclude Include="..\include\Background.h" />
     <ClInclude Include="..\include\Behaviour.h" />
     <ClInclude Include="..\include\Circle.h" />
     <ClInclude Include="..\include\CollisionsManager.h" />
+    <ClInclude Include="..\include\GameTiles.h" />
     <ClInclude Include="..\include\OBB.h" />
     <ClInclude Include="..\include\Shape.h" />
+    <ClInclude Include="..\include\Tiles.h" />
+    <ClInclude Include="..\include\Vector2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\AABB.cpp" />
     <ClCompile Include="..\src\ant.cpp" />
+    <ClCompile Include="..\src\Background.cpp" />
     <ClCompile Include="..\src\Behaviour.cpp" />
     <ClCompile Include="..\src\Circle.cpp" />
     <ClCompile Include="..\src\CollisionsManager.cpp" />
+    <ClCompile Include="..\src\GameTiles.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\OBB.cpp" />
     <ClCompile Include="..\src\Shape.cpp" />
+    <ClCompile Include="..\src\Tiles.cpp" />
+    <ClCompile Include="..\src\Vector2D.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
