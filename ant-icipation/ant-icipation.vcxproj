@@ -79,6 +79,7 @@
     <ClInclude Include="..\include\CollisionsManager.h" />
     <ClInclude Include="..\include\GameTiles.h" />
     <ClInclude Include="..\include\OBB.h" />
+    <ClInclude Include="..\include\Randomiser.h" />
     <ClInclude Include="..\include\Shape.h" />
     <ClInclude Include="..\include\Tiles.h" />
     <ClInclude Include="..\include\Vector2D.h" />
@@ -93,6 +94,7 @@
     <ClCompile Include="..\src\GameTiles.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\OBB.cpp" />
+    <ClCompile Include="..\src\Randomiser.cpp" />
     <ClCompile Include="..\src\Shape.cpp" />
     <ClCompile Include="..\src\Tiles.cpp" />
     <ClCompile Include="..\src\Vector2D.cpp" />

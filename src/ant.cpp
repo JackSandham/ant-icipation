@@ -35,11 +35,13 @@ void Ant::WallCollision(Ant ant)
 
 void Ant::randomMovement()
 {
+	srand (time(NULL));
+
 	float xNum = -1+2*((float)rand())/RAND_MAX;//picks a random number between -1 and 1 for x
 	float yNum = -1+2*((float)rand())/RAND_MAX;//picks a random number between -1 and 1 for y
 
-	m_vDirection.x=xNum;
-	m_vDirection.y=yNum;
+	m_vDirection.x=xNum*4;
+	m_vDirection.y=yNum*4;
 }
 
 void Ant::move()

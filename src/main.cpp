@@ -13,16 +13,34 @@
 
 using namespace std;
 
+void setAntPosInMatrix(Ant* ant){
+	float xPos = ant->getPosition().x;
+	float yPos = ant->getPosition().y;
+
+	xPos = xPos/1020;
+	yPos = yPos/1000;
+
+	xPos = xPos * 51;
+	yPos = yPos * 49;
+
+	xPos = (int)xPos;
+	yPos = (int)yPos;
+
+	cout<<xPos<<" "<<yPos<<endl;
+}
+
 int main()
 {
 	sf::Clock clock;//clock for updating frames
-	sf::RenderWindow Game(sf::VideoMode(800,600,32), "ALIEN ANT FARM");
+	sf::RenderWindow Game(sf::VideoMode(1020,1000,32), "ALIEN ANT FARM");
 	int i = 0; //value for switch statement, 0 - 5 represent different states, to be tidied up x
 
-	Ant* ant1 = new Ant(sf::Vector2f(400, 300),20,50,sf::Color::Red); //controlled character
+	Ant* hill = new Ant(sf::Vector2f(500, 500),100,100,sf::Color::Blue); //ant hill
+
+	Ant* ant1 = new Ant(hill->getPosition(),18,18,sf::Color::Red); //controlled character
 	Circle* antRadius = new Circle(ant1->getPosition(), 50,sf::Color::Green);// ant detection radius
 	Ant* ant2 = new Ant(sf::Vector2f(50, 50), 20,50,sf::Color::Green);	// leaf npc
-	Ant* hill = new Ant(sf::Vector2f(500, 500),100,100,sf::Color::Blue); //ant hill
+	
 
 	//Tanveer's Shapes for testing collisions
 	Circle* m_circle = new Circle(sf::Vector2f(50,50), 50); //top left circle
@@ -36,8 +54,8 @@ int main()
 	bool move=true;
 	Background back;
 	fstream grid;
-	const static int gridX = 50;
-	const static int gridY = 50;
+	const static int gridX = 50; //51
+	const static int gridY = 50; //49
 	char arrayMatrix[gridX][gridY];
 	bool bMapLoaded = false;
 
@@ -194,6 +212,7 @@ int main()
 			move=false;
 			ant1->randomMovement();
 		}
+		setAntPosInMatrix(ant1);
 		ant1->WallCollision(*ant1);
 		ant2->Update();
 		hill->Update();
@@ -204,7 +223,7 @@ int main()
 		Game.draw(*m_AABB2->getRectangle());
 		Game.draw(*ant2->getRectangle());
 		Game.draw(*hill->getRectangle());
-		Game.draw(*antRadius);
+		//Game.draw(*antRadius);
 		Game.draw(*ant1->getRectangle());
 		
 		Game.display();
@@ -213,5 +232,7 @@ int main()
 
 	return EXIT_SUCCESS;
 }
+
+
 
 //Ryan Wilson 23/02/15 ant-icipation
