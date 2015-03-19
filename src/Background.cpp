@@ -3,7 +3,7 @@
 Background::Background(){
 	for(int i = 0; i < ksiNumTiles; i++){
 		tiles[i]= GameTiles(Position.getX(), Position.getY(), Size.getX(), Size.getY(), sColour);
-		if(Position.getX() < 1000){
+		if(Position.getX() < 980){
 			Position.setX(Position.getX() + 20);
 			}
 		else{

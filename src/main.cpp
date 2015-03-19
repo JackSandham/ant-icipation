@@ -10,29 +10,42 @@
 #include "OBB.h"
 #include "Shape.h"
 #include "CollisionsManager.h"
+#include "Vector2D.h"
 
 using namespace std;
 
-void setAntPosInMatrix(Ant* ant){
-	float xPos = ant->getPosition().x;
+void setAntPosInMatrix(Ant* ant, char (&charArray)[50][50], Vector2D &xyPos, bool &btemp){
+	if(btemp == true){
+		charArray[(int)xyPos.getX()][(int)xyPos.getY()] = '.';
+		btemp = false;
+	}
+	float xPos = ant->getPosition().x;	
 	float yPos = ant->getPosition().y;
-
-	xPos = xPos/1020;
+	xPos = xPos/1000;
 	yPos = yPos/1000;
-
-	xPos = xPos * 51;
-	yPos = yPos * 49;
-
+	xPos = xPos * 50;
+	yPos = yPos * 50;
 	xPos = (int)xPos;
 	yPos = (int)yPos;
+	charArray[(int)xPos][(int)yPos] = 'a';
+	xyPos = Vector2D(xPos,yPos);
+	btemp = true;
 
-	cout<<xPos<<" "<<yPos<<endl;
+	cout<<xPos<<" "<<yPos<<" "<<endl;
+	cout<<charArray[(int)xPos][(int)yPos]<<" "<<charArray[(int)xyPos.getX()][(int)xyPos.getY()]<<endl;
+
+	for(int i = 0; i < 50; i++){
+		for(int j = 0; j < 50; j++){
+			cout<<charArray[i][j];
+		}
+		cout<<endl;
+	}
 }
 
 int main()
 {
 	sf::Clock clock;//clock for updating frames
-	sf::RenderWindow Game(sf::VideoMode(1020,1000,32), "ALIEN ANT FARM");
+	sf::RenderWindow Game(sf::VideoMode(1000,1000,32), "ALIEN ANT FARM");
 	int i = 0; //value for switch statement, 0 - 5 represent different states, to be tidied up x
 
 	Ant* hill = new Ant(sf::Vector2f(500, 500),100,100,sf::Color::Blue); //ant hill
@@ -40,7 +53,6 @@ int main()
 	Ant* ant1 = new Ant(hill->getPosition(),18,18,sf::Color::Red); //controlled character
 	Circle* antRadius = new Circle(ant1->getPosition(), 50,sf::Color::Green);// ant detection radius
 	Ant* ant2 = new Ant(sf::Vector2f(50, 50), 20,50,sf::Color::Green);	// leaf npc
-	
 
 	//Tanveer's Shapes for testing collisions
 	Circle* m_circle = new Circle(sf::Vector2f(50,50), 50); //top left circle
@@ -57,6 +69,8 @@ int main()
 	const static int gridX = 50; //51
 	const static int gridY = 50; //49
 	char arrayMatrix[gridX][gridY];
+	Vector2D tempPos(0,0);
+	bool tempBool = false;
 	bool bMapLoaded = false;
 
 	for(int i = 0; i < gridX; i++){
@@ -212,7 +226,8 @@ int main()
 			move=false;
 			ant1->randomMovement();
 		}
-		setAntPosInMatrix(ant1);
+		setAntPosInMatrix(ant1, arrayMatrix, tempPos, tempBool);
+
 		ant1->WallCollision(*ant1);
 		ant2->Update();
 		hill->Update();

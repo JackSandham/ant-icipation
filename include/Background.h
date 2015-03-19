@@ -6,7 +6,7 @@
 
 class Background : GameTiles{
 private:
-	static const int ksiNumTiles = 2499;
+	static const int ksiNumTiles = 2500;
 	GameTiles tiles[ksiNumTiles];
 public:
 	Background();
