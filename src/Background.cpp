@@ -2,7 +2,7 @@
 
 Background::Background(){
 	for(int i = 0; i < ksiNumTiles; i++){
-		tiles[i]= GameTiles(Position.getX(), Position.getY(), Size.getX(), Size.getY(), sColour);
+		tiles[i]= Tiles(Position.getX(), Position.getY(), Size.getX(), Size.getY(), sColour);
 		if(Position.getX() < 980){
 			Position.setX(Position.getX() + 20);
 			}
@@ -11,6 +11,7 @@ Background::Background(){
 			Position.setY(Position.getY() + 20);
 		}
 	}
+	bMapped = false;
 }
 
 void Background::drawBackground(sf::RenderTarget & window) const{
@@ -21,4 +22,24 @@ void Background::drawBackground(sf::RenderTarget & window) const{
 
 void Background::setColour(sf::Color sColor, int iTile){
 	tiles[iTile].setColour(sColor);
+}
+
+void Background::assignMatrixValues(char(&charArray)[GRIDX][GRIDY]){
+	if (bMapped == false){
+		int k = 0;
+		for (int i = 0; i < GRIDX; i++){
+			for (int j = 0; j < GRIDY; j++){
+				switch (charArray[i][j]){
+				case '.':
+					setColour(sf::Color::White, k); //Free Space
+					break;
+				case '1':
+					setColour(sf::Color::Magenta, k); //Change to brown for walls
+					break;
+				}
+				k++;
+			}
+			bMapped = true;
+		}
+	}
 }

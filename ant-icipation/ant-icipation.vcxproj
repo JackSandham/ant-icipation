@@ -78,6 +78,7 @@
     <ClInclude Include="..\include\Circle.h" />
     <ClInclude Include="..\include\CollisionsManager.h" />
     <ClInclude Include="..\include\GameTiles.h" />
+    <ClInclude Include="..\include\MatrixController.h" />
     <ClInclude Include="..\include\OBB.h" />
     <ClInclude Include="..\include\Randomiser.h" />
     <ClInclude Include="..\include\Shape.h" />
@@ -91,8 +92,8 @@
     <ClCompile Include="..\src\Behaviour.cpp" />
     <ClCompile Include="..\src\Circle.cpp" />
     <ClCompile Include="..\src\CollisionsManager.cpp" />
-    <ClCompile Include="..\src\GameTiles.cpp" />
     <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\MatrixController.cpp" />
     <ClCompile Include="..\src\OBB.cpp" />
     <ClCompile Include="..\src\Randomiser.cpp" />
     <ClCompile Include="..\src\Shape.cpp" />

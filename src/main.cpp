@@ -2,7 +2,6 @@
 #include <SFML/Window.hpp>
 #include <iostream>
 #include <fstream>
-#include "Tiles.h"
 #include "Background.h"
 #include <ant.h>
 #include "circle.h"
@@ -11,42 +10,28 @@
 #include "Shape.h"
 #include "CollisionsManager.h"
 #include "Vector2D.h"
+#include "MatrixController.h"
 
+/*Gethin Changes
+Anything that I have changed I have put //--Gethin Changes after and then put a description below it
+
+I have also removed the Tiles class from the program as it is used at all so was pointless 
+(this was my class not sure why I added it though)
+The tiles class that is in this project is the old GameTiles class. The Tiles class and GameTiles class need to be removed and then this Tiles class needs to be added.
+
+I have created a brand new class AdjacencyMatrix and have modified the Background and GameTiles classes
+*/
 using namespace std;
-
-void setAntPosInMatrix(Ant* ant, char (&charArray)[50][50], Vector2D &xyPos, bool &btemp){
-	if(btemp == true){
-		charArray[(int)xyPos.getX()][(int)xyPos.getY()] = '.';
-		btemp = false;
-	}
-	float xPos = ant->getPosition().x;	
-	float yPos = ant->getPosition().y;
-	xPos = xPos/1000;
-	yPos = yPos/1000;
-	xPos = xPos * 50;
-	yPos = yPos * 50;
-	xPos = (int)xPos;
-	yPos = (int)yPos;
-	charArray[(int)xPos][(int)yPos] = 'a';
-	xyPos = Vector2D(xPos,yPos);
-	btemp = true;
-
-	cout<<xPos<<" "<<yPos<<" "<<endl;
-	cout<<charArray[(int)xPos][(int)yPos]<<" "<<charArray[(int)xyPos.getX()][(int)xyPos.getY()]<<endl;
-
-	for(int i = 0; i < 50; i++){
-		for(int j = 0; j < 50; j++){
-			cout<<charArray[i][j];
-		}
-		cout<<endl;
-	}
-}
 
 int main()
 {
 	sf::Clock clock;//clock for updating frames
 	sf::RenderWindow Game(sf::VideoMode(1000,1000,32), "ALIEN ANT FARM");
 	int i = 0; //value for switch statement, 0 - 5 represent different states, to be tidied up x
+
+	//Gethins Adjacency Matrix
+	MatrixController matrixControl; //--Gethin Changes
+	//Declaring an AdjacencyMatrix in the main code
 
 	Ant* hill = new Ant(sf::Vector2f(500, 500),100,100,sf::Color::Blue); //ant hill
 
@@ -65,31 +50,12 @@ int main()
 
 	bool move=true;
 	Background back;
-	fstream grid;
-	const static int gridX = 50; //51
-	const static int gridY = 50; //49
-	char arrayMatrix[gridX][gridY];
-	Vector2D tempPos(0,0);
-	bool tempBool = false;
-	bool bMapLoaded = false;
+	char arrayMatrix[GRIDX][GRIDY]; //--Gethin Changes
+	//Used the grid variable defined in the AdjacencyMatrix class to set the size of the grid.
 
-	for(int i = 0; i < gridX; i++){
-		for(int j = 0; j < gridY; j++){
-			arrayMatrix[i][j] = 0;
-		}
-	}
-	grid.open("../Maps/Map1.txt", ios_base::in);
-	if(grid.is_open()){
-			for(int i = 0; i < gridX; i++){
-				for(int j = 0; j < gridY; j++){
-					grid>>arrayMatrix[i][j];
-				}
-			}
-		grid.close();
-	}
-	else{
-		cout<<"error";
-	}
+	matrixControl.presetMatrix(arrayMatrix);//--Gethin Changes
+	matrixControl.constructMatrix(arrayMatrix);//--Gethin Changes
+	//Took the two functions that were here and put them inside the Adjacency Matrix class.
 
 	while(Game.isOpen()) //game loop
 	{
@@ -132,23 +98,10 @@ int main()
 		{
 			i = 2;
 		}
-		if(bMapLoaded == false){
-			int k = 0;
-			for(int i = 0; i < gridX; i++){
-				for(int j = 0; j < gridY; j++){
-					switch(arrayMatrix[i][j]){
-					case '.':
-						back.setColour(sf::Color::White,k); //Free Space
-						break;
-					case '1':
-						back.setColour(sf::Color::Magenta,k); //Change to brown for walls
-						break;
-				}
-					k++;
-			}
-			bMapLoaded = true;
-			}
-		}
+
+		back.assignMatrixValues(arrayMatrix); //--Gethin Changes
+		//I removed the statement that was here and put it into the Background class and am calling it from there as well.
+		
 		// ^ Q and E reset states to 1 and 2 for vague debugging reasons, needed to make sure switch worked
 		if(fElapsedTime>0.017)
 		{
@@ -226,7 +179,8 @@ int main()
 			move=false;
 			ant1->randomMovement();
 		}
-		setAntPosInMatrix(ant1, arrayMatrix, tempPos, tempBool);
+		matrixControl.setAntPosInMatrix(ant1, arrayMatrix);//--Gethin Changes
+		//Put the function into the AdjacencyMatrix class and am calling it from there rather than it being a global function
 
 		ant1->WallCollision(*ant1);
 		ant2->Update();
@@ -238,7 +192,7 @@ int main()
 		Game.draw(*m_AABB2->getRectangle());
 		Game.draw(*ant2->getRectangle());
 		Game.draw(*hill->getRectangle());
-		//Game.draw(*antRadius);
+		Game.draw(*antRadius);
 		Game.draw(*ant1->getRectangle());
 		
 		Game.display();
