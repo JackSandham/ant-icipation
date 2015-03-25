@@ -1,4 +1,5 @@
 #include "ant.h"
+#include "randomiser.h"
 
 Ant::Ant()
 {
@@ -19,11 +20,12 @@ void Ant::Update()
 
 void Ant::WallCollision(Ant ant)
 {
-	if(m_fLeft<=1+getHalfWidth()) //if the ant collides with the left side of the screen
+	/*if(m_fLeft<=1+getHalfWidth()) //if the ant collides with the left side of the screen
 	{
 		moveright();
 	}
-	if(m_fRight>=800+getHalfWidth())//if the ant collides with the right side of the screen
+	
+	if(m_fRight>=1000+getHalfWidth())//if the ant collides with the right side of the screen
 	{
 		moveleft();
 	}
@@ -31,27 +33,62 @@ void Ant::WallCollision(Ant ant)
 	{
 		movedown();
 	}
-	if(m_fBottom>=600+getHalfHeight())//if the ant collides with the bottom of the screen
+	if(m_fBottom>=1000+getHalfHeight())//if the ant collides with the bottom of the screen
 	{
 		moveup();
+	}*/
+
+	if ((m_vDirection.x>=-1 && m_vDirection.x<=1) && (m_vDirection.y>=0))//if moving up
+	{
+		
+		movedown();
+	}
+
+	if ((m_vDirection.x>=-1 && m_vDirection.x<=1) && (m_vDirection.y<=0))//if moving down
+	{
+		
+		moveup();
+	}
+
+	if ((m_vDirection.y>=-1 && m_vDirection.y<=1) && (m_vDirection.x>=0))//if moving left
+	{
+		
+		moveright();
+	}
+
+	if ((m_vDirection.y>=-1 && m_vDirection.y<=1) && (m_vDirection.x<=0))//if moving right
+	{
+		
+		moveleft();
 	}
 }
 
 void Ant::randomMovement()
 {
+	Randomiser random;
+
 	srand (time(NULL));
 
-	float xNum = -1+2*((float)rand())/RAND_MAX;//picks a random number between -1 and 1 for x
-	float yNum = -1+2*((float)rand())/RAND_MAX;//picks a random number between -1 and 1 for y
+	float xNum = random.getRandom(-1,1);//picks a random number between -1 and 1 for x
+	float yNum = random.getRandom(-1,1);//picks a random number between -1 and 1 for y
 
-	m_vDirection.x=xNum*4;
-	m_vDirection.y=yNum*4;
+	m_vDirection.x=xNum;
+	m_vDirection.y=yNum;
 }
 
 void Ant::move()
 {
-	m_vPosition.x+=m_vDirection.x;
-	m_vPosition.y+=m_vDirection.y;
+	float mag = sqrt(m_vDirection.x*m_vDirection.x+m_vDirection.y*m_vDirection.y);
+	sf::Vector2f constSpeed;
+	float scalar= 1/mag;
+	if(mag!=0)
+	{
+		constSpeed.x=m_vDirection.x*scalar;
+		constSpeed.y=m_vDirection.y*scalar;
+
+	}
+	m_vPosition.x+=constSpeed.x;
+	m_vPosition.y+=constSpeed.y;
 
 	//moves the ant based on the direction of the numers generated
 
@@ -62,36 +99,48 @@ void Ant::move()
 
 void Ant::movedown()
 {
-	float xNum = -1+2*((float)rand())/RAND_MAX;//picks a random number between -1 and 1 for x
-	float yNum = ((float)rand())/RAND_MAX;//picks a random number between 0 and 1 for y
+
+	Randomiser random;
+
+	float xNum = random.getRandom(-1,1);//picks a random number between -1 and 1 for x
+	float yNum = random.getRandom(0,1);//picks a random number between 0 and 1 for y
 
 	m_vDirection.x=xNum;
 	m_vDirection.y=yNum;
 }
 void Ant::moveup()
 {
-	float xNum = -1+2*((float)rand())/RAND_MAX;//picks a random number between -1 and 1 for x
-	float yNum = -1*((float)rand())/RAND_MAX;//picks a random number between -1 and 0 for y
+
+	Randomiser random;
+
+	float xNum = random.getRandom(-1,1);//picks a random number between -1 and 1 for x
+	float yNum = random.getRandom(-1,0);//picks a random number between -1 and 0 for y
 
 	m_vDirection.x=xNum;
 	m_vDirection.y=yNum;
 }
 void Ant::moveleft()
 {
-	float xNum = -1*((float)rand())/RAND_MAX;//picks a random number between -1 and 0 for x
-	float yNum = -1+2*((float)rand())/RAND_MAX;;//picks a random number between -1 and 1 for y
+
+	Randomiser random;
+
+	float xNum = random.getRandom(-1,0);//picks a random number between -1 and 0 for x
+	float yNum = random.getRandom(-1,1);//picks a random number between -1 and 1 for y
 
 	m_vDirection.x=xNum;
 	m_vDirection.y=yNum;
 }
 void Ant::moveright()
 {
-	float xNum = ((float)rand())/RAND_MAX;//picks a random number between 0 and 1 for x
-	float yNum = -1+2*((float)rand())/RAND_MAX;//picks a random number between -1 and 1 for y
+	Randomiser random;
+
+	float xNum = random.getRandom(0,1);//picks a random number between 0 and 1 for x
+	float yNum = random.getRandom(-1,1);//picks a random number between -1 and 1 for y
 
 	m_vDirection.x=xNum;
 	m_vDirection.y=yNum;
 }
+
 Circle* Ant::getAntRadius()
 {
 	return antRadius;

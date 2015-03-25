@@ -34,12 +34,17 @@ void Background::assignMatrixValues(char(&charArray)[GRIDX][GRIDY]){
 					setColour(sf::Color::White, k); //Free Space
 					break;
 				case '1':
-					setColour(sf::Color::Magenta, k); //Change to brown for walls
-					break;
+					AABB* Obstacle = new AABB(sf::Vector2f(20*j+10,20*i+10),20,20,sf::Color::Blue);
+					m_vectorOfAABB.push_back(Obstacle);
 				}
 				k++;
 			}
 			bMapped = true;
 		}
 	}
+}
+
+std::vector<AABB*> Background::getObstacles()
+{
+	return m_vectorOfAABB;
 }

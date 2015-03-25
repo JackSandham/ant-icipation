@@ -60,11 +60,11 @@ int main()
 	m_vectorOfAnts.push_back(*ant2);
 
 	//Tanveer's Shapes for testing collisions
-	m_vectorOfCircles.push_back(Circle(sf::Vector2f(50,50), 50,sf::Color::Magenta)); //top left circle
-	m_vectorOfCircles.push_back(Circle(sf::Vector2f(50,151), 50,sf::Color::Green)); //circle underneath other circle. chamge ypos to 150 for circle circle test
-	m_vectorOfAABB.push_back(AABB(sf::Vector2f(126,50),50,50)); //first rectangle to the left of the circle. change xpos to 125 for circle aabb test
-	m_vectorOfAABB.push_back(AABB(sf::Vector2f(177,50),50,50)); //rectangle to the right of the first rectangle. change xpos to 176 for aabb aabb test
-	m_vectorOfOBB.push_back(OBB(sf::Vector2f(136,150),50,50,45)); //rotated aabb next to bottom circle. xpos to 135 for obb circle text
+	//m_vectorOfCircles.push_back(Circle(sf::Vector2f(50,50), 50,sf::Color::Magenta)); //top left circle
+	//m_vectorOfCircles.push_back(Circle(sf::Vector2f(50,151), 50,sf::Color::Green)); //circle underneath other circle. chamge ypos to 150 for circle circle test
+	//m_vectorOfAABB.push_back(AABB(sf::Vector2f(126,50),50,50)); //first rectangle to the left of the circle. change xpos to 125 for circle aabb test
+	//m_vectorOfAABB.push_back(AABB(sf::Vector2f(177,50),50,50)); //rectangle to the right of the first rectangle. change xpos to 176 for aabb aabb test
+	//m_vectorOfOBB.push_back(OBB(sf::Vector2f(136,150),50,50,45)); //rotated aabb next to bottom circle. xpos to 135 for obb circle text
 	
 	
 	//Collision Manager for testing collisions
@@ -78,6 +78,47 @@ int main()
 	matrixControl.presetMatrix(arrayMatrix);//--Gethin Changes
 	matrixControl.constructMatrix(arrayMatrix);//--Gethin Changes
 	//Took the two functions that were here and put them inside the Adjacency Matrix class.
+
+	
+	/*
+	Add all vectors to vector of shapes for drawing
+	*/
+	for(m_Antit=m_vectorOfAnts.begin();m_Antit!=m_vectorOfAnts.end();++m_Antit)
+	{
+		//m_vectorOfShapes.push_back(&*m_Antit);
+	}
+	for(m_Circleit=m_vectorOfCircles.begin();m_Circleit!=m_vectorOfCircles.end();++m_Circleit)
+	{
+		m_vectorOfShapes.push_back(&*m_Circleit);
+	}
+	for(m_AABBit=m_vectorOfAABB.begin();m_AABBit!=m_vectorOfAABB.end();++m_AABBit)
+	{
+		m_vectorOfShapes.push_back(&*m_AABBit);
+	}
+	for(m_OBBit=m_vectorOfOBB.begin();m_OBBit!=m_vectorOfOBB.end();++m_OBBit)
+	{
+		m_vectorOfShapes.push_back(&*m_OBBit);
+	}
+
+	back.assignMatrixValues(arrayMatrix); //--Gethin Changes
+	//I removed the statement that was here and put it into the Background class and am calling it from there as well.
+
+
+
+	/*
+	Had to move all of this out of the game loop because every frame, more shapes were getting added to the vector
+	so the program was getting very laggy. now they are just added once and the program runs much smoother.
+	*/  // - Tanveer
+
+	std::vector<AABB*> obstacles = back.getObstacles();
+	std::vector<AABB*>::iterator obstaclesit;
+
+	for (obstaclesit = obstacles.begin(); obstaclesit != obstacles.end(); ++obstaclesit) 
+	{
+		m_vectorOfShapes.push_back(&**obstaclesit);// adds all the shapes in the adjacency matrix to the shapes vector
+			
+	}
+
 
 	while(Game.isOpen()) //game loop
 	{
@@ -121,11 +162,13 @@ int main()
 			i = 2;
 		}
 
-		back.assignMatrixValues(arrayMatrix); //--Gethin Changes
-		//I removed the statement that was here and put it into the Background class and am calling it from there as well.
 		
+		
+		
+		
+
 		// ^ Q and E reset states to 1 and 2 for vague debugging reasons, needed to make sure switch worked
-		if(fElapsedTime>0.017)
+		if(fElapsedTime>0.033)
 		{
 			ant1->move();
 			
@@ -147,6 +190,7 @@ int main()
 				if (m_CollisionsManager->OBBtoCircleCollision(OBB,*ant1->getAntRadius()) ==true)
 				{
 					std::cout<<"i collided"<<endl; //obb to circle collision text
+					
 				}
 			}
 			
@@ -155,10 +199,21 @@ int main()
 			{
 				if (m_CollisionsManager->AABBtoCircleCollision(AABB,*ant1->getAntRadius()) ==true)
 				{
-				std::cout<<"i collided"<<endl; //aabb to circle collision text
+					std::cout<<"i collided"<<endl; //aabb to circle collision text
 				}
 			}
 			
+			for (obstaclesit = obstacles.begin(); obstaclesit != obstacles.end(); ++obstaclesit) 
+			{
+
+				if(m_CollisionsManager->AABBtoCircleCollision(**obstaclesit,*ant1->getAntRadius())==true)
+				{
+					cout<<"collision";
+					ant1->WallCollision(*ant1);			
+				}
+			
+			}
+
 			/*
 			if (m_CollisionsManager->AABBtoAABBCollision(*m_AABB,*m_AABB2) ==true)
 			{
@@ -218,32 +273,12 @@ int main()
 		matrixControl.setAntPosInMatrix(ant1, arrayMatrix);//--Gethin Changes
 		//Put the function into the AdjacencyMatrix class and am calling it from there rather than it being a global function
 
-		ant1->WallCollision(*ant1);
 		ant2->Update();
 		//hill->Update();
 
-		/*
-		Add all vectors to vector of shapes for drawing
-		*/
-		for(m_Antit=m_vectorOfAnts.begin();m_Antit!=m_vectorOfAnts.end();++m_Antit)
-		{
-			//m_vectorOfShapes.push_back(&*m_Antit);
-		}
-		for(m_Circleit=m_vectorOfCircles.begin();m_Circleit!=m_vectorOfCircles.end();++m_Circleit)
-		{
-			m_vectorOfShapes.push_back(&*m_Circleit);
-		}
-		for(m_AABBit=m_vectorOfAABB.begin();m_AABBit!=m_vectorOfAABB.end();++m_AABBit)
-		{
-			m_vectorOfShapes.push_back(&*m_AABBit);
-		}
-		for(m_OBBit=m_vectorOfOBB.begin();m_OBBit!=m_vectorOfOBB.end();++m_OBBit)
-		{
-			m_vectorOfShapes.push_back(&*m_OBBit);
-		}
 
 		Game.clear(sf::Color::Black);
-		back.drawBackground(Game);
+		//back.drawBackground(Game); disabled this because it makes it extremely laggy
 		/*
 		Game.draw(*m_AABB->getRectangle());
 		Game.draw(*m_AABB2->getRectangle());
@@ -265,4 +300,3 @@ int main()
 
 	return EXIT_SUCCESS;
 }
-
