@@ -24,3 +24,8 @@ sf::Color Shape::getColor()
 {
 	return m_Color;
 }
+void Shape::draw(sf::RenderTarget& target /** Context for rendering */, 
+sf::RenderStates states /** Primitive shpaes to render */) const
+{
+
+}

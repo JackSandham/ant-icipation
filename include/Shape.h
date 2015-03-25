@@ -13,7 +13,7 @@ class Shape : public sf::Drawable
 
 		sf::Vector2f getPosition();
 		sf::Color getColor();
-
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 	protected:
 		sf::Vector2f m_vPosition;
 		sf::Vector2f m_vOrigin;

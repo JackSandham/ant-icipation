@@ -4,6 +4,10 @@ Ant::Ant()
 {
 	
 }
+Ant::Ant(sf::Vector2f passedPosition, int width, int height, sf::Color passedColor) : AABB(passedPosition,  width,  height,passedColor)
+{
+	antRadius = new Circle(getPosition(), 50,sf::Color::Green);// ant detection radius
+}
 void Ant::Update()
 {
 	m_fBottom = rectangle.getPosition().y + rectangle.getSize().y; //calculates the bottom edge
@@ -52,6 +56,7 @@ void Ant::move()
 	//moves the ant based on the direction of the numers generated
 
 	rectangle.setPosition(m_vPosition);
+	antRadius->move(getPosition()); //update detection radius to ant
 }
 
 
@@ -86,4 +91,16 @@ void Ant::moveright()
 
 	m_vDirection.x=xNum;
 	m_vDirection.y=yNum;
+}
+Circle* Ant::getAntRadius()
+{
+	return antRadius;
+}
+
+void Ant::draw(sf::RenderTarget& target /** Context for rendering */, 
+sf::RenderStates states /** Primitive shpaes to render */) const
+{
+
+	target.draw(*antRadius);
+	target.draw(rectangle);
 }

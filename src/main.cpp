@@ -33,18 +33,40 @@ int main()
 	MatrixController matrixControl; //--Gethin Changes
 	//Declaring an AdjacencyMatrix in the main code
 
-	Ant* hill = new Ant(sf::Vector2f(500, 500),100,100,sf::Color::Blue); //ant hill
+	/*
+	Vectors to hold all shapes. 
+	Shapes are all drawn from vector of shapes. Apart from ants for the moment.
+	Allows for iterating over multiple shapes for collision tests.
+	*/
+	std::vector<Shape*> m_vectorOfShapes; //!< A pointer to shapes held in a vector
+
+	std::vector<Ant> m_vectorOfAnts;
+	std::vector<Ant>::iterator m_Antit; //!< iterator for this vector
+
+	std::vector<AABB> m_vectorOfAABB; //!< Holds AABB objects
+	std::vector<AABB>::iterator m_AABBit; //!< iterator for this vector
+
+	std::vector<OBB> m_vectorOfOBB; //!< Holds OBB objects
+	std::vector<OBB>::iterator m_OBBit; //!< iterator for this vector
+
+	std::vector<Circle> m_vectorOfCircles; //!< Holds OBB objects
+	std::vector<Circle>::iterator m_Circleit; //!< iterator for this vector
+
+	AABB* hill = new Ant(sf::Vector2f(500, 500),100,100,sf::Color::Blue); //ant hill
 
 	Ant* ant1 = new Ant(hill->getPosition(),18,18,sf::Color::Red); //controlled character
-	Circle* antRadius = new Circle(ant1->getPosition(), 50,sf::Color::Green);// ant detection radius
+	m_vectorOfAnts.push_back(*ant1);
 	Ant* ant2 = new Ant(sf::Vector2f(50, 50), 20,50,sf::Color::Green);	// leaf npc
+	m_vectorOfAnts.push_back(*ant2);
 
 	//Tanveer's Shapes for testing collisions
-	Circle* m_circle = new Circle(sf::Vector2f(50,50), 50); //top left circle
-	Circle* m_circle2 = new Circle(sf::Vector2f(50,151), 50); //circle underneath other circle. chamge ypos to 150 for circle circle test
-	AABB* m_AABB = new AABB(sf::Vector2f(126,50),50,50); //first rectangle to the left of the circle. change xpos to 125 for circle aabb test
-	AABB* m_AABB2 = new AABB(sf::Vector2f(177,50),50,50); //rectangle to the right of the first rectangle. change xpos to 176 for aabb aabb test
-	OBB* m_OBB = new OBB(sf::Vector2f(136,150),50,50,45); //rotated aabb next to bottom circle. xpos to 135 for obb circle text
+	m_vectorOfCircles.push_back(Circle(sf::Vector2f(50,50), 50,sf::Color::Magenta)); //top left circle
+	m_vectorOfCircles.push_back(Circle(sf::Vector2f(50,151), 50,sf::Color::Green)); //circle underneath other circle. chamge ypos to 150 for circle circle test
+	m_vectorOfAABB.push_back(AABB(sf::Vector2f(126,50),50,50)); //first rectangle to the left of the circle. change xpos to 125 for circle aabb test
+	m_vectorOfAABB.push_back(AABB(sf::Vector2f(177,50),50,50)); //rectangle to the right of the first rectangle. change xpos to 176 for aabb aabb test
+	m_vectorOfOBB.push_back(OBB(sf::Vector2f(136,150),50,50,45)); //rotated aabb next to bottom circle. xpos to 135 for obb circle text
+	
+	
 	//Collision Manager for testing collisions
 	CollisionsManager* m_CollisionsManager = new CollisionsManager();
 
@@ -106,23 +128,37 @@ int main()
 		if(fElapsedTime>0.017)
 		{
 			ant1->move();
-			antRadius->move(ant1->getPosition()); //update detection radius to ant
+			
 			/*
-			if (m_CollisionsManager->CircletoCircleCollision(*m_circle,*m_circle2) ==true)
-			{
-				std::cout<<"i collided"<<endl; //circle with circle collision test
-			}
-
-			if (m_CollisionsManager->OBBtoCircleCollision(*m_OBB,*m_circle2) ==true)
-			{
-				std::cout<<"i collided"<<endl; //obb to circle collision text
-			}
+			Collision tests now iterate over vectors.
 			*/
-			//if aabb within radius
-			if (m_CollisionsManager->AABBtoCircleCollision(*m_AABB,*antRadius) ==true)
+			
+			//if Circle within radius
+			for(auto Circle : m_vectorOfCircles)
 			{
+				if (m_CollisionsManager->CircletoCircleCollision(Circle,*ant1->getAntRadius()) ==true)
+				{
 				std::cout<<"i collided"<<endl; //aabb to circle collision text
+				}
 			}
+			//if OBB within radius
+			for(auto OBB : m_vectorOfOBB)
+			{
+				if (m_CollisionsManager->OBBtoCircleCollision(OBB,*ant1->getAntRadius()) ==true)
+				{
+					std::cout<<"i collided"<<endl; //obb to circle collision text
+				}
+			}
+			
+			//if aabb within radius
+			for(auto AABB : m_vectorOfAABB)
+			{
+				if (m_CollisionsManager->AABBtoCircleCollision(AABB,*ant1->getAntRadius()) ==true)
+				{
+				std::cout<<"i collided"<<endl; //aabb to circle collision text
+				}
+			}
+			
 			/*
 			if (m_CollisionsManager->AABBtoAABBCollision(*m_AABB,*m_AABB2) ==true)
 			{
@@ -184,17 +220,45 @@ int main()
 
 		ant1->WallCollision(*ant1);
 		ant2->Update();
-		hill->Update();
+		//hill->Update();
+
+		/*
+		Add all vectors to vector of shapes for drawing
+		*/
+		for(m_Antit=m_vectorOfAnts.begin();m_Antit!=m_vectorOfAnts.end();++m_Antit)
+		{
+			//m_vectorOfShapes.push_back(&*m_Antit);
+		}
+		for(m_Circleit=m_vectorOfCircles.begin();m_Circleit!=m_vectorOfCircles.end();++m_Circleit)
+		{
+			m_vectorOfShapes.push_back(&*m_Circleit);
+		}
+		for(m_AABBit=m_vectorOfAABB.begin();m_AABBit!=m_vectorOfAABB.end();++m_AABBit)
+		{
+			m_vectorOfShapes.push_back(&*m_AABBit);
+		}
+		for(m_OBBit=m_vectorOfOBB.begin();m_OBBit!=m_vectorOfOBB.end();++m_OBBit)
+		{
+			m_vectorOfShapes.push_back(&*m_OBBit);
+		}
 
 		Game.clear(sf::Color::Black);
 		back.drawBackground(Game);
+		/*
 		Game.draw(*m_AABB->getRectangle());
 		Game.draw(*m_AABB2->getRectangle());
 		Game.draw(*ant2->getRectangle());
 		Game.draw(*hill->getRectangle());
 		Game.draw(*antRadius);
-		Game.draw(*ant1->getRectangle());
+		*/
+		Game.draw(*ant1);//seperate for the moment.
 		
+		//draw all shapes
+		for(auto shape : m_vectorOfShapes)
+		{
+			Game.draw(*shape);
+		}
+
 		Game.display();
 
 	}
@@ -202,6 +266,3 @@ int main()
 	return EXIT_SUCCESS;
 }
 
-
-
-//Ryan Wilson 23/02/15 ant-icipation
