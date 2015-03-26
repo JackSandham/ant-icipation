@@ -1,13 +1,20 @@
 #include "ant.h"
 #include "randomiser.h"
-
+#include <stdlib.h>     //for using the function sleep
+#include <Windows.h>
 Ant::Ant()
 {
 	
 }
-Ant::Ant(sf::Vector2f passedPosition, int width, int height, sf::Color passedColor) : AABB(passedPosition,  width,  height,passedColor)
+Ant::Ant(Vector2D passedPosition, int width, int height) : AABB(passedPosition,  width,  height)
 {
 	antRadius = new Circle(getPosition(), 50,sf::Color::Green);// ant detection radius
+	m_bCanMove = true;
+}
+Ant::Ant(Vector2D passedPosition, int width, int height, sf::Color passedColor) : AABB(passedPosition,  width,  height,passedColor)
+{
+	antRadius = new Circle(getPosition(), 50,sf::Color::Green);// ant detection radius
+	m_bCanMove = true;
 }
 void Ant::Update()
 {
@@ -38,25 +45,25 @@ void Ant::WallCollision(Ant ant)
 		moveup();
 	}*/
 
-	if ((m_vDirection.x>=-1 && m_vDirection.x<=1) && (m_vDirection.y>=0))//if moving up
+	if ((m_vDirection.getX()>=-1 && m_vDirection.getX()<=1) && (m_vDirection.getY()>=0))//if moving up
 	{
 		
 		movedown();
 	}
 
-	if ((m_vDirection.x>=-1 && m_vDirection.x<=1) && (m_vDirection.y<=0))//if moving down
+	if ((m_vDirection.getX()>=-1 && m_vDirection.getX()<=1) && (m_vDirection.getY()<=0))//if moving down
 	{
 		
 		moveup();
 	}
 
-	if ((m_vDirection.y>=-1 && m_vDirection.y<=1) && (m_vDirection.x>=0))//if moving left
+	if ((m_vDirection.getY()>=-1 && m_vDirection.getY()<=1) && (m_vDirection.getX()>=0))//if moving left
 	{
 		
 		moveright();
 	}
 
-	if ((m_vDirection.y>=-1 && m_vDirection.y<=1) && (m_vDirection.x<=0))//if moving right
+	if ((m_vDirection.getY()>=-1 && m_vDirection.getY()<=1) && (m_vDirection.getX()<=0))//if moving right
 	{
 		
 		moveleft();
@@ -65,34 +72,40 @@ void Ant::WallCollision(Ant ant)
 
 void Ant::randomMovement()
 {
-	Randomiser random;
+	
+	Randomiser* random = new Randomiser();
 
+	float xNum = random->getRandom(-1,1);//picks a random number between -1 and 1 for x
+	float yNum = random->getRandom(-1,1);//picks a random number between -1 and 1 for y
+
+	m_vDirection.setX(xNum);
+	m_vDirection.setY(yNum);
+
+	delete random;
+	random = nullptr;
+	/*delay so that a different random is generated*/
+	Sleep(1000);
 	srand (time(NULL));
-
-	float xNum = random.getRandom(-1,1);//picks a random number between -1 and 1 for x
-	float yNum = random.getRandom(-1,1);//picks a random number between -1 and 1 for y
-
-	m_vDirection.x=xNum;
-	m_vDirection.y=yNum;
+	
 }
 
 void Ant::move()
 {
-	float mag = sqrt(m_vDirection.x*m_vDirection.x+m_vDirection.y*m_vDirection.y);
-	sf::Vector2f constSpeed;
+	float mag = sqrt(m_vDirection.getX()*m_vDirection.getX()+m_vDirection.getY()*m_vDirection.getY());
+	Vector2D constSpeed;
 	float scalar= 1/mag;
 	if(mag!=0)
 	{
-		constSpeed.x=m_vDirection.x*scalar;
-		constSpeed.y=m_vDirection.y*scalar;
+		constSpeed.setX(m_vDirection.getX()*scalar);
+		constSpeed.setY(m_vDirection.getY()*scalar);
 
 	}
-	m_vPosition.x+=constSpeed.x;
-	m_vPosition.y+=constSpeed.y;
+	m_vPosition.setX(m_vPosition.getX()+constSpeed.getX());
+	m_vPosition.setY(m_vPosition.getY()+constSpeed.getY());
 
 	//moves the ant based on the direction of the numers generated
 
-	rectangle.setPosition(m_vPosition);
+	rectangle.setPosition(m_vPosition.getX(),m_vPosition.getY());
 	antRadius->move(getPosition()); //update detection radius to ant
 }
 
@@ -105,8 +118,8 @@ void Ant::movedown()
 	float xNum = random.getRandom(-1,1);//picks a random number between -1 and 1 for x
 	float yNum = random.getRandom(0,1);//picks a random number between 0 and 1 for y
 
-	m_vDirection.x=xNum;
-	m_vDirection.y=yNum;
+	m_vDirection.setX(xNum);
+	m_vDirection.setY(yNum);
 }
 void Ant::moveup()
 {
@@ -116,8 +129,8 @@ void Ant::moveup()
 	float xNum = random.getRandom(-1,1);//picks a random number between -1 and 1 for x
 	float yNum = random.getRandom(-1,0);//picks a random number between -1 and 0 for y
 
-	m_vDirection.x=xNum;
-	m_vDirection.y=yNum;
+	m_vDirection.setX(xNum);
+	m_vDirection.setY(yNum);
 }
 void Ant::moveleft()
 {
@@ -127,8 +140,8 @@ void Ant::moveleft()
 	float xNum = random.getRandom(-1,0);//picks a random number between -1 and 0 for x
 	float yNum = random.getRandom(-1,1);//picks a random number between -1 and 1 for y
 
-	m_vDirection.x=xNum;
-	m_vDirection.y=yNum;
+	m_vDirection.setX(xNum);
+	m_vDirection.setY(yNum);
 }
 void Ant::moveright()
 {
@@ -137,8 +150,8 @@ void Ant::moveright()
 	float xNum = random.getRandom(0,1);//picks a random number between 0 and 1 for x
 	float yNum = random.getRandom(-1,1);//picks a random number between -1 and 1 for y
 
-	m_vDirection.x=xNum;
-	m_vDirection.y=yNum;
+	m_vDirection.setX(xNum);
+	m_vDirection.setY(yNum);
 }
 
 Circle* Ant::getAntRadius()
@@ -146,6 +159,14 @@ Circle* Ant::getAntRadius()
 	return antRadius;
 }
 
+void Ant::setMovable(bool bPassedMove)
+{
+	m_bCanMove = bPassedMove;
+}
+bool Ant::isMoveable()
+{
+	return m_bCanMove;
+}
 void Ant::draw(sf::RenderTarget& target /** Context for rendering */, 
 sf::RenderStates states /** Primitive shpaes to render */) const
 {

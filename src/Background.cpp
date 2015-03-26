@@ -34,7 +34,7 @@ void Background::assignMatrixValues(char(&charArray)[GRIDX][GRIDY]){
 					setColour(sf::Color::White, k); //Free Space
 					break;
 				case '1':
-					AABB* Obstacle = new AABB(sf::Vector2f(20*j+10,20*i+10),20,20,sf::Color::Blue);
+					AABB* Obstacle = new AABB(Vector2D(20*j+10,20*i+10),20,20,sf::Color::Blue);
 					m_vectorOfAABB.push_back(Obstacle);
 				}
 				k++;

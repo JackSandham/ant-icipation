@@ -12,14 +12,15 @@ Document me :)
 #include <iostream>
 #include "AABB.h"
 #include "Circle.h"
+
 using namespace std;
 
 class Ant : public AABB
 {
 	public:
 		Ant();
-		Ant(sf::Vector2f passedPosition, int width, int height) : AABB(passedPosition,  width,  height){}
-		Ant(sf::Vector2f passedPosition, int width, int height, sf::Color passedColor) ;
+		Ant(Vector2D passedPosition, int width, int height);
+		Ant(Vector2D passedPosition, int width, int height, sf::Color passedColor);
 		
 		void move();
 		void moveup();
@@ -29,8 +30,9 @@ class Ant : public AABB
 		void randomMovement();
 		void Update();
 		void WallCollision(Ant ant);
+		void setMovable(bool bPassedMove);
+		bool isMoveable();
 		Circle* getAntRadius();
-
 		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 	protected:
 
@@ -39,8 +41,9 @@ class Ant : public AABB
 		float m_fLeft; 
 		float m_fRight; 
 		float m_fTop;
+		bool m_bCanMove;
 		Circle* antRadius; //previously in main
-		sf::Vector2f m_vDirection;
+		Vector2D m_vDirection;
 };
 #endif
 

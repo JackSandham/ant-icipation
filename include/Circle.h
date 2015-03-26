@@ -7,11 +7,11 @@
 class Circle : public Shape
 {
 	public:
-		Circle(sf::Vector2f position, float radius);
-		Circle(sf::Vector2f position, float radius, sf::Color passedColor);
+		Circle(Vector2D position, float radius);
+		Circle(Vector2D position, float radius, sf::Color passedColor);
 
 		float getRadius();
-		void move(sf::Vector2f position);
+		void move(Vector2D position);
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 	protected:

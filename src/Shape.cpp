@@ -5,7 +5,7 @@ Shape::Shape()
 
 }
 
-void Shape::setPosition(sf::Vector2f pos)
+void Shape::setPosition(Vector2D pos)
 {
 	m_vPosition = pos;
 }
@@ -15,7 +15,7 @@ void Shape::setColor(sf::Color passedColor)
 	m_Color = passedColor;
 }
 
-sf::Vector2f Shape::getPosition()
+Vector2D Shape::getPosition()
 {
 	return m_vPosition;
 }

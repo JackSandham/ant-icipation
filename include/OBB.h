@@ -7,7 +7,7 @@
 class OBB : public Shape
 {
 	public:
-		OBB(sf::Vector2f position, float width, float height, float angle);
+		OBB(Vector2D position, float width, float height, float angle);
 		
 		float getHalfWidth();
 		float getHalfHeight();

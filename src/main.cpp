@@ -11,6 +11,7 @@
 #include "CollisionsManager.h"
 #include "Vector2D.h"
 #include "MatrixController.h"
+#include "Randomiser.h"
 
 /*Gethin Changes
 Anything that I have changed I have put //--Gethin Changes after and then put a description below it
@@ -20,6 +21,10 @@ I have also removed the Tiles class from the program as it is used at all so was
 The tiles class that is in this project is the old GameTiles class. The Tiles class and GameTiles class need to be removed and then this Tiles class needs to be added.
 
 I have created a brand new class AdjacencyMatrix and have modified the Background and GameTiles classes
+*/
+
+/*
+	NOW USING VECTOR2D
 */
 using namespace std;
 
@@ -52,11 +57,11 @@ int main()
 	std::vector<Circle> m_vectorOfCircles; //!< Holds OBB objects
 	std::vector<Circle>::iterator m_Circleit; //!< iterator for this vector
 
-	AABB* hill = new Ant(sf::Vector2f(500, 500),100,100,sf::Color::Blue); //ant hill
+	AABB* hill = new Ant(Vector2D(500, 500),100,100,sf::Color::Blue); //ant hill (spawn)
 
-	Ant* ant1 = new Ant(hill->getPosition(),18,18,sf::Color::Red); //controlled character
+	Ant* ant1 = new Ant(hill->getPosition(),18,18,sf::Color::Red); //Ant Random 1
 	m_vectorOfAnts.push_back(*ant1);
-	Ant* ant2 = new Ant(sf::Vector2f(50, 50), 20,50,sf::Color::Green);	// leaf npc
+	Ant* ant2 = new Ant(hill->getPosition(), 20,50,sf::Color::Yellow);	// Ant Random 2
 	m_vectorOfAnts.push_back(*ant2);
 
 	//Tanveer's Shapes for testing collisions
@@ -70,7 +75,6 @@ int main()
 	//Collision Manager for testing collisions
 	CollisionsManager* m_CollisionsManager = new CollisionsManager();
 
-	bool move=true;
 	Background back;
 	char arrayMatrix[GRIDX][GRIDY]; //--Gethin Changes
 	//Used the grid variable defined in the AdjacencyMatrix class to set the size of the grid.
@@ -133,21 +137,21 @@ int main()
 
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 		{
-			ant1->setPosition(sf::Vector2f(ant1->getPosition().x,ant1->getPosition().y-0.1));	
+			ant1->setPosition(Vector2D(ant1->getPosition().getX(),ant1->getPosition().getY()-0.1));	
 		}
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 		{
-			ant1->setPosition(sf::Vector2f(ant1->getPosition().x,ant1->getPosition().y+0.1));
+			ant1->setPosition(Vector2D(ant1->getPosition().getX(),ant1->getPosition().getY()+0.1));
 			
 		}
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 		{
-			ant1->setPosition(sf::Vector2f(ant1->getPosition().x-0.1,ant1->getPosition().y));
+			ant1->setPosition(Vector2D(ant1->getPosition().getX()-0.1,ant1->getPosition().getY()));
 			
 		}
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 		{
-			ant1->setPosition(sf::Vector2f(ant1->getPosition().x+0.1,ant1->getPosition().y));
+			ant1->setPosition(Vector2D(ant1->getPosition().getX()+0.1,ant1->getPosition().getY()));
 			
 		}
 
@@ -162,69 +166,71 @@ int main()
 			i = 2;
 		}
 
-		
-		
-		
-		
-
 		// ^ Q and E reset states to 1 and 2 for vague debugging reasons, needed to make sure switch worked
 		if(fElapsedTime>0.033)
 		{
-			ant1->move();
-			
-			/*
-			Collision tests now iterate over vectors.
-			*/
-			
-			//if Circle within radius
-			for(auto Circle : m_vectorOfCircles)
+			//Move/collide Multiple Ants
+			for(m_Antit=m_vectorOfAnts.begin();m_Antit!=m_vectorOfAnts.end();++m_Antit)
 			{
-				if (m_CollisionsManager->CircletoCircleCollision(Circle,*ant1->getAntRadius()) ==true)
-				{
-				std::cout<<"i collided"<<endl; //aabb to circle collision text
-				}
-			}
-			//if OBB within radius
-			for(auto OBB : m_vectorOfOBB)
-			{
-				if (m_CollisionsManager->OBBtoCircleCollision(OBB,*ant1->getAntRadius()) ==true)
-				{
-					std::cout<<"i collided"<<endl; //obb to circle collision text
-					
-				}
-			}
+				m_Antit->move();
+				
+				/*
+				Collision tests now iterate over vectors.
+				*/
 			
-			//if aabb within radius
-			for(auto AABB : m_vectorOfAABB)
-			{
-				if (m_CollisionsManager->AABBtoCircleCollision(AABB,*ant1->getAntRadius()) ==true)
+				//if Circle within radius
+				for(auto Circle : m_vectorOfCircles)
 				{
+					if (m_CollisionsManager->CircletoCircleCollision(Circle,*m_Antit->getAntRadius()) ==true)
+					{
 					std::cout<<"i collided"<<endl; //aabb to circle collision text
+					}
 				}
-			}
-			
-			for (obstaclesit = obstacles.begin(); obstaclesit != obstacles.end(); ++obstaclesit) 
-			{
-
-				if(m_CollisionsManager->AABBtoCircleCollision(**obstaclesit,*ant1->getAntRadius())==true)
+				//if OBB within radius
+				for(auto OBB : m_vectorOfOBB)
 				{
-					cout<<"collision";
-					ant1->WallCollision(*ant1);			
+					if (m_CollisionsManager->OBBtoCircleCollision(OBB,*m_Antit->getAntRadius()) ==true)
+					{
+						std::cout<<"i collided"<<endl; //obb to circle collision text
+					
+					}
 				}
 			
-			}
+				//if aabb within radius
+				for(auto AABB : m_vectorOfAABB)
+				{
+					if (m_CollisionsManager->AABBtoCircleCollision(AABB,*m_Antit->getAntRadius()) ==true)
+					{
+						std::cout<<"i collided"<<endl; //aabb to circle collision text
+					}
+				}
+			
+				for (obstaclesit = obstacles.begin(); obstaclesit != obstacles.end(); ++obstaclesit) 
+				{
 
-			/*
-			if (m_CollisionsManager->AABBtoAABBCollision(*m_AABB,*m_AABB2) ==true)
-			{
-				std::cout<<"i collided"<<endl; //aabb to aabb collision test
+					if(m_CollisionsManager->AABBtoCircleCollision(**obstaclesit,*m_Antit->getAntRadius())==true)
+					{
+						cout<<"collision";
+						m_CollisionsManager->correctPosition(*m_Antit);
+						m_Antit->WallCollision(*m_Antit);			
+					}
+			
+				}
+
+				/*
+				if (m_CollisionsManager->AABBtoAABBCollision(*m_AABB,*m_AABB2) ==true)
+				{
+					std::cout<<"i collided"<<endl; //aabb to aabb collision test
+				}
+			
+				if (m_CollisionsManager->AABBtoAABBCollision(*ant1,*m_AABB2) == true)
+				{
+					std::cout<<"i collided"<<endl; //aabb to aabb collision test
+				}
+				*/
 			}
 			
-			if (m_CollisionsManager->AABBtoAABBCollision(*ant1,*m_AABB2) == true)
-			{
-				std::cout<<"i collided"<<endl; //aabb to aabb collision test
-			}
-			*/
+			
 			clock.restart(); //restart the clock to update frames	
 		}
 		/*
@@ -263,22 +269,25 @@ int main()
 		default:
 			cout << "Default"; //default game state, probably seek as well, it's just there in case anything breaks 
 		}
-
-		ant1->Update();
-		if(move==true)
+		//Move Multiple Ants
+		for(m_Antit=m_vectorOfAnts.begin();m_Antit!=m_vectorOfAnts.end();++m_Antit)
 		{
-			move=false;
-			ant1->randomMovement();
-		}
-		matrixControl.setAntPosInMatrix(ant1, arrayMatrix);//--Gethin Changes
-		//Put the function into the AdjacencyMatrix class and am calling it from there rather than it being a global function
+			m_Antit->Update();
+			if(m_Antit->isMoveable())
+			{
+				m_Antit->setMovable(false);
+				m_Antit->randomMovement();
+			}
+			matrixControl.setAntPosInMatrix(&*m_Antit, arrayMatrix);//--Gethin Changes
+			//Put the function into the AdjacencyMatrix class and am calling it from there rather than it being a global function
 
-		ant2->Update();
-		//hill->Update();
+			//ant2->Update();
+			//hill->Update();
+		}
 
 
 		Game.clear(sf::Color::Black);
-		//back.drawBackground(Game); disabled this because it makes it extremely laggy
+		//back.drawBackground(Game); //disabled this because it makes it extremely laggy
 		/*
 		Game.draw(*m_AABB->getRectangle());
 		Game.draw(*m_AABB2->getRectangle());
@@ -286,7 +295,10 @@ int main()
 		Game.draw(*hill->getRectangle());
 		Game.draw(*antRadius);
 		*/
-		Game.draw(*ant1);//seperate for the moment.
+		for(m_Antit=m_vectorOfAnts.begin();m_Antit!=m_vectorOfAnts.end();++m_Antit)
+		{
+			Game.draw(*m_Antit);//seperate for the moment.
+		}
 		
 		//draw all shapes
 		for(auto shape : m_vectorOfShapes)

@@ -8,16 +8,16 @@ class AABB : public Shape
 {
 	public:
 		AABB();
-		AABB(sf::Vector2f position, float width, float height);
-		AABB(sf::Vector2f position, float width, float height, sf::Color passedColor);
+		AABB(Vector2D position, float width, float height);
+		AABB(Vector2D position, float width, float height, sf::Color passedColor);
 	
 		void setMin();
 		void setMax();
-		void setPosition(sf::Vector2f passedVector);
+		void setPosition(Vector2D passedVector);
 		float getHalfWidth();
 		float getHalfHeight();
-		sf::Vector2f getMin();
-		sf::Vector2f getMax();
+		Vector2D getMin();
+		Vector2D getMax();
 		sf::RectangleShape* getRectangle();
 	
 		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
@@ -28,8 +28,8 @@ class AABB : public Shape
 	private:
 		float m_fWidth;
 		float m_fHeight;
-		sf::Vector2f m_vMax;
-		sf::Vector2f m_vMin;
+		Vector2D m_vMax;
+		Vector2D m_vMin;
 };
 
 #endif

@@ -10,8 +10,8 @@ void MatrixController::setAntPosInMatrix(Ant* ant, char(&charArray)[GRIDX][GRIDY
 		charArray[(int)tempPos.getX()][(int)tempPos.getY()] = '.';
 		bTempBool = false;
 	}
-	float xPos = ant->getPosition().x;
-	float yPos = ant->getPosition().y;
+	float xPos = ant->getPosition().getX();
+	float yPos = ant->getPosition().getY();
 	xPos = xPos / 1000;
 	yPos = yPos / 1000;
 	xPos = xPos * 50;
