@@ -54,6 +54,9 @@
     <ClInclude Include="..\include\MatrixController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\BehaviourFollow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\main.cpp">
@@ -93,6 +96,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\MatrixController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\BehaviourFollow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

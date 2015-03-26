@@ -4,6 +4,8 @@
 #include <fstream>
 #include "Background.h"
 #include <ant.h>
+#include <Behaviour.h>
+#include <BehaviourFollow.h>
 #include "circle.h"
 #include "AABB.h"
 #include "OBB.h"
@@ -60,10 +62,13 @@ int main()
 	AABB* hill = new Ant(Vector2D(500, 500),100,100,sf::Color::Blue); //ant hill (spawn)
 
 	Ant* ant1 = new Ant(hill->getPosition(),18,18,sf::Color::Red); //Ant Random 1
+	ant1->setRadiusVisibility(false);
 	m_vectorOfAnts.push_back(*ant1);
-	Ant* ant2 = new Ant(hill->getPosition(), 20,50,sf::Color::Yellow);	// Ant Random 2
+	Ant* ant2 = new Ant(hill->getPosition()-100, 18,18,sf::Color::Yellow);	// Ant Random 2
+	ant2->setRadiusVisibility(false);
 	m_vectorOfAnts.push_back(*ant2);
 
+	BehaviourFollow* antFollow = new BehaviourFollow();
 	//Tanveer's Shapes for testing collisions
 	//m_vectorOfCircles.push_back(Circle(sf::Vector2f(50,50), 50,sf::Color::Magenta)); //top left circle
 	//m_vectorOfCircles.push_back(Circle(sf::Vector2f(50,151), 50,sf::Color::Green)); //circle underneath other circle. chamge ypos to 150 for circle circle test
@@ -170,9 +175,12 @@ int main()
 		if(fElapsedTime>0.033)
 		{
 			//Move/collide Multiple Ants
+			int temp =0;
 			for(m_Antit=m_vectorOfAnts.begin();m_Antit!=m_vectorOfAnts.end();++m_Antit)
 			{
+				++temp;
 				m_Antit->move();
+				
 				
 				/*
 				Collision tests now iterate over vectors.
@@ -210,9 +218,20 @@ int main()
 
 					if(m_CollisionsManager->AABBtoCircleCollision(**obstaclesit,*m_Antit->getAntRadius())==true)
 					{
-						cout<<"collision";
-						m_CollisionsManager->correctPosition(*m_Antit);
-						m_Antit->WallCollision(*m_Antit);			
+						cout<<"obstaclecollision"<<endl;
+						//If the ant is heading towards the obstacle
+						if(m_Antit->getDirection().dotProduct(m_CollisionsManager->getNormal())<0)
+						{
+							m_CollisionsManager->correctPosition(*m_Antit);
+							m_Antit->WallCollision(*m_Antit);
+						}
+									
+					}
+					//If there is no collision, then we can check for antfollow.
+					else
+					{
+						
+						if(temp!=m_vectorOfAnts.size())antFollow->run(*m_Antit,m_vectorOfAnts.at(temp),*m_CollisionsManager);
 					}
 			
 				}

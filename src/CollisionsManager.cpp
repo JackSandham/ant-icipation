@@ -48,6 +48,8 @@ bool CollisionsManager::AABBtoCircleCollision(AABB &aabb,Circle &circle)
 
 bool CollisionsManager::AABBtoAABBCollision(AABB &aabb,AABB &aabb2)
 {
+	Vector2D tempVec = aabb.getPosition()-aabb2.getPosition();
+	m_fFinalDistance = tempVec.getMagnitude()-aabb.getHalfHeight();
 	if(aabb.getMax().getX() < aabb2.getMin().getX()  || aabb.getMin().getX() > aabb2.getMax().getX()) return false;
 	if(aabb.getMax().getY() < aabb2.getMin().getY()  || aabb.getMin().getY() > aabb2.getMax().getY()) return false;
 	return true;
@@ -143,9 +145,18 @@ void CollisionsManager::correctPosition(Shape &passedShape)
 	//Max between pdMinusSlop and 0
 	float fMax = fPDMinusSlop>0 ? fPDMinusSlop : 0;
 	//Calculate c position
-	float cPosX = ((fMax/(0.1))*fPercent)*(m_Normal.getX());
-	float cPosY = ((fMax/(0.1))*fPercent)*(m_Normal.getY());
+	float cPosX = ((fMax/(1))*fPercent)*(m_Normal.getX());
+	float cPosY = ((fMax/(1))*fPercent)*(m_Normal.getY());
 	Vector2D cPos(cPosX,cPosY);
-	Vector2D newPos = passedShape.getPosition() - (cPos*0.1);
+	Vector2D newPos = passedShape.getPosition() - (cPos*1);
 	passedShape.setPosition(newPos);
+}
+
+Vector2D CollisionsManager::getNormal()
+{
+	return m_Normal;
+}
+float CollisionsManager::getDistance()
+{
+	return m_fFinalDistance;
 }

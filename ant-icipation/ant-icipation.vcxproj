@@ -75,6 +75,7 @@
     <ClInclude Include="..\include\ant.h" />
     <ClInclude Include="..\include\Background.h" />
     <ClInclude Include="..\include\Behaviour.h" />
+    <ClInclude Include="..\include\BehaviourFollow.h" />
     <ClInclude Include="..\include\Circle.h" />
     <ClInclude Include="..\include\CollisionsManager.h" />
     <ClInclude Include="..\include\GameTiles.h" />
@@ -90,6 +91,7 @@
     <ClCompile Include="..\src\ant.cpp" />
     <ClCompile Include="..\src\Background.cpp" />
     <ClCompile Include="..\src\Behaviour.cpp" />
+    <ClCompile Include="..\src\BehaviourFollow.cpp" />
     <ClCompile Include="..\src\Circle.cpp" />
     <ClCompile Include="..\src\CollisionsManager.cpp" />
     <ClCompile Include="..\src\main.cpp" />

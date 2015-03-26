@@ -31,7 +31,11 @@ class Ant : public AABB
 		void Update();
 		void WallCollision(Ant ant);
 		void setMovable(bool bPassedMove);
+		void setDirection(Vector2D passedVector);
+		void setRadiusVisibility(bool passedVisible);
 		bool isMoveable();
+		bool radiusIsVisible();
+		Vector2D getDirection();
 		Circle* getAntRadius();
 		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 	protected:
@@ -42,6 +46,7 @@ class Ant : public AABB
 		float m_fRight; 
 		float m_fTop;
 		bool m_bCanMove;
+		bool m_bRadiusVisible;
 		Circle* antRadius; //previously in main
 		Vector2D m_vDirection;
 };

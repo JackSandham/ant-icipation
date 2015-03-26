@@ -18,6 +18,8 @@ class CollisionsManager
 		bool CircletoCircleCollision(Circle &circle, Circle &circle2);
 
 		void correctPosition(Shape &passedShape);
+		Vector2D getNormal();
+		float getDistance();
 	protected:
 
 	private:
