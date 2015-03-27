@@ -1,23 +1,25 @@
 #include "ant.h"
-#include "randomiser.h"
 #include <stdlib.h>     //for using the function sleep
 #include <Windows.h>
+
 Ant::Ant()
 {
-	
 }
+
 Ant::Ant(Vector2D passedPosition, int width, int height) : AABB(passedPosition,  width,  height)
 {
 	antRadius = new Circle(getPosition(), 100,sf::Color::Green);// ant detection radius
 	m_bCanMove = true;
 	m_bRadiusVisible = true;
 }
+
 Ant::Ant(Vector2D passedPosition, int width, int height, sf::Color passedColor) : AABB(passedPosition,  width,  height,passedColor)
 {
 	antRadius = new Circle(getPosition(), 100,sf::Color::Green);// ant detection radius
 	m_bCanMove = true;
 	m_bRadiusVisible = true;
 }
+
 void Ant::Update()
 {
 	m_fBottom = rectangle.getPosition().y + rectangle.getSize().y; //calculates the bottom edge
@@ -25,7 +27,6 @@ void Ant::Update()
 	m_fRight = rectangle.getPosition().x + rectangle.getSize().x;//calculates the right edge
 	m_fTop = rectangle.getPosition().y;//calculates the top edge
 }
-
 
 void Ant::WallCollision(Ant ant)
 {
@@ -72,23 +73,17 @@ void Ant::WallCollision(Ant ant)
 	}
 }
 
+/**
+* @modified 27/03
+* What does this function even do? - Nathan
+*/
 void Ant::randomMovement()
 {
-	
-	Randomiser* random = new Randomiser();
-
-	float xNum = random->getRandom(-1,1);//picks a random number between -1 and 1 for x
-	float yNum = random->getRandom(-1,1);//picks a random number between -1 and 1 for y
+	float xNum = m_randomiser.getRandom(-1,1);//picks a random number between -1 and 1 for x
+	float yNum = m_randomiser.getRandom(-1,1);//picks a random number between -1 and 1 for y
 
 	m_vDirection.setX(xNum);
-	m_vDirection.setY(yNum);
-
-	delete random;
-	random = nullptr;
-	/*delay so that a different random is generated*/
-	Sleep(1000);
-	srand (time(NULL));
-	
+	m_vDirection.setY(yNum);	
 }
 
 void Ant::move()
@@ -111,46 +106,37 @@ void Ant::move()
 	antRadius->move(getPosition()); //update detection radius to ant
 }
 
-
 void Ant::movedown()
 {
-
-	Randomiser random;
-
-	float xNum = random.getRandom(-1,1);//picks a random number between -1 and 1 for x
-	float yNum = random.getRandom(0,1);//picks a random number between 0 and 1 for y
+	float xNum = m_randomiser.getRandom(-1, 1);//picks a random number between -1 and 1 for x
+	float yNum = m_randomiser.getRandom(0, 1);//picks a random number between 0 and 1 for y
 
 	m_vDirection.setX(xNum);
 	m_vDirection.setY(yNum);
 }
+
 void Ant::moveup()
 {
-
-	Randomiser random;
-
-	float xNum = random.getRandom(-1,1);//picks a random number between -1 and 1 for x
-	float yNum = random.getRandom(-1,0);//picks a random number between -1 and 0 for y
+	float xNum = m_randomiser.getRandom(-1, 1);//picks a random number between -1 and 1 for x
+	float yNum = m_randomiser.getRandom(-1, 0);//picks a random number between -1 and 0 for y
 
 	m_vDirection.setX(xNum);
 	m_vDirection.setY(yNum);
 }
+
 void Ant::moveleft()
 {
-
-	Randomiser random;
-
-	float xNum = random.getRandom(-1,0);//picks a random number between -1 and 0 for x
-	float yNum = random.getRandom(-1,1);//picks a random number between -1 and 1 for y
+	float xNum = m_randomiser.getRandom(-1, 0);//picks a random number between -1 and 0 for x
+	float yNum = m_randomiser.getRandom(-1, 1);//picks a random number between -1 and 1 for y
 
 	m_vDirection.setX(xNum);
 	m_vDirection.setY(yNum);
 }
+
 void Ant::moveright()
 {
-	Randomiser random;
-
-	float xNum = random.getRandom(0,1);//picks a random number between 0 and 1 for x
-	float yNum = random.getRandom(-1,1);//picks a random number between -1 and 1 for y
+	float xNum = m_randomiser.getRandom(0, 1);//picks a random number between 0 and 1 for x
+	float yNum = m_randomiser.getRandom(-1, 1);//picks a random number between -1 and 1 for y
 
 	m_vDirection.setX(xNum);
 	m_vDirection.setY(yNum);
@@ -165,10 +151,12 @@ void Ant::setMovable(bool bPassedMove)
 {
 	m_bCanMove = bPassedMove;
 }
+
 void Ant::setDirection(Vector2D passedVector)
 {
 	m_vDirection = passedVector;
 }
+
 void Ant::setRadiusVisibility(bool bPassedVisibility)
 {
 	m_bRadiusVisible = bPassedVisibility;
@@ -189,10 +177,11 @@ Vector2D Ant::getDirection()
 	return m_vDirection;
 }
 
-void Ant::draw(sf::RenderTarget& target /** Context for rendering */, 
-sf::RenderStates states /** Primitive shpaes to render */) const
+void Ant::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-
-	if(m_bRadiusVisible)target.draw(*antRadius);
+	if (m_bRadiusVisible)
+	{
+		target.draw(*antRadius);
+	}
 	target.draw(rectangle);
 }

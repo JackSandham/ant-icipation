@@ -7,6 +7,7 @@ Document me :)
 #ifndef ANT_H
 #define ANT_H
 
+#include "randomiser.h"
 #include <SFML/Graphics.hpp>
 #include <cmath>
 #include <iostream>
@@ -41,6 +42,7 @@ class Ant : public AABB
 	protected:
 
 	private:
+		Randomiser m_randomiser;
 		float m_fBottom;
 		float m_fLeft; 
 		float m_fRight; 
