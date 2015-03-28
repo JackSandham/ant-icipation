@@ -53,7 +53,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>sfml-main-d.lib;sfml-system-s-d.lib;sfml-graphics-s-d.lib;sfml-window-s-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sfml-main-d.lib;sfml-system-s-d.lib;sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-audio-s-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -73,33 +73,66 @@
   <ItemGroup>
     <ClInclude Include="..\include\AABB.h" />
     <ClInclude Include="..\include\ant.h" />
+    <ClInclude Include="..\include\AntSimulator.h" />
+    <ClInclude Include="..\include\AudioManager.h" />
     <ClInclude Include="..\include\Background.h" />
     <ClInclude Include="..\include\Behaviour.h" />
     <ClInclude Include="..\include\BehaviourFollow.h" />
     <ClInclude Include="..\include\Circle.h" />
     <ClInclude Include="..\include\CollisionsManager.h" />
+    <ClInclude Include="..\include\FontManager.h" />
     <ClInclude Include="..\include\GameTiles.h" />
     <ClInclude Include="..\include\MatrixController.h" />
     <ClInclude Include="..\include\OBB.h" />
     <ClInclude Include="..\include\Randomiser.h" />
     <ClInclude Include="..\include\Shape.h" />
+    <ClInclude Include="..\include\StringsManager.h" />
+    <ClInclude Include="..\include\TextureManager.h" />
     <ClInclude Include="..\include\Tiles.h" />
+    <ClInclude Include="..\include\UIBuilder.h" />
+    <ClInclude Include="..\include\UIButton.h" />
+    <ClInclude Include="..\include\UIButtonListener.h" />
+    <ClInclude Include="..\include\UIComponent.h" />
+    <ClInclude Include="..\include\UIComponentBuilder.h" />
+    <ClInclude Include="..\include\UIComponentListener.h" />
+    <ClInclude Include="..\include\UIDestructor.h" />
+    <ClInclude Include="..\include\UIFrame.h" />
+    <ClInclude Include="..\include\UIImage.h" />
+    <ClInclude Include="..\include\UIManager.h" />
+    <ClInclude Include="..\include\UIText.h" />
     <ClInclude Include="..\include\Vector2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\AABB.cpp" />
     <ClCompile Include="..\src\ant.cpp" />
+    <ClCompile Include="..\src\AntSimulator.cpp" />
+    <ClCompile Include="..\src\AudioManager.cpp" />
     <ClCompile Include="..\src\Background.cpp" />
     <ClCompile Include="..\src\Behaviour.cpp" />
     <ClCompile Include="..\src\BehaviourFollow.cpp" />
     <ClCompile Include="..\src\Circle.cpp" />
     <ClCompile Include="..\src\CollisionsManager.cpp" />
+    <ClCompile Include="..\src\FontManager.cpp" />
+    <ClCompile Include="..\src\GameTiles.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\MatrixController.cpp" />
     <ClCompile Include="..\src\OBB.cpp" />
     <ClCompile Include="..\src\Randomiser.cpp" />
     <ClCompile Include="..\src\Shape.cpp" />
+    <ClCompile Include="..\src\StringsManager.cpp" />
+    <ClCompile Include="..\src\TextureManager.cpp" />
     <ClCompile Include="..\src\Tiles.cpp" />
+    <ClCompile Include="..\src\UIBuilder.cpp" />
+    <ClCompile Include="..\src\UIButton.cpp" />
+    <ClCompile Include="..\src\UIButtonListener.cpp" />
+    <ClCompile Include="..\src\UIComponent.cpp" />
+    <ClCompile Include="..\src\UIComponentBuilder.cpp" />
+    <ClCompile Include="..\src\UIComponentListener.cpp" />
+    <ClCompile Include="..\src\UIDestructor.cpp" />
+    <ClCompile Include="..\src\UIFrame.cpp" />
+    <ClCompile Include="..\src\UIImage.cpp" />
+    <ClCompile Include="..\src\UIManager.cpp" />
+    <ClCompile Include="..\src\UIText.cpp" />
     <ClCompile Include="..\src\Vector2D.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
