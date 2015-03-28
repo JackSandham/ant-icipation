@@ -19,7 +19,6 @@ class BehaviourFollow : public Behaviour
 		bool antInRadius(Ant &passedAnt1, Ant &passedAnt2, CollisionsManager &passedColMan);
 
 		void followAnt(Ant &passedAnt1, Ant &passedAnt2,CollisionsManager &passedColMan);
-		virtual void run();
 		virtual void run(Ant &passedAnt1, Ant &passedAnt2, CollisionsManager &passedColMan);
 
 	protected:

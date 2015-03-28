@@ -16,3 +16,18 @@ Behaviour::Behaviour(std::string sBehaviourName)
 {
 	m_sBehaviourName = sBehaviourName;
 }
+
+void Behaviour::enable()
+{
+	m_bIsEnabled = true;
+}
+
+void Behaviour::disable()
+{
+	m_bIsEnabled = false;
+}
+
+bool Behaviour::isEnabled() const
+{
+	return m_bIsEnabled;
+}

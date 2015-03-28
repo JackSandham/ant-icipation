@@ -22,6 +22,7 @@ This function includes the game loop. */
 void AntSimulator::run()
 {
 	m_window.create(sf::VideoMode(1000, 1000, 32), "ALIEN ANT FARM");
+	m_window.setFramerateLimit(60);
 	sf::Clock clock;//clock for updating frames
 	int i = 0; //value for switch statement, 0 - 5 represent different states, to be tidied up x
 
@@ -105,7 +106,6 @@ void AntSimulator::run()
 
 	}
 
-
 	while (m_window.isOpen()) //game loop
 	{
 		sf::Event event;
@@ -114,7 +114,9 @@ void AntSimulator::run()
 		while (m_window.pollEvent(event))
 		{
 			if (event.type == sf::Event::Closed)
+			{
 				m_window.close();
+			}
 		}
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
@@ -212,18 +214,6 @@ void AntSimulator::run()
 					}
 
 				}
-
-				/*
-				if (m_CollisionsManager->AABBtoAABBCollision(*m_AABB,*m_AABB2) ==true)
-				{
-				std::cout<<"i collided"<<endl; //aabb to aabb collision test
-				}
-
-				if (m_CollisionsManager->AABBtoAABBCollision(*ant1,*m_AABB2) == true)
-				{
-				std::cout<<"i collided"<<endl; //aabb to aabb collision test
-				}
-				*/
 			}
 
 
@@ -245,26 +235,26 @@ void AntSimulator::run()
 		ant1.rect.setFillColor(sf::Color::Red); // visual indicator of collision
 		}
 		*/
-		//switch(i) // state change statement
-		//{
-		//case 0:
-		//	cout << "0"<< endl; break;// state 0 exists for a reason I think 
-		//case 1:
-		//	cout << "1"<< endl; break;//change game state to seek. incl avoid - I can't see a reason to seperate avoid from everything else. Perhaps if I implement avoid as "0" but that triggers alongside everything else? 
-		//								// either way seek becomes default, using value rather than switch default
-		//case 2:
-		//	cout << "2"<< endl; break;// change game state to follow - i = 2 if ant1.Collision(ant2followRadius), I'll leave that to tanveer
-		//case 3:
-		//	cout << "3"<< endl; break;//change game state to return - i = 3 if ant1.Collision(leaf) wee fella will return to the ant hill
-		//case 4:
-		//	cout << "4" << endl; break;//change game state to flee - i = 4 if ant1.Collision(antEaterRadius). Still unsure of how this will play out until the adjacency matrix is running. 
-		//								// can probably do something like making the ant move slightly faster than the anteaterso it escapes its field of view.
-		//case 5:
-		//	cout << "3 and 4" <<endl; break; //change game state to fleeing and returning. Depending on how "dynamic" fleeing might be this may be redundant as switch statements
-		//									//can cover multiple cases with one variable... something to mull over
-		//default:
-		//	cout << "Default"; //default game state, probably seek as well, it's just there in case anything breaks 
-		//}
+		switch(i) // state change statement
+		{
+		case 0:
+			cout << "0"<< endl; break;// state 0 exists for a reason I think 
+		case 1:
+			cout << "1"<< endl; break;//change game state to seek. incl avoid - I can't see a reason to seperate avoid from everything else. Perhaps if I implement avoid as "0" but that triggers alongside everything else? 
+										// either way seek becomes default, using value rather than switch default
+		case 2:
+			cout << "2"<< endl; break;// change game state to follow - i = 2 if ant1.Collision(ant2followRadius), I'll leave that to tanveer
+		case 3:
+			cout << "3"<< endl; break;//change game state to return - i = 3 if ant1.Collision(leaf) wee fella will return to the ant hill
+		case 4:
+			cout << "4" << endl; break;//change game state to flee - i = 4 if ant1.Collision(antEaterRadius). Still unsure of how this will play out until the adjacency matrix is running. 
+										// can probably do something like making the ant move slightly faster than the anteaterso it escapes its field of view.
+		case 5:
+			cout << "3 and 4" <<endl; break; //change game state to fleeing and returning. Depending on how "dynamic" fleeing might be this may be redundant as switch statements
+											//can cover multiple cases with one variable... something to mull over
+		default:
+			cout << "Default"; //default game state, probably seek as well, it's just there in case anything breaks 
+		}
 		//Move Multiple Ants
 		for (m_Antit = m_vectorOfAnts.begin(); m_Antit != m_vectorOfAnts.end(); ++m_Antit)
 		{
@@ -292,11 +282,11 @@ void AntSimulator::render()
 	m_window.clear(sf::Color::Black);
 	//back.drawBackground(Game); //disabled this because it makes it extremely laggy
 	/*
-	Game.draw(*m_AABB->getRectangle());
-	Game.draw(*m_AABB2->getRectangle());
-	Game.draw(*ant2->getRectangle());
-	Game.draw(*hill->getRectangle());
-	Game.draw(*antRadius);
+	m_window.draw(*m_AABB->getRectangle());
+	m_window.draw(*m_AABB2->getRectangle());
+	m_window.draw(*ant2->getRectangle());
+	m_window.draw(*hill->getRectangle());
+	m_window.draw(*antRadius);
 	*/
 	for (m_Antit = m_vectorOfAnts.begin(); m_Antit != m_vectorOfAnts.end(); ++m_Antit)
 	{
@@ -319,12 +309,27 @@ void AntSimulator::render()
 Respond to buttons being depressed on the user interface. */
 void AntSimulator::buttonDepressed(std::string sButtonName)
 {
-
+	// Do nothing on depress. It looks weird.
 }
 
 /** 
 Respond to buttons being released on the user interface. */
 void AntSimulator::buttonReleased(std::string sButtonName)
 {
+	if (sButtonName == "behaviour_follow")
+	{
+		
+	}
+	else if (sButtonName == "behaviour_seek")
+	{
 
+	}
+	else if (sButtonName == "behaviour_flee")
+	{
+
+	}
+	else if (sButtonName == "behaviour_move")
+	{
+
+	}
 }

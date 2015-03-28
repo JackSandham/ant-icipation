@@ -70,6 +70,8 @@ class AntSimulator : UIButtonListener
 
 		std::vector<Circle> m_vectorOfCircles; //!< Holds OBB objects
 		std::vector<Circle>::iterator m_Circleit; //!< iterator for this vector
+
+		std::vector<Behaviour*> m_behaviours;
 };
 
 #endif

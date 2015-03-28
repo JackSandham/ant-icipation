@@ -1,14 +1,7 @@
 /**
 This class is an abstract class that allows polymorphic calls to behaviour objects.
 
-All implementations of an ants behaviour should inherit this class, and all actions to be executed
-should occur from a call to the 'run' function.
-
-Usage example: A behaviour subclass is called BehaviourMoveForward. The subclass implements the run function so
-that every game loop iteration the ant moves forward 3 pixels. 
-
-Note that as this behaviour baseclass is abstract, references to it may only be stored as pointers. A std::vector
-of pointers to behaviour objects will be satisfactory in almost all cases.
+Also more importantly contains data nathan needs for his fancy user interface :D
 
 @author Nathan
 */
@@ -23,12 +16,17 @@ class Behaviour
 	public:
 		Behaviour(std::string sBehaviourName);
 
-		virtual void run() = 0;
+		bool isEnabled() const;
+
+		virtual void enable();
+		virtual void disable();
 
 	protected:
+
 	private:
 		Behaviour();
 
+		bool m_bIsEnabled;
 		std::string m_sBehaviourName;
 };
 

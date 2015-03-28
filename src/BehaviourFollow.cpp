@@ -5,15 +5,6 @@ BehaviourFollow::BehaviourFollow() : Behaviour("FOLLOW")
 {
 
 }
-/*
-overriden run from behaviour, not sure how you want to use this here?
-The run I have used requires ants and col-man.
-What way were you thinking Nathan?
-*/
-void BehaviourFollow::run()
-{
-
-}
 
 //require ants and collisionmanager.
 void BehaviourFollow::run(Ant &passedAnt1, Ant &passedAnt2, CollisionsManager &passedColMan)
