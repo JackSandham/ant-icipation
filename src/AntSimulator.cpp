@@ -7,8 +7,31 @@ AntSimulator::AntSimulator()
 	AudioManager* m_pAudioManager = AudioManager::getInstance();
 	TextureManager* m_pTextureManager = TextureManager::getInstance();
 	StringsManager* m_pStringsManager = StringsManager::getInstance();
-}
 
+	//set pointers to NULL at start
+	m_RandomHillStartPos = NULL;
+}
+AntSimulator::~AntSimulator()
+{
+	if(m_RandomHillStartPos != NULL)
+	{
+		delete m_RandomHillStartPos;
+	}
+	m_RandomHillStartPos = NULL;
+
+	if(antFollow != NULL)
+	{
+		delete antFollow;
+	}
+	antFollow = NULL;
+
+	if(m_CollisionsManager != NULL)
+	{
+		delete m_CollisionsManager;
+	}
+
+	m_CollisionsManager = NULL;
+}
 void AntSimulator::buildUI()
 {
 	UIBuilder b(m_uiManager);
@@ -41,20 +64,8 @@ void AntSimulator::run()
 		m_vectorOfAnts.push_back(Ant(*m_RandomHillStartPos, 18, 18, sf::Color::Red));
 		m_vectorOfAnts.at(x).setRadiusVisibility(false);
 	}
-	delete m_RandomHillStartPos;
-	m_RandomHillStartPos = nullptr;
-	/*
-	Ant* ant1 = new Ant(hill->getPosition(), 18, 18, sf::Color::Red); //Ant Random 1
-	ant1->setRadiusVisibility(false);
-	m_vectorOfAnts.push_back(*ant1);
-	Ant* ant2 = new Ant(hill->getPosition() - 100, 18, 18, sf::Color::Yellow);	// Ant Random 2
-	ant2->setRadiusVisibility(false);
-	m_vectorOfAnts.push_back(*ant2);
-	Ant* ant3 = new Ant(hill->getPosition() - 50, 18, 18, sf::Color::White);	// Ant Random 3
-	ant3->setRadiusVisibility(false);
-	m_vectorOfAnts.push_back(*ant3);
-	*/
-	BehaviourFollow* antFollow = new BehaviourFollow();
+	
+	antFollow = new BehaviourFollow();
 	//Tanveer's Shapes for testing collisions
 	//m_vectorOfCircles.push_back(Circle(sf::Vector2f(50,50), 50,sf::Color::Magenta)); //top left circle
 	//m_vectorOfCircles.push_back(Circle(sf::Vector2f(50,151), 50,sf::Color::Green)); //circle underneath other circle. chamge ypos to 150 for circle circle test
@@ -64,7 +75,7 @@ void AntSimulator::run()
 
 
 	//Collision Manager for testing collisions
-	CollisionsManager* m_CollisionsManager = new CollisionsManager();
+	m_CollisionsManager = new CollisionsManager();
 
 	Background back;
 	char arrayMatrix[GRIDX][GRIDY]; //--Gethin Changes

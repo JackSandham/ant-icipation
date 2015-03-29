@@ -43,7 +43,7 @@ class AntSimulator : UIButtonListener
 {
 	public:
 		AntSimulator();
-
+		~AntSimulator();
 		void run();
 		void render();
 		void buildUI();
@@ -78,6 +78,9 @@ class AntSimulator : UIButtonListener
 		Randomiser m_RandomStartPosY;
 		float m_fRandomStartPosY;
 		Vector2D* m_RandomHillStartPos;
+
+		BehaviourFollow* antFollow;
+		CollisionsManager* m_CollisionsManager;
 };
 
 #endif
