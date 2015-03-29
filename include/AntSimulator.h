@@ -72,6 +72,12 @@ class AntSimulator : UIButtonListener
 		std::vector<Circle>::iterator m_Circleit; //!< iterator for this vector
 
 		std::vector<Behaviour*> m_behaviours;
+
+		Randomiser m_RandomStartPosX;
+		float m_fRandomStartPosX;
+		Randomiser m_RandomStartPosY;
+		float m_fRandomStartPosY;
+		Vector2D* m_RandomHillStartPos;
 };
 
 #endif

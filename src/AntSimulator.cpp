@@ -30,22 +30,28 @@ void AntSimulator::run()
 	MatrixController matrixControl; //--Gethin Changes
 	//Declaring an AdjacencyMatrix in the main code
 
+	AABB* hill = new Ant(Vector2D(500, 500), 100, 100, sf::Color::Green); //ant hill (spawn)
+	m_vectorOfAABB.push_back(*hill);
+	//antz
+	for(int x = 0;x<5;++x)
+	{
+		m_fRandomStartPosX = m_RandomStartPosX.getRandom(hill->getMin().getX(),hill->getMax().getX());
+		m_fRandomStartPosY = m_RandomStartPosY.getRandom(hill->getMin().getY(),hill->getMax().getY());
+		m_RandomHillStartPos = new Vector2D(m_fRandomStartPosX,m_fRandomStartPosY);
+		m_vectorOfAnts.push_back(Ant(*m_RandomHillStartPos, 18, 18, sf::Color::Red));
+		m_vectorOfAnts.at(x).setRadiusVisibility(false);
+	}
 	/*
-	Vectors to hold all shapes.
-	Shapes are all drawn from vector of shapes. Apart from ants for the moment.
-	Allows for iterating over multiple shapes for collision tests.
-	*/
-
-
-	AABB* hill = new Ant(Vector2D(500, 500), 100, 100, sf::Color::Blue); //ant hill (spawn)
-
 	Ant* ant1 = new Ant(hill->getPosition(), 18, 18, sf::Color::Red); //Ant Random 1
 	ant1->setRadiusVisibility(false);
 	m_vectorOfAnts.push_back(*ant1);
 	Ant* ant2 = new Ant(hill->getPosition() - 100, 18, 18, sf::Color::Yellow);	// Ant Random 2
 	ant2->setRadiusVisibility(false);
 	m_vectorOfAnts.push_back(*ant2);
-
+	Ant* ant3 = new Ant(hill->getPosition() - 50, 18, 18, sf::Color::White);	// Ant Random 3
+	ant3->setRadiusVisibility(false);
+	m_vectorOfAnts.push_back(*ant3);
+	*/
 	BehaviourFollow* antFollow = new BehaviourFollow();
 	//Tanveer's Shapes for testing collisions
 	//m_vectorOfCircles.push_back(Circle(sf::Vector2f(50,50), 50,sf::Color::Magenta)); //top left circle
@@ -121,21 +127,21 @@ void AntSimulator::run()
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 		{
-			ant1->setPosition(Vector2D(ant1->getPosition().getX(), ant1->getPosition().getY() - 0.1));
+			//ant1->setPosition(Vector2D(ant1->getPosition().getX(), ant1->getPosition().getY() - 0.1));
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 		{
-			ant1->setPosition(Vector2D(ant1->getPosition().getX(), ant1->getPosition().getY() + 0.1));
+			//ant1->setPosition(Vector2D(ant1->getPosition().getX(), ant1->getPosition().getY() + 0.1));
 
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 		{
-			ant1->setPosition(Vector2D(ant1->getPosition().getX() - 0.1, ant1->getPosition().getY()));
+			//ant1->setPosition(Vector2D(ant1->getPosition().getX() - 0.1, ant1->getPosition().getY()));
 
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 		{
-			ant1->setPosition(Vector2D(ant1->getPosition().getX() + 0.1, ant1->getPosition().getY()));
+			//ant1->setPosition(Vector2D(ant1->getPosition().getX() + 0.1, ant1->getPosition().getY()));
 
 		}
 
@@ -151,13 +157,13 @@ void AntSimulator::run()
 		}
 
 		// ^ Q and E reset states to 1 and 2 for vague debugging reasons, needed to make sure switch worked
-		if (fElapsedTime>0.033)
+		if (fElapsedTime>0.01)
 		{
 			//Move/collide Multiple Ants
-			int temp = 0;
+			int iAntCounter = 0;
 			for (m_Antit = m_vectorOfAnts.begin(); m_Antit != m_vectorOfAnts.end(); ++m_Antit)
 			{
-				++temp;
+				++iAntCounter;
 				m_Antit->move();
 
 
@@ -170,7 +176,7 @@ void AntSimulator::run()
 				{
 					if (m_CollisionsManager->CircletoCircleCollision(Circle, *m_Antit->getAntRadius()) == true)
 					{
-						std::cout << "i collided" << endl; //aabb to circle collision text
+						//std::cout << "i collided" << endl; //aabb to circle collision text
 					}
 				}
 				//if OBB within radius
@@ -178,7 +184,7 @@ void AntSimulator::run()
 				{
 					if (m_CollisionsManager->OBBtoCircleCollision(OBB, *m_Antit->getAntRadius()) == true)
 					{
-						std::cout << "i collided" << endl; //obb to circle collision text
+						//std::cout << "i collided" << endl; //obb to circle collision text
 
 					}
 				}
@@ -188,7 +194,7 @@ void AntSimulator::run()
 				{
 					if (m_CollisionsManager->AABBtoCircleCollision(AABB, *m_Antit->getAntRadius()) == true)
 					{
-						std::cout << "i collided" << endl; //aabb to circle collision text
+						//std::cout << "i collided" << endl; //aabb to circle collision text
 					}
 				}
 
@@ -197,7 +203,7 @@ void AntSimulator::run()
 
 					if (m_CollisionsManager->AABBtoCircleCollision(**obstaclesit, *m_Antit->getAntRadius()) == true)
 					{
-						cout << "obstaclecollision" << endl;
+						//cout << "obstaclecollision" << endl;
 						//If the ant is heading towards the obstacle
 						if (m_Antit->getDirection().dotProduct(m_CollisionsManager->getNormal())<0)
 						{
@@ -210,7 +216,7 @@ void AntSimulator::run()
 					else
 					{
 
-						if (temp != m_vectorOfAnts.size())antFollow->run(*m_Antit, m_vectorOfAnts.at(temp), *m_CollisionsManager);
+						if (iAntCounter != m_vectorOfAnts.size())antFollow->run(*m_Antit, m_vectorOfAnts.at(iAntCounter), *m_CollisionsManager);
 					}
 
 				}
@@ -234,27 +240,29 @@ void AntSimulator::run()
 		{
 		ant1.rect.setFillColor(sf::Color::Red); // visual indicator of collision
 		}
-		*/
+		
+		
 		switch(i) // state change statement
 		{
 		case 0:
-			cout << "0"<< endl; break;// state 0 exists for a reason I think 
+			//cout << "0"<< endl; break;// state 0 exists for a reason I think 
 		case 1:
-			cout << "1"<< endl; break;//change game state to seek. incl avoid - I can't see a reason to seperate avoid from everything else. Perhaps if I implement avoid as "0" but that triggers alongside everything else? 
+			//cout << "1"<< endl; break;//change game state to seek. incl avoid - I can't see a reason to seperate avoid from everything else. Perhaps if I implement avoid as "0" but that triggers alongside everything else? 
 										// either way seek becomes default, using value rather than switch default
 		case 2:
-			cout << "2"<< endl; break;// change game state to follow - i = 2 if ant1.Collision(ant2followRadius), I'll leave that to tanveer
+			//cout << "2"<< endl; break;// change game state to follow - i = 2 if ant1.Collision(ant2followRadius), I'll leave that to tanveer
 		case 3:
-			cout << "3"<< endl; break;//change game state to return - i = 3 if ant1.Collision(leaf) wee fella will return to the ant hill
+			//cout << "3"<< endl; break;//change game state to return - i = 3 if ant1.Collision(leaf) wee fella will return to the ant hill
 		case 4:
-			cout << "4" << endl; break;//change game state to flee - i = 4 if ant1.Collision(antEaterRadius). Still unsure of how this will play out until the adjacency matrix is running. 
+			//cout << "4" << endl; break;//change game state to flee - i = 4 if ant1.Collision(antEaterRadius). Still unsure of how this will play out until the adjacency matrix is running. 
 										// can probably do something like making the ant move slightly faster than the anteaterso it escapes its field of view.
 		case 5:
-			cout << "3 and 4" <<endl; break; //change game state to fleeing and returning. Depending on how "dynamic" fleeing might be this may be redundant as switch statements
+			//cout << "3 and 4" <<endl; break; //change game state to fleeing and returning. Depending on how "dynamic" fleeing might be this may be redundant as switch statements
 											//can cover multiple cases with one variable... something to mull over
 		default:
-			cout << "Default"; //default game state, probably seek as well, it's just there in case anything breaks 
+			//cout << "Default"; //default game state, probably seek as well, it's just there in case anything breaks 
 		}
+		*/
 		//Move Multiple Ants
 		for (m_Antit = m_vectorOfAnts.begin(); m_Antit != m_vectorOfAnts.end(); ++m_Antit)
 		{
@@ -267,8 +275,6 @@ void AntSimulator::run()
 			matrixControl.setAntPosInMatrix(&*m_Antit, arrayMatrix);//--Gethin Changes
 			//Put the function into the AdjacencyMatrix class and am calling it from there rather than it being a global function
 
-			//ant2->Update();
-			//hill->Update();
 		}
 
 		render();
@@ -281,24 +287,16 @@ void AntSimulator::render()
 {
 	m_window.clear(sf::Color::Black);
 	//back.drawBackground(Game); //disabled this because it makes it extremely laggy
-	/*
-	m_window.draw(*m_AABB->getRectangle());
-	m_window.draw(*m_AABB2->getRectangle());
-	m_window.draw(*ant2->getRectangle());
-	m_window.draw(*hill->getRectangle());
-	m_window.draw(*antRadius);
-	*/
-	for (m_Antit = m_vectorOfAnts.begin(); m_Antit != m_vectorOfAnts.end(); ++m_Antit)
-	{
-		m_window.draw(*m_Antit);//seperate for the moment.
-	}
 
 	//draw all shapes
 	for (auto shape : m_vectorOfShapes)
 	{
 		m_window.draw(*shape);
 	}
-
+	for (m_Antit = m_vectorOfAnts.begin(); m_Antit != m_vectorOfAnts.end(); ++m_Antit)
+	{
+		m_window.draw(*m_Antit);//seperate for the moment.
+	}
 	// This line will draw the ENTIRE user interface.
 	m_window.draw(m_uiManager.getRootComponent());
 
