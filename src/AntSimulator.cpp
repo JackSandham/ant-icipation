@@ -41,6 +41,8 @@ void AntSimulator::run()
 		m_vectorOfAnts.push_back(Ant(*m_RandomHillStartPos, 18, 18, sf::Color::Red));
 		m_vectorOfAnts.at(x).setRadiusVisibility(false);
 	}
+	delete m_RandomHillStartPos;
+	m_RandomHillStartPos = nullptr;
 	/*
 	Ant* ant1 = new Ant(hill->getPosition(), 18, 18, sf::Color::Red); //Ant Random 1
 	ant1->setRadiusVisibility(false);
