@@ -77,6 +77,7 @@
     <ClInclude Include="..\include\AudioManager.h" />
     <ClInclude Include="..\include\Background.h" />
     <ClInclude Include="..\include\Behaviour.h" />
+    <ClInclude Include="..\include\BehaviourAvoid.h" />
     <ClInclude Include="..\include\BehaviourFollow.h" />
     <ClInclude Include="..\include\Circle.h" />
     <ClInclude Include="..\include\CollisionsManager.h" />
@@ -109,6 +110,7 @@
     <ClCompile Include="..\src\AudioManager.cpp" />
     <ClCompile Include="..\src\Background.cpp" />
     <ClCompile Include="..\src\Behaviour.cpp" />
+    <ClCompile Include="..\src\BehaviourAvoid.cpp" />
     <ClCompile Include="..\src\BehaviourFollow.cpp" />
     <ClCompile Include="..\src\Circle.cpp" />
     <ClCompile Include="..\src\CollisionsManager.cpp" />

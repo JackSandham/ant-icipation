@@ -8,6 +8,7 @@ AntSimulator::AntSimulator()
 	TextureManager* m_pTextureManager = TextureManager::getInstance();
 	StringsManager* m_pStringsManager = StringsManager::getInstance();
 
+	isFollowing = true;
 	//set pointers to NULL at start
 	m_RandomHillStartPos = NULL;
 }
@@ -24,6 +25,12 @@ AntSimulator::~AntSimulator()
 		delete antFollow;
 	}
 	antFollow = NULL;
+
+	if(antAvoid != NULL)
+	{
+		delete antAvoid;
+	}
+	antAvoid = NULL;
 
 	if(m_CollisionsManager != NULL)
 	{
@@ -66,6 +73,7 @@ void AntSimulator::run()
 	}
 	
 	antFollow = new BehaviourFollow();
+	antAvoid = new BehaviourAvoid();
 	//Tanveer's Shapes for testing collisions
 	//m_vectorOfCircles.push_back(Circle(sf::Vector2f(50,50), 50,sf::Color::Magenta)); //top left circle
 	//m_vectorOfCircles.push_back(Circle(sf::Vector2f(50,151), 50,sf::Color::Green)); //circle underneath other circle. chamge ypos to 150 for circle circle test
@@ -160,9 +168,14 @@ void AntSimulator::run()
 
 		// ^ movement controls for testing, unless people want I'm not going to try to implement AI movement until we have an adjancency matrix implemented
 
+		//Temp follow off switch
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
 		{
-			i = 1;
+			//i = 1;
+			
+			
+			isFollowing = false;
+		
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 		{
@@ -210,28 +223,38 @@ void AntSimulator::run()
 						//std::cout << "i collided" << endl; //aabb to circle collision text
 					}
 				}
+				/*
 
+				Run ant behaviours through obstacles!
+
+				*/
 				for (obstaclesit = obstacles.begin(); obstaclesit != obstacles.end(); ++obstaclesit)
 				{
-
-					if (m_CollisionsManager->AABBtoCircleCollision(**obstaclesit, *m_Antit->getAntRadius()) == true)
-					{
-						//cout << "obstaclecollision" << endl;
-						//If the ant is heading towards the obstacle
-						if (m_Antit->getDirection().dotProduct(m_CollisionsManager->getNormal())<0)
-						{
-							m_CollisionsManager->correctPosition(*m_Antit);
-							m_Antit->WallCollision(*m_Antit);
-						}
-
-					}
+					antAvoid->run(*m_Antit,**obstaclesit,*m_CollisionsManager);
 					//If there is no collision, then we can check for antfollow.
+					if(isFollowing)
+					{
+						if(!antAvoid->isColliding())
+						{
+
+							if (iAntCounter != m_vectorOfAnts.size())
+							{
+								antFollow->run(*m_Antit, m_vectorOfAnts.at(iAntCounter), *m_CollisionsManager);
+							}
+						}
+					}
+					/*
+					If we are not following, then change direction on col.
+					Will be changed with steer behaviour.
+					I.E will default to steer behaviour if not following?
+					*/
 					else
 					{
-
-						if (iAntCounter != m_vectorOfAnts.size())antFollow->run(*m_Antit, m_vectorOfAnts.at(iAntCounter), *m_CollisionsManager);
+						if(antAvoid->isColliding())
+						{
+							m_Antit->randomDirection();
+						}
 					}
-
 				}
 			}
 
@@ -283,7 +306,7 @@ void AntSimulator::run()
 			if (m_Antit->isMoveable())
 			{
 				m_Antit->setMovable(false);
-				m_Antit->randomMovement();
+				m_Antit->randomDirection();
 			}
 			matrixControl.setAntPosInMatrix(&*m_Antit, arrayMatrix);//--Gethin Changes
 			//Put the function into the AdjacencyMatrix class and am calling it from there rather than it being a global function

@@ -20,6 +20,7 @@ I have created a brand new class AdjacencyMatrix and have modified the Backgroun
 #include <ant.h>
 #include <Behaviour.h>
 #include <BehaviourFollow.h>
+#include <BehaviourAvoid.h>
 #include "circle.h"
 #include "AABB.h"
 #include "OBB.h"
@@ -80,6 +81,8 @@ class AntSimulator : UIButtonListener
 		Vector2D* m_RandomHillStartPos;
 
 		BehaviourFollow* antFollow;
+		bool isFollowing;
+		BehaviourAvoid* antAvoid;
 		CollisionsManager* m_CollisionsManager;
 };
 

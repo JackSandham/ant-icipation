@@ -26,5 +26,8 @@ void BehaviourFollow::followAnt(Ant &passedAnt1, Ant &passedAnt2, CollisionsMana
 	//check distance between them.
 	passedColMan.AABBtoAABBCollision(passedAnt1,passedAnt2);
 	//One ant behind the other
-	if(passedColMan.getDistance()>=passedAnt1.getHalfHeight()*2)passedAnt2.setDirection(passedAnt1.getPosition()-passedAnt2.getPosition());
+	if(passedColMan.getDistance()>=passedAnt1.getHalfHeight()*2)
+	{
+		passedAnt2.setDirection(passedAnt1.getPosition()-passedAnt2.getPosition());
+	}
 }

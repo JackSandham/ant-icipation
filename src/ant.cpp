@@ -28,7 +28,7 @@ void Ant::Update()
 	m_fTop = rectangle.getPosition().y;//calculates the top edge
 }
 
-void Ant::WallCollision(Ant ant)
+void Ant::WallCollision()
 {
 	/*if(m_fLeft<=1+getHalfWidth()) //if the ant collides with the left side of the screen
 	{
@@ -71,13 +71,10 @@ void Ant::WallCollision(Ant ant)
 		
 		moveleft();
 	}
+	
 }
 
-/**
-* @modified 27/03
-* What does this function even do? - Nathan
-*/
-void Ant::randomMovement()
+void Ant::randomDirection()
 {
 	float xNum = m_randomiser.getRandom(-1,1);//picks a random number between -1 and 1 for x
 	float yNum = m_randomiser.getRandom(-1,1);//picks a random number between -1 and 1 for y

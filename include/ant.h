@@ -28,9 +28,9 @@ class Ant : public AABB
 		void movedown();
 		void moveleft();
 		void moveright();
-		void randomMovement();
+		void randomDirection();
 		void Update();
-		void WallCollision(Ant ant);
+		void WallCollision();
 		void setMovable(bool bPassedMove);
 		void setDirection(Vector2D passedVector);
 		void setRadiusVisibility(bool passedVisible);
