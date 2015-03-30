@@ -29,3 +29,11 @@ sf::RenderStates states /** Primitive shpaes to render */) const
 {
 
 }
+
+float Shape::getXPosition(){
+	return m_vPosition.getX();
+}
+
+float Shape::getYPosition(){
+	return m_vPosition.getY();
+}

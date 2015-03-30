@@ -27,7 +27,7 @@ void BehaviourAvoid::avoidObstacle(Ant &passedAnt1, AABB &passedBackObstacles, C
 	if(passedAnt1.getDirection().dotProduct(passedColMan.getNormal()) <0)
 	{
 		passedColMan.correctPosition(passedAnt1);
-		passedAnt1.WallCollision();
+		steerBehaviour.WallCollision(passedAnt1);
 		m_bAntColliding = true;
 		
 	}

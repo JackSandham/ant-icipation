@@ -11,6 +11,7 @@ When an obstacle is in radius, avoid.
 #include <Behaviour.h>
 #include <Background.h>
 #include <CollisionsManager.h>
+#include "BehaviourSteer.h"
 
 class BehaviourAvoid : public Behaviour
 {
@@ -26,6 +27,7 @@ class BehaviourAvoid : public Behaviour
 	protected:
 
 	private:
+		BehaviourSteer steerBehaviour;
 		bool m_bAntColliding;
 
 };

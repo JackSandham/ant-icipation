@@ -23,14 +23,7 @@ class Ant : public AABB
 		Ant(Vector2D passedPosition, int width, int height);
 		Ant(Vector2D passedPosition, int width, int height, sf::Color passedColor);
 		
-		void move();
-		void moveup();
-		void movedown();
-		void moveleft();
-		void moveright();
-		void randomDirection();
 		void Update();
-		void WallCollision();
 		void setMovable(bool bPassedMove);
 		void setDirection(Vector2D passedVector);
 		void setRadiusVisibility(bool passedVisible);
@@ -39,10 +32,11 @@ class Ant : public AABB
 		Vector2D getDirection();
 		Circle* getAntRadius();
 		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+		//This function is used to move the rectangle and ant radius.
+		void moveVisualObjects(float xPos, float yPos);
 	protected:
 
 	private:
-		Randomiser m_randomiser;
 		float m_fBottom;
 		float m_fLeft; 
 		float m_fRight; 

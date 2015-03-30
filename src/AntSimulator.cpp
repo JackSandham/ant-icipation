@@ -32,6 +32,11 @@ AntSimulator::~AntSimulator()
 	}
 	antAvoid = NULL;
 
+	if(antSteer != NULL){
+		delete antSteer;
+	}
+	antSteer = NULL;
+
 	if(m_CollisionsManager != NULL)
 	{
 		delete m_CollisionsManager;
@@ -74,6 +79,7 @@ void AntSimulator::run()
 	
 	antFollow = new BehaviourFollow();
 	antAvoid = new BehaviourAvoid();
+	antSteer = new BehaviourSteer();
 	//Tanveer's Shapes for testing collisions
 	//m_vectorOfCircles.push_back(Circle(sf::Vector2f(50,50), 50,sf::Color::Magenta)); //top left circle
 	//m_vectorOfCircles.push_back(Circle(sf::Vector2f(50,151), 50,sf::Color::Green)); //circle underneath other circle. chamge ypos to 150 for circle circle test
@@ -190,7 +196,7 @@ void AntSimulator::run()
 			for (m_Antit = m_vectorOfAnts.begin(); m_Antit != m_vectorOfAnts.end(); ++m_Antit)
 			{
 				++iAntCounter;
-				m_Antit->move();
+				antSteer->move(*m_Antit);
 
 
 				/*
@@ -252,7 +258,7 @@ void AntSimulator::run()
 					{
 						if(antAvoid->isColliding())
 						{
-							m_Antit->randomDirection();
+							antSteer->randomDirection(*m_Antit);
 						}
 					}
 				}
@@ -306,7 +312,7 @@ void AntSimulator::run()
 			if (m_Antit->isMoveable())
 			{
 				m_Antit->setMovable(false);
-				m_Antit->randomDirection();
+				antSteer->randomDirection(*m_Antit);
 			}
 			matrixControl.setAntPosInMatrix(&*m_Antit, arrayMatrix);//--Gethin Changes
 			//Put the function into the AdjacencyMatrix class and am calling it from there rather than it being a global function

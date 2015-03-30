@@ -28,120 +28,12 @@ void Ant::Update()
 	m_fTop = rectangle.getPosition().y;//calculates the top edge
 }
 
-void Ant::WallCollision()
-{
-	/*if(m_fLeft<=1+getHalfWidth()) //if the ant collides with the left side of the screen
-	{
-		moveright();
-	}
-	
-	if(m_fRight>=1000+getHalfWidth())//if the ant collides with the right side of the screen
-	{
-		moveleft();
-	}
-	if(m_fTop<=1+getHalfHeight())//if the ant collides with the top of the screen
-	{
-		movedown();
-	}
-	if(m_fBottom>=1000+getHalfHeight())//if the ant collides with the bottom of the screen
-	{
-		moveup();
-	}*/
-
-	if ((m_vDirection.getX()>=-1 && m_vDirection.getX()<=1) && (m_vDirection.getY()>=0))//if moving up
-	{
-		
-		movedown();
-	}
-
-	if ((m_vDirection.getX()>=-1 && m_vDirection.getX()<=1) && (m_vDirection.getY()<=0))//if moving down
-	{
-		
-		moveup();
-	}
-
-	if ((m_vDirection.getY()>=-1 && m_vDirection.getY()<=1) && (m_vDirection.getX()>=0))//if moving left
-	{
-		
-		moveright();
-	}
-
-	if ((m_vDirection.getY()>=-1 && m_vDirection.getY()<=1) && (m_vDirection.getX()<=0))//if moving right
-	{
-		
-		moveleft();
-	}
-	
-}
-
-void Ant::randomDirection()
-{
-	float xNum = m_randomiser.getRandom(-1,1);//picks a random number between -1 and 1 for x
-	float yNum = m_randomiser.getRandom(-1,1);//picks a random number between -1 and 1 for y
-
-	m_vDirection.setX(xNum);
-	m_vDirection.setY(yNum);	
-}
-
-void Ant::move()
-{
-	float mag = sqrt(m_vDirection.getX()*m_vDirection.getX()+m_vDirection.getY()*m_vDirection.getY());
-	Vector2D constSpeed;
-	float scalar= 1/mag;
-	if(mag!=0)
-	{
-		constSpeed.setX(m_vDirection.getX()*scalar);
-		constSpeed.setY(m_vDirection.getY()*scalar);
-
-	}
-	m_vPosition.setX(m_vPosition.getX()+constSpeed.getX());
-	m_vPosition.setY(m_vPosition.getY()+constSpeed.getY());
-
-	//moves the ant based on the direction of the numers generated
-
-	rectangle.setPosition(m_vPosition.getX(),m_vPosition.getY());
-	antRadius->move(getPosition()); //update detection radius to ant
-}
-
-void Ant::movedown()
-{
-	float xNum = m_randomiser.getRandom(-1, 1);//picks a random number between -1 and 1 for x
-	float yNum = m_randomiser.getRandom(0, 1);//picks a random number between 0 and 1 for y
-
-	m_vDirection.setX(xNum);
-	m_vDirection.setY(yNum);
-}
-
-void Ant::moveup()
-{
-	float xNum = m_randomiser.getRandom(-1, 1);//picks a random number between -1 and 1 for x
-	float yNum = m_randomiser.getRandom(-1, 0);//picks a random number between -1 and 0 for y
-
-	m_vDirection.setX(xNum);
-	m_vDirection.setY(yNum);
-}
-
-void Ant::moveleft()
-{
-	float xNum = m_randomiser.getRandom(-1, 0);//picks a random number between -1 and 0 for x
-	float yNum = m_randomiser.getRandom(-1, 1);//picks a random number between -1 and 1 for y
-
-	m_vDirection.setX(xNum);
-	m_vDirection.setY(yNum);
-}
-
-void Ant::moveright()
-{
-	float xNum = m_randomiser.getRandom(0, 1);//picks a random number between 0 and 1 for x
-	float yNum = m_randomiser.getRandom(-1, 1);//picks a random number between -1 and 1 for y
-
-	m_vDirection.setX(xNum);
-	m_vDirection.setY(yNum);
-}
-
-Circle* Ant::getAntRadius()
-{
-	return antRadius;
+//This function was created to move the rectangle position and the ant radius position.
+//This was needed as the rectangle object is protected and the circle radius object is private.
+//This means that they are only changed in this function.
+void Ant::moveVisualObjects(float xPos, float yPos){
+	rectangle.setPosition(xPos,yPos);
+	antRadius->setPosition(Vector2D(xPos,yPos));
 }
 
 void Ant::setMovable(bool bPassedMove)
