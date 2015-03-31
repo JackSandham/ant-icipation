@@ -22,14 +22,15 @@ I have created a brand new class AdjacencyMatrix and have modified the Backgroun
 #include <BehaviourFollow.h>
 #include <BehaviourAvoid.h>
 #include "BehaviourSteer.h"
+#include "BehaviourGather.h"
 #include "circle.h"
 #include "AABB.h"
 #include "OBB.h"
 #include "Shape.h"
+#include "Food.h"
 #include "CollisionsManager.h"
 #include "Vector2D.h"
 #include "MatrixController.h"
-
 #include "Randomiser.h"
 #include "FontManager.h"
 #include "AudioManager.h"
@@ -73,6 +74,9 @@ class AntSimulator : UIButtonListener
 		std::vector<Circle> m_vectorOfCircles; //!< Holds OBB objects
 		std::vector<Circle>::iterator m_Circleit; //!< iterator for this vector
 
+		std::vector<Food> m_vectorOfFood;
+		std::vector<Food>::iterator m_Foodit;
+
 		std::vector<Behaviour*> m_behaviours;
 
 		Randomiser m_RandomStartPosX;
@@ -80,11 +84,13 @@ class AntSimulator : UIButtonListener
 		Randomiser m_RandomStartPosY;
 		float m_fRandomStartPosY;
 		Vector2D* m_RandomHillStartPos;
-
+		
 		BehaviourFollow* antFollow;
 		bool isFollowing;
+		bool seek;
 		BehaviourAvoid* antAvoid;
 		BehaviourSteer* antSteer;
+		BehaviourGather* antGather;
 		CollisionsManager* m_CollisionsManager;
 };
 

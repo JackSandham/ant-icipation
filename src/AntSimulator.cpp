@@ -80,6 +80,7 @@ void AntSimulator::run()
 	antFollow = new BehaviourFollow();
 	antAvoid = new BehaviourAvoid();
 	antSteer = new BehaviourSteer();
+	antGather = new BehaviourGather();
 	//Tanveer's Shapes for testing collisions
 	//m_vectorOfCircles.push_back(Circle(sf::Vector2f(50,50), 50,sf::Color::Magenta)); //top left circle
 	//m_vectorOfCircles.push_back(Circle(sf::Vector2f(50,151), 50,sf::Color::Green)); //circle underneath other circle. chamge ypos to 150 for circle circle test
@@ -133,10 +134,17 @@ void AntSimulator::run()
 	std::vector<AABB*> obstacles = back.getObstacles();
 	std::vector<AABB*>::iterator obstaclesit;
 
+	std::vector<Food*> m_vectorOfFood = back.getFood();
+	std::vector<Food*>::iterator Foodit;
+
 	for (obstaclesit = obstacles.begin(); obstaclesit != obstacles.end(); ++obstaclesit)
 	{
 		m_vectorOfShapes.push_back(&**obstaclesit);// adds all the shapes in the adjacency matrix to the shapes vector
+	}
 
+	for (Foodit = m_vectorOfFood.begin(); Foodit != m_vectorOfFood.end(); ++Foodit)
+	{
+		m_vectorOfShapes.push_back(&**Foodit);// adds all the shapes in the adjacency matrix to the shapes vector
 	}
 
 	while (m_window.isOpen()) //game loop
@@ -193,6 +201,8 @@ void AntSimulator::run()
 		{
 			//Move/collide Multiple Ants
 			int iAntCounter = 0;
+			bool seek=false;
+
 			for (m_Antit = m_vectorOfAnts.begin(); m_Antit != m_vectorOfAnts.end(); ++m_Antit)
 			{
 				++iAntCounter;
@@ -211,15 +221,20 @@ void AntSimulator::run()
 						//std::cout << "i collided" << endl; //aabb to circle collision text
 					}
 				}
+
+
+
 				//if OBB within radius
 				for (auto OBB : m_vectorOfOBB)
 				{
 					if (m_CollisionsManager->OBBtoCircleCollision(OBB, *m_Antit->getAntRadius()) == true)
 					{
-						//std::cout << "i collided" << endl; //obb to circle collision text
+						std::cout << "i collided" << endl; //obb to circle collision text
 
 					}
 				}
+
+			
 
 				//if aabb within radius
 				for (auto AABB : m_vectorOfAABB)
@@ -236,11 +251,12 @@ void AntSimulator::run()
 				*/
 				for (obstaclesit = obstacles.begin(); obstaclesit != obstacles.end(); ++obstaclesit)
 				{
+					
 					antAvoid->run(*m_Antit,**obstaclesit,*m_CollisionsManager);
 					//If there is no collision, then we can check for antfollow.
 					if(isFollowing)
 					{
-						if(!antAvoid->isColliding())
+						if(!antAvoid->isColliding()&& seek!=true)
 						{
 
 							if (iAntCounter != m_vectorOfAnts.size())
@@ -254,14 +270,43 @@ void AntSimulator::run()
 					Will be changed with steer behaviour.
 					I.E will default to steer behaviour if not following?
 					*/
-					else
+
+					if(antAvoid->isColliding() && seek!=true)
 					{
-						if(antAvoid->isColliding())
-						{
-							antSteer->randomDirection(*m_Antit);
-						}
+						antSteer->randomDirection(*m_Antit);
 					}
+					
 				}
+				for (auto Food : m_vectorOfFood)
+				{
+					if(Food->getCollidable()==true)
+					{
+						if(m_CollisionsManager->CircletoCircleCollision(*Food->getFoodRadius(), *m_Antit->getAntRadius()) == true)
+						{
+							antGather->run(*m_Antit,*Food,*m_CollisionsManager);
+							antSteer->update(*m_Antit);
+							Food->Update();
+							m_Antit->Update();
+							//m_Antit->setPosition(Vector2D(50,50));
+							seek==true;
+						}
+
+						
+					}
+					/*
+					i dont know why, but this collision test isnt working. I need to do stuff after the ant collides with the food but
+					because the collision is working, im not sure what to do. if someone can help work out why, that would be great.
+					*/
+					if(m_CollisionsManager->AABBtoAABBCollision(*Food,*m_Antit)==true)
+					{
+						Food->setCollidable(false);
+						Food->setPosition(m_Antit->getPosition());
+						antSteer->randomDirection(*m_Antit);
+					}
+
+
+				}
+
 			}
 
 
@@ -339,9 +384,11 @@ void AntSimulator::render()
 	{
 		m_window.draw(*m_Antit);//seperate for the moment.
 	}
+
+
+
 	// This line will draw the ENTIRE user interface.
 	m_window.draw(m_uiManager.getRootComponent());
-
 	m_window.display();
 }
 

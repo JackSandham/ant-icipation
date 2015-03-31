@@ -11,6 +11,7 @@ Ant::Ant(Vector2D passedPosition, int width, int height) : AABB(passedPosition, 
 	antRadius = new Circle(getPosition(), 100,sf::Color::Green);// ant detection radius
 	m_bCanMove = true;
 	m_bRadiusVisible = true;
+	Update();
 }
 
 Ant::Ant(Vector2D passedPosition, int width, int height, sf::Color passedColor) : AABB(passedPosition,  width,  height,passedColor)
@@ -18,6 +19,7 @@ Ant::Ant(Vector2D passedPosition, int width, int height, sf::Color passedColor) 
 	antRadius = new Circle(getPosition(), 100,sf::Color::Green);// ant detection radius
 	m_bCanMove = true;
 	m_bRadiusVisible = true;
+	Update();
 }
 
 void Ant::Update()
@@ -73,4 +75,9 @@ void Ant::draw(sf::RenderTarget& target, sf::RenderStates states) const
 		target.draw(*antRadius);
 	}
 	target.draw(rectangle);
+}
+
+Circle* Ant::getAntRadius()
+{
+	return antRadius;
 }

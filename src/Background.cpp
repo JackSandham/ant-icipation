@@ -31,11 +31,23 @@ void Background::assignMatrixValues(char(&charArray)[GRIDX][GRIDY]){
 			for (int j = 0; j < GRIDY; j++){
 				switch (charArray[i][j]){
 				case '.':
+					{
 					setColour(sf::Color::White, k); //Free Space
 					break;
+					}
 				case '1':
+					{
 					AABB* Obstacle = new AABB(Vector2D(20*j+10,20*i+10),20,20,sf::Color::Blue);
 					m_vectorOfAABB.push_back(Obstacle);
+					break;
+					}
+				case '2':
+					{
+					Food* food = new Food(Vector2D(20*j+10,20*i+10),20,20,sf::Color::Magenta);
+					m_vectorOfFood.push_back(food);
+					break;
+					}
+					
 				}
 				k++;
 			}
@@ -47,4 +59,9 @@ void Background::assignMatrixValues(char(&charArray)[GRIDX][GRIDY]){
 std::vector<AABB*> Background::getObstacles()
 {
 	return m_vectorOfAABB;
+}
+
+std::vector<Food*> Background::getFood()
+{
+	return m_vectorOfFood;
 }

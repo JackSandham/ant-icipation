@@ -30,6 +30,11 @@ void BehaviourSteer::move(Ant &passedAnt1){
 	passedAnt1.moveVisualObjects(passedAnt1.getXPosition(),passedAnt1.getYPosition());
 }
 
+void BehaviourSteer::update(Ant &passedAnt1){
+
+	passedAnt1.setPosition(Vector2D(passedAnt1.getXPosition() + passedAnt1.getDirection().getX() , passedAnt1.getYPosition() + passedAnt1.getDirection().getY()));
+}
+
 void BehaviourSteer::moveup(Ant &passedAnt1){
 	float xNum = m_randomiser.getRandom(-1, 1);//picks a random number between -1 and 1 for x
 	float yNum = m_randomiser.getRandom(-1, 0);//picks a random number between -1 and 0 for y

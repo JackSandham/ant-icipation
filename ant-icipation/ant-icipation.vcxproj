@@ -79,9 +79,12 @@
     <ClInclude Include="..\include\Behaviour.h" />
     <ClInclude Include="..\include\BehaviourAvoid.h" />
     <ClInclude Include="..\include\BehaviourFollow.h" />
+    <ClInclude Include="..\include\BehaviourGather.h" />
+    <ClInclude Include="..\include\BehaviourSteer.h" />
     <ClInclude Include="..\include\Circle.h" />
     <ClInclude Include="..\include\CollisionsManager.h" />
     <ClInclude Include="..\include\FontManager.h" />
+    <ClInclude Include="..\include\Food.h" />
     <ClInclude Include="..\include\GameTiles.h" />
     <ClInclude Include="..\include\MatrixController.h" />
     <ClInclude Include="..\include\OBB.h" />
@@ -112,9 +115,12 @@
     <ClCompile Include="..\src\Behaviour.cpp" />
     <ClCompile Include="..\src\BehaviourAvoid.cpp" />
     <ClCompile Include="..\src\BehaviourFollow.cpp" />
+    <ClCompile Include="..\src\BehaviourGather.cpp" />
+    <ClCompile Include="..\src\BehaviourSteer.cpp" />
     <ClCompile Include="..\src\Circle.cpp" />
     <ClCompile Include="..\src\CollisionsManager.cpp" />
     <ClCompile Include="..\src\FontManager.cpp" />
+    <ClCompile Include="..\src\Food.cpp" />
     <ClCompile Include="..\src\GameTiles.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\MatrixController.cpp" />
