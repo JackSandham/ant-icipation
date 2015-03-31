@@ -26,8 +26,8 @@ void BehaviourGather::seekFood(Ant &passedAnt1, Food &passedFood, CollisionsMana
 	//check distance between them.
 	passedColMan.AABBtoAABBCollision(passedAnt1,passedFood);
 	//One ant behind the other
-	if(passedColMan.getDistance()>=passedAnt1.getHalfHeight())
-	{
+	//if(passedColMan.getDistance()>=passedAnt1.getHalfHeight())
+	//{
 
 		Vector2D vec = Vector2D(passedFood.getPosition() - passedAnt1.getPosition());
 		float xPos = vec.getX()/vec.getMagnitude();
@@ -52,7 +52,7 @@ void BehaviourGather::seekFood(Ant &passedAnt1, Food &passedFood, CollisionsMana
 
 
 		passedAnt1.setDirection(vec);
-	}
+	//}
 
 	
 }

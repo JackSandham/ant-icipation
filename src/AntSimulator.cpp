@@ -37,6 +37,12 @@ AntSimulator::~AntSimulator()
 	}
 	antSteer = NULL;
 
+	if(antGather != NULL)
+	{
+		delete antGather;
+	}
+	antGather = NULL;
+
 	if(m_CollisionsManager != NULL)
 	{
 		delete m_CollisionsManager;
@@ -288,7 +294,7 @@ void AntSimulator::run()
 							Food->Update();
 							m_Antit->Update();
 							//m_Antit->setPosition(Vector2D(50,50));
-							seek==true;
+							seek=true;
 						}
 
 						
@@ -297,7 +303,7 @@ void AntSimulator::run()
 					i dont know why, but this collision test isnt working. I need to do stuff after the ant collides with the food but
 					because the collision is working, im not sure what to do. if someone can help work out why, that would be great.
 					*/
-					if(m_CollisionsManager->AABBtoAABBCollision(*Food,*m_Antit)==true)
+					if(m_CollisionsManager->AABBtoAABBCollision(*m_Antit,*Food)==true)
 					{
 						Food->setCollidable(false);
 						Food->setPosition(m_Antit->getPosition());

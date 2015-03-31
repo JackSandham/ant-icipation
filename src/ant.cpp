@@ -28,6 +28,8 @@ void Ant::Update()
 	m_fLeft = rectangle.getPosition().x; //calculates the left edge
 	m_fRight = rectangle.getPosition().x + rectangle.getSize().x;//calculates the right edge
 	m_fTop = rectangle.getPosition().y;//calculates the top edge
+	setMin();
+	setMax();
 }
 
 //This function was created to move the rectangle position and the ant radius position.
