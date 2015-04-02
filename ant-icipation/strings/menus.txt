@@ -1,0 +1,22 @@
+# Lines beginning with a #, space or new line character are not loaded.
+# Formatting a string:
+# - Use a key and value pair.
+# - A key ends at the first space character
+# - A value ends at the first new line character after the key
+# - Whitespace is trimmed from the value up to the first non space character
+# - Use the ` symbol to place a new line character in to your string.
+# Example:
+# my_test_key              my value
+# Loads as:
+# my_test_key my value
+#
+# ==================================================================
+title                           Ant-icipation
+collect_food                    Collect food
+follow                          Follow
+steer                           Steer
+avoid                           Avoid
+seek                            Seek
+flee                            Flee
+ants_active                     Number of ants active:   0
+ants_eaten                      Number of ants eaten:   0
