@@ -85,6 +85,9 @@ void AntSimulator::run()
 		m_vectorOfAnts.push_back(Ant(*m_RandomHillStartPos, 18, 18, sf::Color::Red));
 		m_vectorOfAnts.at(x).setRadiusVisibility(false);
 	}
+	//anteater basic draw
+	Ant* antEater = new Ant(Vector2D(800,800), 100, 100, sf::Color::Magenta);
+	m_vectorOfAnts.push_back(*antEater);
 	
 	antFollow = new BehaviourFollow();
 	antAvoid = new BehaviourAvoid();

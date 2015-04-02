@@ -105,6 +105,7 @@
     <ClInclude Include="..\include\UIManager.h" />
     <ClInclude Include="..\include\UIText.h" />
     <ClInclude Include="..\include\Vector2D.h" />
+    <ClInclude Include="antEater.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\AABB.cpp" />
