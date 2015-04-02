@@ -9,6 +9,9 @@ AntSimulator::AntSimulator()
 	StringsManager* m_pStringsManager = StringsManager::getInstance();
 
 	isFollowing = true;
+	isAvoiding = true;
+    isSteering = true;
+	isSeeking = false;
 	//set pointers to NULL at start
 	m_RandomHillStartPos = NULL;
 }
@@ -207,7 +210,6 @@ void AntSimulator::run()
 		{
 			//Move/collide Multiple Ants
 			int iAntCounter = 0;
-			bool seek=false;
 
 			for (m_Antit = m_vectorOfAnts.begin(); m_Antit != m_vectorOfAnts.end(); ++m_Antit)
 			{
@@ -262,7 +264,7 @@ void AntSimulator::run()
 					//If there is no collision, then we can check for antfollow.
 					if(isFollowing)
 					{
-						if(!antAvoid->isColliding()&& seek!=true)
+						if(!antAvoid->isColliding() & !isSeeking)
 						{
 
 							if (iAntCounter != m_vectorOfAnts.size())
@@ -276,12 +278,13 @@ void AntSimulator::run()
 					Will be changed with steer behaviour.
 					I.E will default to steer behaviour if not following?
 					*/
-
-					if(antAvoid->isColliding() && seek!=true)
+					else
 					{
-						antSteer->randomDirection(*m_Antit);
+						if(antAvoid->isColliding())
+						{
+							antSteer->randomDirection(*m_Antit);
+						}
 					}
-					
 				}
 				for (auto Food : m_vectorOfFood)
 				{
@@ -294,15 +297,13 @@ void AntSimulator::run()
 							Food->Update();
 							m_Antit->Update();
 							//m_Antit->setPosition(Vector2D(50,50));
-							seek=true;
+							isSeeking=true;
 						}
+						else isSeeking = false;
 
 						
 					}
-					/*
-					i dont know why, but this collision test isnt working. I need to do stuff after the ant collides with the food but
-					because the collision is working, im not sure what to do. if someone can help work out why, that would be great.
-					*/
+					
 					if(m_CollisionsManager->AABBtoAABBCollision(*m_Antit,*Food)==true)
 					{
 						Food->setCollidable(false);

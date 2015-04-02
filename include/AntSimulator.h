@@ -87,7 +87,10 @@ class AntSimulator : UIButtonListener
 		
 		BehaviourFollow* antFollow;
 		bool isFollowing;
-		bool seek;
+		bool isAvoiding;
+		bool isSteering;
+		bool isSeeking;
+		
 		BehaviourAvoid* antAvoid;
 		BehaviourSteer* antSteer;
 		BehaviourGather* antGather;

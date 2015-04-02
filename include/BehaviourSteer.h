@@ -30,7 +30,7 @@ public:
 	void update(Ant &passedAnt1);
 private:
 	Randomiser m_randomiser; //This is a random object used to create a random number.
-	Vector2D m_vDirection; //This Vector2D is used to store the direction of the Ant.
+	
 };
 
 #endif
