@@ -21,8 +21,9 @@ class BehaviourGather : public Behaviour
 
 		void seekFood(Ant &passedAnt1, Food &passedFood,CollisionsManager &passedColMan);
 		void gatherFood(Ant &passedAnt1, Food &passedFood,CollisionsManager &passedColMan);
-		Vector2D getDirection();
+		void goHome(Ant &passedAnt1, Food &passedFood,CollisionsManager &passedColMan, AABB &antHill);
 		virtual void run(Ant &passedAnt1, Food &passedFood, CollisionsManager &passedColMan);
+
 
 	protected:
 

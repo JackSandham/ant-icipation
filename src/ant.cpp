@@ -11,6 +11,7 @@ Ant::Ant(Vector2D passedPosition, int width, int height) : AABB(passedPosition, 
 	antRadius = new Circle(getPosition(), 100,sf::Color::Green);// ant detection radius
 	m_bCanMove = true;
 	m_bRadiusVisible = true;
+	m_bHasFood=false;
 	Update();
 }
 
@@ -82,4 +83,14 @@ void Ant::draw(sf::RenderTarget& target, sf::RenderStates states) const
 Circle* Ant::getAntRadius()
 {
 	return antRadius;
+}
+
+void Ant::setFood(bool bPassedFood)
+{
+	m_bHasFood=bPassedFood;
+}
+
+bool Ant::getFood()
+{
+	return m_bHasFood;
 }

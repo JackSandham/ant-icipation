@@ -25,6 +25,10 @@ class Food : public AABB
 		bool getCollidable();
 		void setCollidable(bool bPassedCollidable);
 		void setRadiusVisibility(bool bPassedVisibility);
+		void setCollected(bool bPassedCollected);
+		bool getCollected();
+		void setHome(bool bPassedHome);
+		bool getHome();
 		void Update();
 
 	protected:
@@ -36,8 +40,10 @@ class Food : public AABB
 		float m_fRight; 
 		float m_fTop;
 
+		bool m_bIsCollected;
 		bool m_bRadiusVisible;
 		bool m_bCollidable;
+		bool m_bIsHome;
 		Circle* foodRadius; //previously in main
 };
 #endif

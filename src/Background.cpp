@@ -43,7 +43,7 @@ void Background::assignMatrixValues(char(&charArray)[GRIDX][GRIDY]){
 					}
 				case '2':
 					{
-					Food* food = new Food(Vector2D(20*j+10,20*i+10),20,20,sf::Color::Magenta);
+					Food* food = new Food(Vector2D(20*j+10,20*i+10),20,20,sf::Color::Cyan);
 					m_vectorOfFood.push_back(food);
 					break;
 					}

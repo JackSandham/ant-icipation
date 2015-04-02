@@ -27,8 +27,10 @@ class Ant : public AABB
 		void setMovable(bool bPassedMove);
 		void setDirection(Vector2D passedVector);
 		void setRadiusVisibility(bool passedVisible);
+		void setFood(bool bPassedFood);
 		bool isMoveable();
 		bool radiusIsVisible();
+		bool getFood();
 		Vector2D getDirection();
 		Circle* getAntRadius();
 		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
@@ -42,6 +44,7 @@ class Ant : public AABB
 		float m_fRight; 
 		float m_fTop;
 		bool m_bCanMove;
+		bool m_bHasFood;
 		bool m_bRadiusVisible;
 		Circle* antRadius; //previously in main
 		Vector2D m_vDirection;

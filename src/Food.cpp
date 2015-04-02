@@ -13,6 +13,8 @@ Food::Food(Vector2D passedPosition, int width, int height, sf::Color passedColor
 	foodRadius = new Circle(getPosition(), 50,sf::Color::Green);// foods detection radius
 	m_bRadiusVisible = true;
 	m_bCollidable =true;
+	m_bIsCollected =false;
+	m_bIsHome=false;
 	Update();
 }
 
@@ -62,4 +64,24 @@ bool Food::getCollidable()
 void Food::setCollidable(bool bPassedCollidable)
 {
 	m_bCollidable = bPassedCollidable;
+}
+
+void Food::setCollected(bool bPassedCollected)
+{
+	m_bIsCollected=bPassedCollected;
+}
+
+bool Food::getCollected()
+{
+	return m_bIsCollected;
+}
+
+void Food::setHome(bool bPassedHome)
+{
+	m_bIsHome=bPassedHome;
+}
+
+bool Food::getHome()
+{
+	return m_bIsHome;
 }
