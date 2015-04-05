@@ -68,7 +68,9 @@ void AntSimulator::run()
 	m_window.create(sf::VideoMode(1000, 1000, 32), "ALIEN ANT FARM");
 	m_window.setFramerateLimit(60);
 	sf::Clock clock;//clock for updating frames
-	int i = 0; //value for switch statement, 0 - 5 represent different states, to be tidied up x
+	int i = 0; //value for switch statement, 0 - 5 represent different states, to be tidied up x	
+	//bool bMovementCheck = false; //test turning movement on/off, simple true/false check within listener
+								//how does isMoveable function?
 
 	//Gethins Adjacency Matrix
 	MatrixController matrixControl; //--Gethin Changes
@@ -85,9 +87,11 @@ void AntSimulator::run()
 		m_vectorOfAnts.push_back(Ant(*m_RandomHillStartPos, 18, 18, sf::Color::Red));
 		m_vectorOfAnts.at(x).setRadiusVisibility(false);
 	}
-	//anteater basic draw
-	Ant* antEater = new Ant(Vector2D(800,800), 100, 100, sf::Color::Magenta);
-	m_vectorOfAnts.push_back(*antEater);
+	//anteater
+	m_vAntEaterSpawn = new Vector2D(800,800);
+	m_vectorOfAntEaters.push_back(AntEater(*m_vAntEaterSpawn, 100, 100, sf::Color::Magenta));
+
+
 	
 	antFollow = new BehaviourFollow();
 	antAvoid = new BehaviourAvoid();
@@ -119,6 +123,10 @@ void AntSimulator::run()
 	for (m_Antit = m_vectorOfAnts.begin(); m_Antit != m_vectorOfAnts.end(); ++m_Antit)
 	{
 		//m_vectorOfShapes.push_back(&*m_Antit);
+	}
+	for (m_AntEaterit = m_vectorOfAntEaters.begin(); m_AntEaterit != m_vectorOfAntEaters.end(); ++m_AntEaterit)
+	{
+
 	}
 	for (m_Circleit = m_vectorOfCircles.begin(); m_Circleit != m_vectorOfCircles.end(); ++m_Circleit)
 	{
@@ -172,27 +180,41 @@ void AntSimulator::run()
 			}
 		}
 
+		//Movement for AntEater. Uses generic SFML bindings. Will move into AntEater.cpp eventually to tidy loop up.
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 		{
-			//ant1->setPosition(Vector2D(ant1->getPosition().getX(), ant1->getPosition().getY() - 0.1));
+			//if(bMovementCheck) 
+			{
+				for (m_AntEaterit = m_vectorOfAntEaters.begin(); m_AntEaterit != m_vectorOfAntEaters.end(); ++m_AntEaterit)
+				{
+					m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY() - 1.0));
+				}
+			}
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 		{
-			//ant1->setPosition(Vector2D(ant1->getPosition().getX(), ant1->getPosition().getY() + 0.1));
-
+			
+			for (m_AntEaterit = m_vectorOfAntEaters.begin(); m_AntEaterit != m_vectorOfAntEaters.end(); ++m_AntEaterit)
+			{
+				m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY() + 1.0));
+			}
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 		{
-			//ant1->setPosition(Vector2D(ant1->getPosition().getX() - 0.1, ant1->getPosition().getY()));
-
+			for (m_AntEaterit = m_vectorOfAntEaters.begin(); m_AntEaterit != m_vectorOfAntEaters.end(); ++m_AntEaterit)
+			{
+				m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX() - 1.0 ,m_AntEaterit->getPosition().getY()));
+			}
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-		{
-			//ant1->setPosition(Vector2D(ant1->getPosition().getX() + 0.1, ant1->getPosition().getY()));
-
+		{			
+			for (m_AntEaterit = m_vectorOfAntEaters.begin(); m_AntEaterit != m_vectorOfAntEaters.end(); ++m_AntEaterit)
+			{
+				m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX() + 1.0,m_AntEaterit->getPosition().getY()));
+			}
 		}
 
-		// ^ movement controls for testing, unless people want I'm not going to try to implement AI movement until we have an adjancency matrix implemented
+		
 
 		//Temp follow off switch
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
@@ -387,6 +409,7 @@ void AntSimulator::run()
 			//Put the function into the AdjacencyMatrix class and am calling it from there rather than it being a global function
 
 		}
+		
 
 		render();
 	}
@@ -407,6 +430,10 @@ void AntSimulator::render()
 	for (m_Antit = m_vectorOfAnts.begin(); m_Antit != m_vectorOfAnts.end(); ++m_Antit)
 	{
 		m_window.draw(*m_Antit);//seperate for the moment.
+	}
+	for (m_AntEaterit = m_vectorOfAntEaters.begin(); m_AntEaterit != m_vectorOfAntEaters.end(); ++m_AntEaterit)
+	{
+		m_window.draw(*m_AntEaterit);
 	}
 
 

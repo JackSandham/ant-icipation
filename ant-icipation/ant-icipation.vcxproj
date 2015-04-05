@@ -73,6 +73,7 @@
   <ItemGroup>
     <ClInclude Include="..\include\AABB.h" />
     <ClInclude Include="..\include\ant.h" />
+    <ClInclude Include="..\include\antEater.h" />
     <ClInclude Include="..\include\AntSimulator.h" />
     <ClInclude Include="..\include\AudioManager.h" />
     <ClInclude Include="..\include\Background.h" />
@@ -105,11 +106,11 @@
     <ClInclude Include="..\include\UIManager.h" />
     <ClInclude Include="..\include\UIText.h" />
     <ClInclude Include="..\include\Vector2D.h" />
-    <ClInclude Include="antEater.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\AABB.cpp" />
     <ClCompile Include="..\src\ant.cpp" />
+    <ClCompile Include="..\src\AntEater.cpp" />
     <ClCompile Include="..\src\AntSimulator.cpp" />
     <ClCompile Include="..\src\AudioManager.cpp" />
     <ClCompile Include="..\src\Background.cpp" />

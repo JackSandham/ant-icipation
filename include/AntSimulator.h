@@ -18,6 +18,7 @@ I have created a brand new class AdjacencyMatrix and have modified the Backgroun
 #include <fstream>
 #include "Background.h"
 #include <ant.h>
+#include <antEater.h>
 #include <Behaviour.h>
 #include <BehaviourFollow.h>
 #include <BehaviourAvoid.h>
@@ -39,6 +40,7 @@ I have created a brand new class AdjacencyMatrix and have modified the Backgroun
 #include "UIManager.h"
 #include "UIBuilder.h"
 #include "UIButtonListener.h"
+
 
 using namespace std;
 
@@ -65,6 +67,9 @@ class AntSimulator : UIButtonListener
 		std::vector<Ant> m_vectorOfAnts;
 		std::vector<Ant>::iterator m_Antit; //!< iterator for this vector
 
+		std::vector<AntEater> m_vectorOfAntEaters;
+		std::vector<AntEater>::iterator m_AntEaterit;
+
 		std::vector<AABB> m_vectorOfAABB; //!< Holds AABB objects
 		std::vector<AABB>::iterator m_AABBit; //!< iterator for this vector
 
@@ -84,6 +89,7 @@ class AntSimulator : UIButtonListener
 		Randomiser m_RandomStartPosY;
 		float m_fRandomStartPosY;
 		Vector2D* m_RandomHillStartPos;
+		Vector2D* m_vAntEaterSpawn;
 		
 		BehaviourFollow* antFollow;
 		bool isFollowing;
