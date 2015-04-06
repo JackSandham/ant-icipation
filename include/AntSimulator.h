@@ -24,6 +24,7 @@ I have created a brand new class AdjacencyMatrix and have modified the Backgroun
 #include <BehaviourAvoid.h>
 #include "BehaviourSteer.h"
 #include "BehaviourGather.h"
+#include "BehaviourFlee.h"
 #include "circle.h"
 #include "AABB.h"
 #include "OBB.h"
@@ -91,15 +92,18 @@ class AntSimulator : UIButtonListener
 		Vector2D* m_RandomHillStartPos;
 		Vector2D* m_vAntEaterSpawn;
 		
-		BehaviourFollow* antFollow;
+		
 		bool isFollowing;
+		bool isFleeing;
 		bool isAvoiding;
 		bool isSteering;
 		bool isSeeking;
 		
+		BehaviourFollow* antFollow;
 		BehaviourAvoid* antAvoid;
 		BehaviourSteer* antSteer;
 		BehaviourGather* antGather;
+		BehaviourFlee* antFlee;
 		CollisionsManager* m_CollisionsManager;
 };
 

@@ -28,6 +28,7 @@ void AntEater::Update()
 	m_fTop = rectangle.getPosition().y;
 	setMin();
 	setMax();
+
 }
 
 void AntEater::moveVisualObjects(float xPos, float yPos)

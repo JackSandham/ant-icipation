@@ -9,9 +9,10 @@ AntSimulator::AntSimulator()
 	StringsManager* m_pStringsManager = StringsManager::getInstance();
 
 	isFollowing = true;
+	isFleeing = true;
 	isAvoiding = true;
     isSteering = true;
-	isSeeking = false;
+	isSeeking = true;
 	//set pointers to NULL at start
 	m_RandomHillStartPos = NULL;
 }
@@ -45,6 +46,12 @@ AntSimulator::~AntSimulator()
 		delete antGather;
 	}
 	antGather = NULL;
+
+	if(antFlee != NULL)
+	{
+		delete antFlee;
+	}
+	antFlee = NULL;
 
 	if(m_CollisionsManager != NULL)
 	{
@@ -97,6 +104,7 @@ void AntSimulator::run()
 	antAvoid = new BehaviourAvoid();
 	antSteer = new BehaviourSteer();
 	antGather = new BehaviourGather();
+	antFlee = new BehaviourFlee();
 	//Tanveer's Shapes for testing collisions
 	//m_vectorOfCircles.push_back(Circle(sf::Vector2f(50,50), 50,sf::Color::Magenta)); //top left circle
 	//m_vectorOfCircles.push_back(Circle(sf::Vector2f(50,151), 50,sf::Color::Green)); //circle underneath other circle. chamge ypos to 150 for circle circle test
@@ -227,7 +235,8 @@ void AntSimulator::run()
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 		{
-			i = 2;
+			//i = 2;
+			isFleeing = false;
 		}
 
 		// ^ Q and E reset states to 1 and 2 for vague debugging reasons, needed to make sure switch worked
@@ -279,17 +288,34 @@ void AntSimulator::run()
 				}
 				/*
 
-				Run ant behaviours through obstacles!
+				Run ant avoid through obstacles!
 
 				*/
 				for (obstaclesit = obstacles.begin(); obstaclesit != obstacles.end(); ++obstaclesit)
 				{
+					//If avoiding behaviour is on
+					if(isAvoiding)
+					{
+						antAvoid->run(*m_Antit,**obstaclesit,*m_CollisionsManager);
+					}
+
 					
-					antAvoid->run(*m_Antit,**obstaclesit,*m_CollisionsManager);
+					
+					
+				}
+				//If fleeing behaviour is on
+				if(isFleeing)
+				{
+						antFlee->run(*m_Antit,m_vectorOfAntEaters.at(0),*m_CollisionsManager);
+				}
+				//If we are not fleeing!
+				if(!antFlee->isFleeing())
+				{
 					//If there is no collision, then we can check for antfollow.
+					//If following behaviour is on
 					if(isFollowing)
 					{
-						if(!antAvoid->isColliding() & !isSeeking)
+						if(!antAvoid->isColliding() & !antGather->isGathering())
 						{
 
 							if (iAntCounter != m_vectorOfAnts.size())
@@ -303,56 +329,54 @@ void AntSimulator::run()
 					Will be changed with steer behaviour.
 					I.E will default to steer behaviour if not following?
 					*/
-					else
+				
+					//if seek on
+					if(isSeeking)
 					{
-						if(antAvoid->isColliding())
+						for (auto Food : m_vectorOfFood)
 						{
-							antSteer->randomDirection(*m_Antit);
-						}
-					}
-				}
-				for (auto Food : m_vectorOfFood)
-				{
-					// this is the gather food behaviour. it has alot of statements that might not make much sense but il try to explain as best as possible
+							// this is the gather food behaviour. it has alot of statements that might not make much sense but il try to explain as best as possible
 					
-					if(Food->getCollidable()==true)//if the food can be collided
-					{
-						if(m_CollisionsManager->CircletoCircleCollision(*Food->getFoodRadius(), *m_Antit->getAntRadius()) == true && Food->getHome()==false)//if the ant and food radius collide and
-																																							//if the ant is not at the ant hill
-						{
-							antGather->run(*m_Antit,*Food,*m_CollisionsManager);//the ant will move towards the food itseld
-						}
+							if(Food->getCollidable()==true)//if the food can be collided
+							{
+								if(m_CollisionsManager->CircletoCircleCollision(*Food->getFoodRadius(), *m_Antit->getAntRadius()) == true && Food->getHome()==false)//if the ant and food radius collide and
+																																									//if the ant is not at the ant hill
+								{
+									antGather->run(*m_Antit,*Food,*m_CollisionsManager);//the ant will move towards the food itseld
+								}
 						
-					}
+							}
 					
-					if((m_CollisionsManager->AABBtoAABBCollision(*m_Antit,*Food)==true) &&(Food->getCollidable()==true)&& Food->getHome()==false)//if the ant and food collide and the food is collidable
-																																				//and the food is not at the ant hill
-					{
-						Food->setCollidable(false);//set the food to no longer be collidable
-						Food->setCollected(true);//make it so the food has been collected
-						m_Antit->setFood(true);//the ant is now carrying food
-					}
+							if((m_CollisionsManager->AABBtoAABBCollision(*m_Antit,*Food)==true) &&(Food->getCollidable()==true)&& Food->getHome()==false)//if the ant and food collide and the food is collidable
+																																						//and the food is not at the ant hill
+							{
+								Food->setCollidable(false);//set the food to no longer be collidable
+								Food->setCollected(true);//make it so the food has been collected
+								m_Antit->setFood(true);//the ant is now carrying food
+							}
 
-					if(Food->getCollected()==true && Food->getCollidable()==false && m_Antit->getFood()==true)//if the food has been collected and its not colllidable
-																											  //and the ant has food
-					{
-						Food->setPosition(m_Antit->getPosition());//set the foods position to the ant
-						antGather->goHome(*m_Antit,*Food,*m_CollisionsManager,*hill);//make the ant start going to the ant hill
-					}
+							if(Food->getCollected()==true && Food->getCollidable()==false && m_Antit->getFood()==true)//if the food has been collected and its not colllidable
+																													  //and the ant has food
+							{
+								Food->setPosition(m_Antit->getPosition());//set the foods position to the ant
+								antGather->goHome(*m_Antit,*Food,*m_CollisionsManager,*hill);//make the ant start going to the ant hill
+							}
 
-					if((m_CollisionsManager->AABBtoAABBCollision(*m_Antit,*hill)==true) &&(Food->getHome()==false) && (Food->getCollected()==true))//if the ant and the and hill collide
-																																					//and the food is not at the ant hill
-																																					//and the food is collected
-					{
-						Food->setPosition(hill->getPosition());//set the foods position to be at the ant hill
-						antSteer->randomDirection(*m_Antit);//choose a random direction for the ant to move
-						m_Antit->setFood(false);//ant no longer has food
-						Food->setHome(true);//set it so the food is at the ant hill
-						Food->setCollidable(true);//the the food to be collidable again (this just stops it from going into other loops, it cant actually collide)
-					}
+							if((m_CollisionsManager->AABBtoAABBCollision(*m_Antit,*hill)==true) &&(Food->getHome()==false) && (Food->getCollected()==true))//if the ant and the and hill collide
+																																							//and the food is not at the ant hill
+																																							//and the food is collected
+							{
+								Food->setPosition(hill->getPosition());//set the foods position to be at the ant hill
+								antSteer->randomDirection(*m_Antit);//choose a random direction for the ant to move
+								m_Antit->setFood(false);//ant no longer has food
+								Food->setHome(true);//set it so the food is at the ant hill
+								Food->setCollidable(true);//the the food to be collidable again (this just stops it from going into other loops, it cant actually collide)
+							}
 
+						}
+					}
 				}
-
+				
 			}
 
 
@@ -409,8 +433,11 @@ void AntSimulator::run()
 			//Put the function into the AdjacencyMatrix class and am calling it from there rather than it being a global function
 
 		}
+		for (m_AntEaterit = m_vectorOfAntEaters.begin(); m_AntEaterit != m_vectorOfAntEaters.end(); ++m_AntEaterit)
+		{
+			m_AntEaterit->Update();
+		}
 		
-
 		render();
 	}
 }

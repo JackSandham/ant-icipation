@@ -3,7 +3,7 @@
 //using behaviours constructor
 BehaviourGather::BehaviourGather() : Behaviour("GATHER")
 {
-
+	m_bGathering = false;
 }
 
 //require ants and collisionmanager.
@@ -12,8 +12,9 @@ void BehaviourGather::run(Ant &passedAnt1, Food &passedFood, CollisionsManager &
 	if(antInRadius(passedAnt1,passedFood,passedColMan))
 	{
 		seekFood(passedAnt1,passedFood,passedColMan);
-		
+		m_bGathering = true;
 	}
+	else m_bGathering = false;
 }
 bool BehaviourGather::antInRadius(Ant &passedAnt1, Food &passedFood, CollisionsManager &passedColMan)
 {
@@ -91,4 +92,13 @@ void BehaviourGather::goHome(Ant &passedAnt1, Food &passedFood,CollisionsManager
 
 
 
+}
+
+bool BehaviourGather::isGathering()
+{
+	if(m_bGathering)
+	{
+		return true;
+	}
+	else return false;
 }
