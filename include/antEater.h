@@ -34,7 +34,8 @@ public:
 	bool radiusIsVisible();
 	bool getFood();
 	Vector2D getDirection();
-	Circle* getAntEaterRadius();
+	Circle* getAntEaterOuterRadius();
+	Circle* getAntEaterInnerRadius();
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 	//This function is used to move the rectangle and ant radius.
 	void moveVisualObjects(float xPos, float yPos);
@@ -48,7 +49,8 @@ private:
 	bool m_bCanMove;
 	bool m_bHasFood;
 	bool m_bRadiusVisible;
-	Circle* anteaterRadius; //previously in main
+	Circle* anteaterInnerRadius; 
+	Circle* anteaterOuterRadius;
 	Vector2D m_vDirection;
 
 };
