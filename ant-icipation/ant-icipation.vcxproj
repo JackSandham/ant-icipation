@@ -79,7 +79,6 @@
     <ClInclude Include="..\include\Background.h" />
     <ClInclude Include="..\include\Behaviour.h" />
     <ClInclude Include="..\include\BehaviourAvoid.h" />
-    <ClInclude Include="..\include\BehaviourFlee.h" />
     <ClInclude Include="..\include\BehaviourFollow.h" />
     <ClInclude Include="..\include\BehaviourGather.h" />
     <ClInclude Include="..\include\BehaviourSteer.h" />
@@ -117,7 +116,6 @@
     <ClCompile Include="..\src\Background.cpp" />
     <ClCompile Include="..\src\Behaviour.cpp" />
     <ClCompile Include="..\src\BehaviourAvoid.cpp" />
-    <ClCompile Include="..\src\BehaviourFlee.cpp" />
     <ClCompile Include="..\src\BehaviourFollow.cpp" />
     <ClCompile Include="..\src\BehaviourGather.cpp" />
     <ClCompile Include="..\src\BehaviourSteer.cpp" />

@@ -28,9 +28,6 @@ void BehaviourFollow::followAnt(Ant &passedAnt1, Ant &passedAnt2, CollisionsMana
 	//One ant behind the other
 	if(passedColMan.getDistance()>=passedAnt1.getHalfHeight()*2)
 	{
-		Vector2D m_vFirstAntDirection(passedAnt1.getPosition()-passedAnt2.getPosition());
-		Vector2D m_vUnitDirection;
-		m_vUnitDirection = m_vFirstAntDirection.unitVector();
-		passedAnt2.setDirection(m_vUnitDirection);
+		passedAnt2.setDirection(passedAnt1.getPosition()-passedAnt2.getPosition());
 	}
 }

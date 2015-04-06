@@ -18,7 +18,6 @@ class BehaviourGather : public Behaviour
 		BehaviourGather();
 
 		bool antInRadius(Ant &passedAnt1, Food &passedFood, CollisionsManager &passedColMan);
-		bool isGathering();
 
 		void seekFood(Ant &passedAnt1, Food &passedFood,CollisionsManager &passedColMan);
 		void gatherFood(Ant &passedAnt1, Food &passedFood,CollisionsManager &passedColMan);
@@ -27,7 +26,7 @@ class BehaviourGather : public Behaviour
 
 
 	protected:
-		bool m_bGathering;
+
 	private:
 		
 
