@@ -75,7 +75,7 @@ void Ant::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	if (m_bRadiusVisible)
 	{
-		target.draw(*antRadius);
+		//target.draw(*antRadius);
 	}
 	target.draw(rectangle);
 }

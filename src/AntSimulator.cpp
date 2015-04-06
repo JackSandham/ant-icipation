@@ -1,5 +1,6 @@
 #include "AntSimulator.h"
 
+
 AntSimulator::AntSimulator()
 {
 	// Instantiate singleton resource managers. These should not be deconstructed for the lifetime of the program.
@@ -89,7 +90,10 @@ void AntSimulator::run()
 	}
 	//anteater
 	m_vAntEaterSpawn = new Vector2D(800,800);
-	m_vectorOfAntEaters.push_back(AntEater(*m_vAntEaterSpawn, 100, 100, sf::Color::Magenta));
+	//m_vectorOfAntEaters.push_back(AntEater(*m_vAntEaterSpawn, 100, 100, sf::Color::Magenta));
+
+	AntEater* antEater1 = new AntEater(*m_vAntEaterSpawn, 100, 100, sf::Color::Magenta);
+	m_vectorOfAntEaters.push_back(*antEater1);
 
 
 	
@@ -180,7 +184,10 @@ void AntSimulator::run()
 			}
 		}
 
-		//Movement for AntEater. Uses generic SFML bindings. Will move into AntEater.cpp eventually to tidy loop up.
+		//Movement for AntEater. Uses generic SFML bindings.
+		//Problems - calling moveVisualObjects doesn't work repeatedly. I can use setPosition on the vector to move the anteater
+		//but not the moveVisualObjects. Anyone able to chime in? I'm sure the code I've gotten is fine, but I'm just missing something.
+		//as a result the radii aren't moving nor is the AABB
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 		{
 			//if(bMovementCheck) 
@@ -188,6 +195,7 @@ void AntSimulator::run()
 				for (m_AntEaterit = m_vectorOfAntEaters.begin(); m_AntEaterit != m_vectorOfAntEaters.end(); ++m_AntEaterit)
 				{
 					m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY() - 1.0));
+					//m_AntEaterit->moveVisualObjects(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY());	//test to see if coords are actually being passed, and they are.				
 				}
 			}
 		}
@@ -197,6 +205,7 @@ void AntSimulator::run()
 			for (m_AntEaterit = m_vectorOfAntEaters.begin(); m_AntEaterit != m_vectorOfAntEaters.end(); ++m_AntEaterit)
 			{
 				m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY() + 1.0));
+				m_AntEaterit->moveVisualObjects(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY());		
 			}
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
@@ -204,6 +213,7 @@ void AntSimulator::run()
 			for (m_AntEaterit = m_vectorOfAntEaters.begin(); m_AntEaterit != m_vectorOfAntEaters.end(); ++m_AntEaterit)
 			{
 				m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX() - 1.0 ,m_AntEaterit->getPosition().getY()));
+				m_AntEaterit->moveVisualObjects(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY());		
 			}
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
@@ -211,6 +221,7 @@ void AntSimulator::run()
 			for (m_AntEaterit = m_vectorOfAntEaters.begin(); m_AntEaterit != m_vectorOfAntEaters.end(); ++m_AntEaterit)
 			{
 				m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX() + 1.0,m_AntEaterit->getPosition().getY()));
+				m_AntEaterit->moveVisualObjects(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY());		
 			}
 		}
 
@@ -235,6 +246,8 @@ void AntSimulator::run()
 		{
 			//Move/collide Multiple Ants
 			int iAntCounter = 0;
+
+
 
 			for (m_Antit = m_vectorOfAnts.begin(); m_Antit != m_vectorOfAnts.end(); ++m_Antit)
 			{
@@ -311,6 +324,14 @@ void AntSimulator::run()
 						}
 					}
 				}
+			/*	for (m_Antit = m_vectorOfAnts.begin(); m_Antit!= m_vectorOfAnts.end(); ++m_Antit)
+				{
+					if((m_CollisionsManager->AABBtoAABBCollision(*m_Antit, *m_AntEaterit)==true))
+					{
+						
+					}
+				}*/
+
 				for (auto Food : m_vectorOfFood)
 				{
 					// this is the gather food behaviour. it has alot of statements that might not make much sense but il try to explain as best as possible
@@ -324,6 +345,8 @@ void AntSimulator::run()
 						}
 						
 					}
+
+				
 					
 					if((m_CollisionsManager->AABBtoAABBCollision(*m_Antit,*Food)==true) &&(Food->getCollidable()==true)&& Food->getHome()==false)//if the ant and food collide and the food is collidable
 																																				//and the food is not at the ant hill
@@ -351,9 +374,26 @@ void AntSimulator::run()
 						Food->setCollidable(true);//the the food to be collidable again (this just stops it from going into other loops, it cant actually collide)
 					}
 
+					
 				}
 
+				if((m_CollisionsManager->AABBtoAABBCollision(*m_Antit, *antEater1)==true))
+				{
+					cout<<"Deleted Ant"<<endl;
+				}
+				if((m_CollisionsManager->AABBtoCircleCollision(*m_Antit, *antEater1->getAntEaterInnerRadius())==true) && (m_CollisionsManager->AABBtoCircleCollision(*m_Antit, *antEater1->getAntEaterOuterRadius())==true))
+				{
+					cout<<"Flee Harder"<<endl;
+				}
+				if((m_CollisionsManager->AABBtoCircleCollision(*m_Antit, *antEater1->getAntEaterOuterRadius())==true))
+				{
+					cout<<"Flee"<<endl;
+				}
+
+
 			}
+		
+
 
 
 			clock.restart(); //restart the clock to update frames	
