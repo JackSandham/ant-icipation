@@ -30,7 +30,9 @@ public:
 	void setDirection(Vector2D passedVector);
 	void setRadiusVisibility(bool passedVisible);
 	void setFood(bool bPassedFood);
+	void setColliding(bool bColliding);
 	bool isMoveable();
+	bool isColliding();
 	bool radiusIsVisible();
 	bool getFood();
 	Vector2D getDirection();
@@ -49,6 +51,7 @@ private:
 	bool m_bCanMove;
 	bool m_bHasFood;
 	bool m_bRadiusVisible;
+	bool m_bAntColliding;
 	Circle* anteaterInnerRadius; 
 	Circle* anteaterOuterRadius;
 	Vector2D m_vDirection;

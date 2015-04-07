@@ -19,7 +19,7 @@ class BehaviourAvoid : public Behaviour
 		BehaviourAvoid();
 
 		bool obstacleInRadius(Ant &passedAnt1, AABB &passedBackObstacles, CollisionsManager &passedColMan);
-		bool isColliding();
+		
 
 		void avoidObstacle(Ant &passedAnt1, AABB &passedBackObstacles,CollisionsManager &passedColMan);
 		virtual void run(Ant &passedAnt1, AABB &passedBackObstacles, CollisionsManager &passedColMan);
@@ -28,7 +28,7 @@ class BehaviourAvoid : public Behaviour
 
 	private:
 		BehaviourSteer steerBehaviour;
-		bool m_bAntColliding;
+		
 
 };
 

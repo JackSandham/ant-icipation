@@ -1,14 +1,26 @@
-﻿Build started 06/04/2015 13:10:46.
+﻿Build started 07/04/2015 16:36:18.
      1>Project "H:\DEV\ant-icipation\ant-icipation\ant-icipation.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D SFML_STATIC /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt ..\src\AntSimulator.cpp ..\src\BehaviourFlee.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D SFML_STATIC /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt ..\src\AntSimulator.cpp ..\src\BehaviourAvoid.cpp ..\src\BehaviourFlee.cpp ..\src\BehaviourFollow.cpp ..\src\BehaviourGather.cpp ..\src\BehaviourSteer.cpp ..\src\MatrixController.cpp ..\src\ant.cpp ..\src\main.cpp
+         ant.cpp
+     1>h:\dev\ant-icipation\src\ant.cpp(10): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>h:\dev\ant-icipation\src\ant.cpp(23): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
          BehaviourFlee.cpp
-         AntSimulator.cpp
-     1>h:\dev\ant-icipation\src\antsimulator.cpp(206): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>h:\dev\ant-icipation\src\antsimulator.cpp(216): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>h:\dev\ant-icipation\src\antsimulator.cpp(224): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>h:\dev\ant-icipation\src\antsimulator.cpp(232): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
          Generating Code...
+         Compiling...
+         AntSimulator.cpp
+     1>h:\dev\ant-icipation\src\antsimulator.cpp(207): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>h:\dev\ant-icipation\src\antsimulator.cpp(217): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>h:\dev\ant-icipation\src\antsimulator.cpp(225): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>h:\dev\ant-icipation\src\antsimulator.cpp(233): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+         Generating Code...
+         Skipping... (no relevant changes detected)
+         main.cpp
+         MatrixController.cpp
+         BehaviourSteer.cpp
+         BehaviourGather.cpp
+         BehaviourFollow.cpp
+         BehaviourAvoid.cpp
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"H:\DEV\ant-icipation\Debug\ant-icipation.exe" /INCREMENTAL /NOLOGO "sfml-main-d.lib" "sfml-system-s-d.lib" "sfml-graphics-s-d.lib" "sfml-window-s-d.lib" "sfml-audio-s-d.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"H:\DEV\ant-icipation\Debug\ant-icipation.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"H:\DEV\ant-icipation\Debug\ant-icipation.lib" /MACHINE:X86 Debug\AABB.obj
          Debug\ant.obj
@@ -52,4 +64,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:37.26
+Time Elapsed 00:00:51.51

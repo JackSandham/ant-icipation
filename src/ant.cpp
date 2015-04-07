@@ -8,18 +8,26 @@ Ant::Ant()
 
 Ant::Ant(Vector2D passedPosition, int width, int height) : AABB(passedPosition,  width,  height)
 {
+	m_vStartPos = passedPosition;
 	antRadius = new Circle(getPosition(), 75,sf::Color::Green);// ant detection radius
 	m_bCanMove = true;
 	m_bRadiusVisible = true;
-	m_bHasFood=false;
+	m_bHasFood = false;
+	m_bAntColliding = false;
+	m_bFleeing = false;
+	m_bFacingWall = false;
 	Update();
 }
 
 Ant::Ant(Vector2D passedPosition, int width, int height, sf::Color passedColor) : AABB(passedPosition,  width,  height,passedColor)
 {
+	m_vStartPos = passedPosition;
 	antRadius = new Circle(getPosition(), 75,sf::Color::Green);// ant detection radius
 	m_bCanMove = true;
 	m_bRadiusVisible = true;
+	m_bHasFood = false;
+	m_bFleeing = false;
+	m_bFacingWall = false;
 	Update();
 }
 
@@ -56,6 +64,49 @@ void Ant::setRadiusVisibility(bool bPassedVisibility)
 	m_bRadiusVisible = bPassedVisibility;
 }
 
+void Ant::setColliding(bool bColliding)
+{
+	m_bAntColliding = bColliding;
+}
+
+void Ant::setFleeing(bool bFleeing)
+{
+	m_bFleeing = bFleeing;
+}
+
+void Ant::setFacingWall(bool bFacing)
+{
+	m_bFacingWall = bFacing;
+}
+
+
+bool Ant::isColliding()
+{
+	if(m_bAntColliding)
+	{
+		return true;
+	}
+	else return false;
+}
+
+bool Ant::isFleeing()
+{
+	if(m_bFleeing)
+	{
+		return true;
+	}
+	else return false;
+}
+
+bool Ant::isFacingWall()
+{
+	if(m_bFacingWall)
+	{
+		return true;
+	}
+	else return false;
+}
+
 bool Ant::isMoveable()
 {
 	return m_bCanMove;
@@ -69,6 +120,11 @@ bool Ant::radiusIsVisible()
 Vector2D Ant::getDirection()
 {
 	return m_vDirection;
+}
+
+Vector2D Ant::getStartPos()
+{
+	return m_vStartPos;
 }
 
 void Ant::draw(sf::RenderTarget& target, sf::RenderStates states) const

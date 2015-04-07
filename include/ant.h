@@ -28,10 +28,17 @@ class Ant : public AABB
 		void setDirection(Vector2D passedVector);
 		void setRadiusVisibility(bool passedVisible);
 		void setFood(bool bPassedFood);
+		void setColliding(bool bColliding);
+		void setFleeing(bool bFleeing);
+		void setFacingWall(bool bFacingWall);
 		bool isMoveable();
+		bool isColliding();
+		bool isFacingWall();
+		bool isFleeing();
 		bool radiusIsVisible();
 		bool getFood();
 		Vector2D getDirection();
+		Vector2D getStartPos();
 		Circle* getAntRadius();
 		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 		//This function is used to move the rectangle and ant radius.
@@ -46,8 +53,12 @@ class Ant : public AABB
 		bool m_bCanMove;
 		bool m_bHasFood;
 		bool m_bRadiusVisible;
+		bool m_bAntColliding;
+		bool m_bFleeing;
+		bool m_bFacingWall;
 		Circle* antRadius; //previously in main
 		Vector2D m_vDirection;
+		Vector2D m_vStartPos;
 };
 #endif
 

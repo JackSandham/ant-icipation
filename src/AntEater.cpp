@@ -52,6 +52,20 @@ void AntEater::setRadiusVisibility(bool bPassedVisibility)
 	m_bRadiusVisible = bPassedVisibility;
 }
 
+void AntEater::setColliding(bool bColliding)
+{
+	m_bAntColliding = bColliding;
+}
+
+bool AntEater::isColliding()
+{
+	if(m_bAntColliding)
+	{
+		return true;
+	}
+	else return false;
+}
+
 bool AntEater::isMoveable()
 {
 	return m_bCanMove;

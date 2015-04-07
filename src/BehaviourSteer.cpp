@@ -42,7 +42,7 @@ void BehaviourSteer::moveup(Ant &passedAnt1){
 	passedAnt1.getDirection().setX(xNum);
 	passedAnt1.getDirection().setY(yNum);
 	passedAnt1.setDirection(Vector2D(xNum,yNum));
-	cout<<passedAnt1.getDirection().getX()<<" "<<passedAnt1.getDirection().getY()<<endl;
+	//<<passedAnt1.getDirection().getX()<<" "<<passedAnt1.getDirection().getY()<<endl;
 }
 
 void BehaviourSteer::movedown(Ant &passedAnt1){
@@ -52,7 +52,7 @@ void BehaviourSteer::movedown(Ant &passedAnt1){
 	passedAnt1.getDirection().setX(xNum);
 	passedAnt1.getDirection().setY(yNum);
 	passedAnt1.setDirection(Vector2D(xNum,yNum));
-	cout<<passedAnt1.getDirection().getX()<<" "<<passedAnt1.getDirection().getY()<<endl;
+	//cout<<passedAnt1.getDirection().getX()<<" "<<passedAnt1.getDirection().getY()<<endl;
 }
 
 void BehaviourSteer::moveleft(Ant &passedAnt1){
@@ -62,7 +62,7 @@ void BehaviourSteer::moveleft(Ant &passedAnt1){
 	passedAnt1.getDirection().setX(xNum);
 	passedAnt1.getDirection().setY(yNum);
 	passedAnt1.setDirection(Vector2D(xNum,yNum));
-	cout<<passedAnt1.getDirection().getX()<<" "<<passedAnt1.getDirection().getY()<<endl;
+	//cout<<passedAnt1.getDirection().getX()<<" "<<passedAnt1.getDirection().getY()<<endl;
 }
 
 void BehaviourSteer::moveright(Ant &passedAnt1){
@@ -72,7 +72,7 @@ void BehaviourSteer::moveright(Ant &passedAnt1){
 	passedAnt1.getDirection().setX(xNum);
 	passedAnt1.getDirection().setY(yNum);
 	passedAnt1.setDirection(Vector2D(xNum,yNum));
-	cout<<passedAnt1.getDirection().getX()<<" "<<passedAnt1.getDirection().getY()<<endl;
+	//<<passedAnt1.getDirection().getX()<<" "<<passedAnt1.getDirection().getY()<<endl;
 }
 
 void BehaviourSteer::WallCollision(Ant &passedAnt1){

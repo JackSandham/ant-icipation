@@ -204,7 +204,7 @@ void AntSimulator::run()
 			{
 				for (m_AntEaterit = m_vectorOfAntEaters.begin(); m_AntEaterit != m_vectorOfAntEaters.end(); ++m_AntEaterit)
 				{
-					m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY() - 1.0));
+					m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY() - 0.7));
 					//m_AntEaterit->moveVisualObjects(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY());	//test to see if coords are actually being passed, and they are.				
 				}
 			}
@@ -214,7 +214,7 @@ void AntSimulator::run()
 			
 			for (m_AntEaterit = m_vectorOfAntEaters.begin(); m_AntEaterit != m_vectorOfAntEaters.end(); ++m_AntEaterit)
 			{
-				m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY() + 1.0));
+				m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY() + 0.7));
 				m_AntEaterit->moveVisualObjects(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY());		
 			}
 		}
@@ -222,7 +222,7 @@ void AntSimulator::run()
 		{
 			for (m_AntEaterit = m_vectorOfAntEaters.begin(); m_AntEaterit != m_vectorOfAntEaters.end(); ++m_AntEaterit)
 			{
-				m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX() - 1.0 ,m_AntEaterit->getPosition().getY()));
+				m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX() - 0.7 ,m_AntEaterit->getPosition().getY()));
 				m_AntEaterit->moveVisualObjects(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY());		
 			}
 		}
@@ -230,7 +230,7 @@ void AntSimulator::run()
 		{			
 			for (m_AntEaterit = m_vectorOfAntEaters.begin(); m_AntEaterit != m_vectorOfAntEaters.end(); ++m_AntEaterit)
 			{
-				m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX() + 1.0,m_AntEaterit->getPosition().getY()));
+				m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX() + 0.7,m_AntEaterit->getPosition().getY()));
 				m_AntEaterit->moveVisualObjects(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY());		
 			}
 		}
@@ -307,29 +307,41 @@ void AntSimulator::run()
 				*/
 				for (obstaclesit = obstacles.begin(); obstaclesit != obstacles.end(); ++obstaclesit)
 				{
+					//emergency if we collide with an obstacle.
+					if(m_CollisionsManager->AABBtoAABBCollision(*m_Antit,**obstaclesit))
+					{
+						m_Antit->setDirection(Vector2D(0,0));
+						m_CollisionsManager->correctPosition(*m_Antit);
+					}
 					//If avoiding behaviour is on
 					if(isAvoiding)
 					{
 						antAvoid->run(*m_Antit,**obstaclesit,*m_CollisionsManager);
 					}
 
+					//If fleeing behaviour is on
+					if(isFleeing)
+					{
+						//If the ant is moving away from wall then we can only push.
+						if(!m_Antit->isFacingWall())
+						{
+							//Ant is not colliding with a obstacle
+							if(!m_Antit->isColliding())
+							{
+								antFlee->run(*m_Antit,m_vectorOfAntEaters.at(0),*m_CollisionsManager);
+							}
+						}
 					
-					
-					
-				}
-				//If fleeing behaviour is on
-				if(isFleeing)
-				{
-						antFlee->run(*m_Antit,m_vectorOfAntEaters.at(0),*m_CollisionsManager);
+					}
 				}
 				//If we are not fleeing!
-				if(!antFlee->isFleeing())
+				if(!m_Antit->isFleeing())
 				{
 					//If there is no collision, then we can check for antfollow.
 					//If following behaviour is on
 					if(isFollowing)
 					{
-						if(!antAvoid->isColliding() & !antGather->isGathering())
+						if(!m_Antit->isColliding() & !antGather->isGathering())
 						{
 
 							if (iAntCounter != m_vectorOfAnts.size())
@@ -383,6 +395,7 @@ void AntSimulator::run()
 						}
 					}
 				}
+			
 		/*moved to behaviourflee!
 				if((m_CollisionsManager->AABBtoAABBCollision(*m_Antit, *antEater1)==true))
 				{

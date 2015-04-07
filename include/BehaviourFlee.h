@@ -22,7 +22,7 @@ class BehaviourFlee : public Behaviour
 		bool antEaterInRadius(Ant &passedAnt1, AntEater &passedAntEater, CollisionsManager &passedColMan);
 		bool antEaterEats(Ant &passedAnt1, AntEater &passedAntEater, CollisionsManager &passedColMan);
 		bool isColliding();
-		bool isFleeing();
+		
 
 		void avoidEater(Ant &passedAnt1, AntEater &passedAntEater,CollisionsManager &passedColMan);
 		virtual void run(Ant &passedAnt1, AntEater &passedAntEater, CollisionsManager &passedColMan);
@@ -32,7 +32,7 @@ class BehaviourFlee : public Behaviour
 	private:
 		BehaviourSteer steerBehaviour;
 		bool m_bAntColliding;
-		bool m_bFleeing;
+		
 
 };
 

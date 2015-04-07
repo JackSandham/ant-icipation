@@ -4,7 +4,7 @@
 BehaviourFlee::BehaviourFlee() : Behaviour("FLEE")
 {
 	m_bAntColliding = false;
-	m_bFleeing = false;
+	
 }
 
 //require ants and collisionmanager.
@@ -17,11 +17,12 @@ void BehaviourFlee::run(Ant &passedAnt1, AntEater &passedEater, CollisionsManage
 	}
 	if(antEaterEats(passedAnt1,passedEater,passedColMan))
 	{
-		cout<<"Deleted Ant"<<endl;
+		//death by anteater, send to hill
+		passedAnt1.setPosition(passedAnt1.getStartPos());
 	}
 	else
 	{
-		m_bFleeing = false;
+		passedAnt1.setFleeing(false);
 		m_bAntColliding = false;
 	}
 }
@@ -29,12 +30,12 @@ bool BehaviourFlee::antEaterInRadius(Ant &passedAnt1, AntEater &passedEater, Col
 {
 	if(passedColMan.AABBtoCircleCollision(passedAnt1,*passedEater.getAntEaterInnerRadius()))
 	{
-		cout<<"Flee Harder"<<endl;
+		//cout<<"Flee Harder"<<endl;
 		return true;
 	}
 	if(passedColMan.AABBtoCircleCollision(passedAnt1,*passedEater.getAntEaterOuterRadius()))
 	{
-		cout<<"Flee"<<endl;
+		//cout<<"Flee"<<endl;
 		return true;
 	}
 	else return false;
@@ -48,7 +49,7 @@ void BehaviourFlee::avoidEater(Ant &passedAnt1, AntEater &passedEater, Collision
 		m_vUnitDirection = m_vEaterDirection.unitVector();
 		passedAnt1.setDirection(m_vUnitDirection);
 		m_bAntColliding = true;
-		m_bFleeing = true;
+		passedAnt1.setFleeing(true);
 	
 	
 }
@@ -61,14 +62,7 @@ bool BehaviourFlee::isColliding()
 	}
 	else return false;
 }
-bool BehaviourFlee::isFleeing()
-{
-	if(m_bFleeing)
-	{
-		return true;
-	}
-	else return false;
-}
+
 bool BehaviourFlee::antEaterEats(Ant &passedAnt1, AntEater &passedEater, CollisionsManager &passedColMan)
 {
 	if(passedColMan.AABBtoAABBCollision(passedAnt1,passedEater))

@@ -3,7 +3,7 @@
 //using behaviours constructor
 BehaviourAvoid::BehaviourAvoid() : Behaviour("AVOID")
 {
-	m_bAntColliding = false;
+	
 }
 
 //require ants and collisionmanager.
@@ -12,9 +12,10 @@ void BehaviourAvoid::run(Ant &passedAnt1, AABB &passedBackObstacles, CollisionsM
 	if(obstacleInRadius(passedAnt1,passedBackObstacles,passedColMan))
 	{
 		avoidObstacle(passedAnt1,passedBackObstacles,passedColMan);
-		
+		passedAnt1.setColliding(true);
 	}
-	else m_bAntColliding = false;
+	
+	else passedAnt1.setColliding(false);
 }
 bool BehaviourAvoid::obstacleInRadius(Ant &passedAnt1, AABB &passedBackObstacles, CollisionsManager &passedColMan)
 {
@@ -26,20 +27,17 @@ void BehaviourAvoid::avoidObstacle(Ant &passedAnt1, AABB &passedBackObstacles, C
 {
 	if(passedAnt1.getDirection().dotProduct(passedColMan.getNormal()) <0)
 	{
+		passedAnt1.setFacingWall(true);
 		passedColMan.correctPosition(passedAnt1);
 		steerBehaviour.WallCollision(passedAnt1);
-		m_bAntColliding = true;
+		
 		
 	}
-	else m_bAntColliding = false;
+	else
+	{
+		passedAnt1.setFacingWall(false);
+		passedAnt1.setColliding(false);
+	}
 	
 }
 
-bool BehaviourAvoid::isColliding()
-{
-	if(m_bAntColliding)
-	{
-		return true;
-	}
-	else return false;
-}

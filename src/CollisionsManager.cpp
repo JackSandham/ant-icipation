@@ -138,7 +138,7 @@ bool CollisionsManager::CircletoCircleCollision(Circle &circle, Circle &circle2)
 void CollisionsManager::correctPosition(Shape &passedShape)
 {
 	//penetration depth
-	float fPercent = 0.8f;
+	float fPercent = 0.5f;
 	float fSlop = 0.1f;
 	//Calculate the penetration depth minus the slop
 	float fPDMinusSlop = m_fFinalDistance -fSlop;
