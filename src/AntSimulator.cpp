@@ -76,6 +76,7 @@ void AntSimulator::run()
 	m_window.create(sf::VideoMode(1000, 1000, 32), "ALIEN ANT FARM");
 	m_window.setFramerateLimit(60);
 	sf::Clock clock;//clock for updating frames
+	int iNumFood = 0;
 	int i = 0; //value for switch statement, 0 - 5 represent different states, to be tidied up x	
 	//bool bMovementCheck = false; //test turning movement on/off, simple true/false check within listener
 								//how does isMoveable function?
@@ -377,6 +378,7 @@ void AntSimulator::run()
 								m_Antit->setFood(false);//ant no longer has food
 								Food->setHome(true);//set it so the food is at the ant hill
 								Food->setCollidable(true);//the the food to be collidable again (this just stops it from going into other loops, it cant actually collide)
+								iNumFood++;
 							}
 						}
 					}
@@ -395,10 +397,18 @@ void AntSimulator::run()
 					cout<<"Flee"<<endl;
 				}
 		*/
-
+				
 			}
-		
-
+				
+			if(iNumFood == 4){
+				cout<<"Game Over"<<endl;
+				//Disable movement 
+				isAvoiding = false;
+				isFleeing = false;
+				isFollowing = false;
+				isSeeking = false;
+				isSteering = false;
+			}
 
 
 			clock.restart(); //restart the clock to update frames	

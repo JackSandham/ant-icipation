@@ -53,6 +53,7 @@ class AntSimulator : UIButtonListener
 		void run();
 		void render();
 		void buildUI();
+		void GameOver();
 
 		virtual void buttonDepressed(std::string sButtonName);
 		virtual void buttonReleased(std::string sButtonName);

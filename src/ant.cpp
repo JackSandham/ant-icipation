@@ -8,7 +8,7 @@ Ant::Ant()
 
 Ant::Ant(Vector2D passedPosition, int width, int height) : AABB(passedPosition,  width,  height)
 {
-	antRadius = new Circle(getPosition(), 100,sf::Color::Green);// ant detection radius
+	antRadius = new Circle(getPosition(), 75,sf::Color::Green);// ant detection radius
 	m_bCanMove = true;
 	m_bRadiusVisible = true;
 	m_bHasFood=false;
@@ -17,7 +17,7 @@ Ant::Ant(Vector2D passedPosition, int width, int height) : AABB(passedPosition, 
 
 Ant::Ant(Vector2D passedPosition, int width, int height, sf::Color passedColor) : AABB(passedPosition,  width,  height,passedColor)
 {
-	antRadius = new Circle(getPosition(), 100,sf::Color::Green);// ant detection radius
+	antRadius = new Circle(getPosition(), 75,sf::Color::Green);// ant detection radius
 	m_bCanMove = true;
 	m_bRadiusVisible = true;
 	Update();

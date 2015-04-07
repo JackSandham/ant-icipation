@@ -32,22 +32,33 @@ void Background::assignMatrixValues(char(&charArray)[GRIDX][GRIDY]){
 				switch (charArray[i][j]){
 				case '.':
 					{
-					setColour(sf::Color::White, k); //Free Space
-					break;
+						setColour(sf::Color::White, k); //Free Space
+						break;
 					}
 				case '1':
 					{
-					AABB* Obstacle = new AABB(Vector2D(20*j+10,20*i+10),20,20,sf::Color::Blue);
-					m_vectorOfAABB.push_back(Obstacle);
-					break;
+						AABB* Obstacle = new AABB(Vector2D(20*j+10,20*i+10),20,20,sf::Color::Blue);
+						m_vectorOfAABB.push_back(Obstacle);
+						break;
 					}
 				case '2':
 					{
-					Food* food = new Food(Vector2D(20*j+10,20*i+10),20,20,sf::Color::Cyan);
-					m_vectorOfFood.push_back(food);
-					break;
+						Food* food = new Food(Vector2D(20*j+10,20*i+10),20,20,sf::Color::Cyan);
+						m_vectorOfFood.push_back(food);
+						break;
 					}
-					
+				case '3':
+					{
+						AABB* Obstacle = new AABB(Vector2D(20*j+10,20*i+10),20,20,sf::Color::White);
+						m_vectorOfAABB.push_back(Obstacle);
+						break;
+					}
+				case '4' :
+					{
+						AABB* Obstacle = new AABB(Vector2D(20*j+10,20*i+10),20,20,sf::Color::Yellow);
+						m_vectorOfAABB.push_back(Obstacle);
+						break;
+					}
 				}
 				k++;
 			}
