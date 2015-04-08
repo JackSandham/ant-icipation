@@ -30,7 +30,8 @@ class Food : public AABB
 		void setHome(bool bPassedHome);
 		bool getHome();
 		void Update();
-
+		int getFoodNumber();
+		void setFoodNumber(int iFoodNumber);
 	protected:
 
 	private:
@@ -44,6 +45,8 @@ class Food : public AABB
 		bool m_bRadiusVisible;
 		bool m_bCollidable;
 		bool m_bIsHome;
+
+		int m_iNumber;
 		Circle* foodRadius; //previously in main
 };
 #endif

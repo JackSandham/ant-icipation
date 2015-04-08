@@ -27,6 +27,7 @@ void Background::setColour(sf::Color sColor, int iTile){
 void Background::assignMatrixValues(char(&charArray)[GRIDX][GRIDY]){
 	if (bMapped == false){
 		int k = 0;
+		int l = 0;
 		for (int i = 0; i < GRIDX; i++){
 			for (int j = 0; j < GRIDY; j++){
 				switch (charArray[i][j]){
@@ -44,6 +45,8 @@ void Background::assignMatrixValues(char(&charArray)[GRIDX][GRIDY]){
 				case '2':
 					{
 						Food* food = new Food(Vector2D(20*j+10,20*i+10),20,20,sf::Color::Cyan);
+						food->setFoodNumber(l+1);
+						l++;
 						m_vectorOfFood.push_back(food);
 						break;
 					}

@@ -150,3 +150,11 @@ bool Ant::getFood()
 {
 	return m_bHasFood;
 }
+int Ant::getNumber()
+{
+	return m_iNumber;
+}
+void Ant::setNumber(int iPassedNumber)
+{
+	m_iNumber=iPassedNumber;
+}

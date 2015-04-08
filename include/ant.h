@@ -43,6 +43,9 @@ class Ant : public AABB
 		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 		//This function is used to move the rectangle and ant radius.
 		void moveVisualObjects(float xPos, float yPos);
+
+		int getNumber();
+		void setNumber(int iPassedNumber);
 	protected:
 
 	private:
@@ -56,6 +59,7 @@ class Ant : public AABB
 		bool m_bAntColliding;
 		bool m_bFleeing;
 		bool m_bFacingWall;
+		int m_iNumber;
 		Circle* antRadius; //previously in main
 		Vector2D m_vDirection;
 		Vector2D m_vStartPos;

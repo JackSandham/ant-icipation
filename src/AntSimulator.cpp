@@ -374,16 +374,17 @@ void AntSimulator::run()
 							{
 								Food->setCollidable(false);//set the food to no longer be collidable
 								Food->setCollected(true);//make it so the food has been collected
+								m_Antit->setNumber(Food->getFoodNumber());
 								m_Antit->setFood(true);//the ant is now carrying food
 							}
 
-							if(Food->getCollected()==true && Food->getCollidable()==false && m_Antit->getFood()==true)//if the food has been collected and its not colllidable																					  //and the ant has food
+							if(Food->getCollected()==true && Food->getCollidable()==false && m_Antit->getFood()==true && m_Antit->getNumber()==Food->getFoodNumber())//if the food has been collected and its not colllidable																					  //and the ant has food
 							{
 								Food->setPosition(m_Antit->getPosition());//set the foods position to the ant
 								antGather->goHome(*m_Antit,*Food,*m_CollisionsManager,*hill);//make the ant start going to the ant hill
 							}
 
-							if((m_CollisionsManager->AABBtoAABBCollision(*m_Antit,*hill)==true) &&(Food->getHome()==false) && (Food->getCollected()==true))//if the ant and the and hill collide																															//and the food is collected
+							if((m_CollisionsManager->AABBtoAABBCollision(*m_Antit,*hill)==true) &&(Food->getHome()==false) && (Food->getCollected()==true)&& m_Antit->getNumber()==Food->getFoodNumber())//if the ant and the and hill collide																															//and the food is collected
 							{
 								Food->setPosition(hill->getPosition());//set the foods position to be at the ant hill
 								antSteer->randomDirection(*m_Antit);//choose a random direction for the ant to move

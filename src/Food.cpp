@@ -85,3 +85,12 @@ bool Food::getHome()
 {
 	return m_bIsHome;
 }
+
+int Food::getFoodNumber()
+{
+	return m_iNumber;
+}
+void Food::setFoodNumber(int iFoodNumber)
+{
+	m_iNumber=iFoodNumber;
+}
