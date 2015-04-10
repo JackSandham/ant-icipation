@@ -30,10 +30,10 @@ void BehaviourSteer::move(Ant &passedAnt1){
 	passedAnt1.moveVisualObjects(passedAnt1.getXPosition(),passedAnt1.getYPosition());
 }
 
-void BehaviourSteer::update(Ant &passedAnt1){
-
-	passedAnt1.setPosition(Vector2D(passedAnt1.getXPosition() + passedAnt1.getDirection().getX() , passedAnt1.getYPosition() + passedAnt1.getDirection().getY()));
-}
+//void BehaviourSteer::update(Ant &passedAnt1){
+//
+//	passedAnt1.setPosition(Vector2D(passedAnt1.getXPosition() + passedAnt1.getDirection().getX() , passedAnt1.getYPosition() + passedAnt1.getDirection().getY()));
+//}
 
 void BehaviourSteer::moveup(Ant &passedAnt1){
 	float xNum = m_randomiser.getRandom(-1, 1);//picks a random number between -1 and 1 for x
@@ -96,3 +96,40 @@ void BehaviourSteer::WallCollision(Ant &passedAnt1){
 		moveleft(passedAnt1);
 	}
 }
+
+//string BehaviourSteer::WallCol(Ant &passedAnt1){
+//	if ((passedAnt1.getDirection().getX()>=-1 && passedAnt1.getDirection().getX()<=1) && (passedAnt1.getDirection().getY()>=0))//if moving up
+//	{
+//		return "moveDown";
+//	}
+//
+//	if ((passedAnt1.getDirection().getX()>=-1 && passedAnt1.getDirection().getX()<=1) && (passedAnt1.getDirection().getY()<=0))//if moving down
+//	{
+//		return "moveUp";
+//	}
+//
+//	if ((passedAnt1.getDirection().getY()>=-1 && passedAnt1.getDirection().getY()<=1) && (passedAnt1.getDirection().getX()>=0))//if moving left
+//	{
+//		return "moveRight";
+//	}
+//
+//	if ((passedAnt1.getDirection().getY()>=-1 && passedAnt1.getDirection().getY()<=1) && (passedAnt1.getDirection().getX()<=0))//if moving right
+//	{
+//		return "moveLeft";
+//	}
+//}
+//
+//void BehaviourSteer::run(Ant &passedAnt1){
+//	if(WallCol(passedAnt1) == "moveDown"){
+//		movedown(passedAnt1);
+//	}
+//	else if(WallCol(passedAnt1) == "moveUp"){
+//		moveup(passedAnt1);
+//	}
+//	else if(WallCol(passedAnt1) == "moveRight"){
+//		moveright(passedAnt1);
+//	}
+//	else if(WallCol(passedAnt1) == "moveLeft"){
+//		moveleft(passedAnt1);
+//	}
+//}

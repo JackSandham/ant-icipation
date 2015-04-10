@@ -32,7 +32,7 @@ void BehaviourAvoid::avoidObstacle(Ant &passedAnt1, AABB &passedBackObstacles, C
 		//passedAnt1.setFacingWall(true);
 		passedColMan.correctPosition(passedAnt1);
 		steerBehaviour.WallCollision(passedAnt1);
-		
+		//steerBehaviour.WallCol(passedAnt1);
 		
 	}
 	else
