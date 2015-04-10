@@ -14,11 +14,7 @@ void BehaviourFlee::run(Ant &passedAnt1, AntEater &passedEater, CollisionsManage
 	{
 		avoidEater(passedAnt1,passedEater,passedColMan);
 		
-	}
-	if(antEaterEats(passedAnt1,passedEater,passedColMan))
-	{
-		//death by anteater, send to hill
-		passedAnt1.setPosition(passedAnt1.getStartPos());
+		
 	}
 	else
 	{
@@ -33,11 +29,11 @@ bool BehaviourFlee::antEaterInRadius(Ant &passedAnt1, AntEater &passedEater, Col
 		//cout<<"Flee Harder"<<endl;
 		return true;
 	}
-	if(passedColMan.AABBtoCircleCollision(passedAnt1,*passedEater.getAntEaterOuterRadius()))
-	{
+	//if(passedColMan.AABBtoCircleCollision(passedAnt1,*passedEater.getAntEaterOuterRadius()))
+	//{
 		//cout<<"Flee"<<endl;
-		return true;
-	}
+		//return true;
+	//}
 	else return false;
 }
 
@@ -52,6 +48,7 @@ void BehaviourFlee::avoidEater(Ant &passedAnt1, AntEater &passedEater, Collision
 		passedAnt1.setFleeing(true);
 }
 
+
 bool BehaviourFlee::isColliding()
 {
 	if(m_bAntColliding)
@@ -59,17 +56,4 @@ bool BehaviourFlee::isColliding()
 		return true;
 	}
 	else return false;
-}
-
-bool BehaviourFlee::antEaterEats(Ant &passedAnt1, AntEater &passedEater, CollisionsManager &passedColMan)
-{
-	if(passedColMan.AABBtoAABBCollision(passedAnt1,passedEater))
-	{
-		
-		return true;
-	}
-	else
-	{
-		return false;
-	}
 }

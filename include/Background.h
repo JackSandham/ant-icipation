@@ -32,7 +32,7 @@ public:
 	
 	/*This is the matrix that will be used to set the colour of the tiles in the background.*/
 	//This function is used to assign the values of the matrix to the background to draw the correct tiles.
-	void assignMatrixValues(char(&charArray)[GRIDX][GRIDY], std::vector<Rock>& rocks, std::vector<Wall>& walls);
+	void assignMatrixValues(char(&charArray)[GRIDX][GRIDY], std::vector<Rock*>& rocks, std::vector<Wall*>& walls);
 	std::vector<AABB*> getObstacles();
 	std::vector<Food*> getFood();
 };

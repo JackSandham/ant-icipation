@@ -23,11 +23,13 @@ bool BehaviourAvoid::obstacleInRadius(Ant &passedAnt1, AABB &passedBackObstacles
 	else return false;
 }
 
+
+
 void BehaviourAvoid::avoidObstacle(Ant &passedAnt1, AABB &passedBackObstacles, CollisionsManager &passedColMan)
 {
 	if(passedAnt1.getDirection().dotProduct(passedColMan.getNormal()) <0)
 	{
-		passedAnt1.setFacingWall(true);
+		//passedAnt1.setFacingWall(true);
 		passedColMan.correctPosition(passedAnt1);
 		steerBehaviour.WallCollision(passedAnt1);
 		
@@ -35,7 +37,7 @@ void BehaviourAvoid::avoidObstacle(Ant &passedAnt1, AABB &passedBackObstacles, C
 	}
 	else
 	{
-		passedAnt1.setFacingWall(false);
+		//passedAnt1.setFacingWall(false);
 		passedAnt1.setColliding(false);
 	}
 	

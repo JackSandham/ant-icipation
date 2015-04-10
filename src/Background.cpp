@@ -27,7 +27,7 @@ void Background::setColour(sf::Color sColor, int iTile)
 	tiles[iTile].setColour(sColor);
 }
 
-void Background::assignMatrixValues(char(&charArray)[GRIDX][GRIDY], std::vector<Rock>& rocks, std::vector<Wall>& walls)
+void Background::assignMatrixValues(char(&charArray)[GRIDX][GRIDY], std::vector<Rock*>& rocks, std::vector<Wall*>& walls)
 {
 	if (bMapped == false)
 	{
@@ -46,7 +46,7 @@ void Background::assignMatrixValues(char(&charArray)[GRIDX][GRIDY], std::vector<
 					}
 				case '1':
 					{
-						Wall wall(Vector2D(20 * j + 10, 20 * i + 10), 20, 20);
+						Wall* wall =  new Wall(Vector2D(20 * j + 10, 20 * i + 10), 20, 20);
 						walls.push_back(wall);
 						break;
 					}
@@ -62,7 +62,7 @@ void Background::assignMatrixValues(char(&charArray)[GRIDX][GRIDY], std::vector<
 					}	
 				case '3':
 					{
-						Rock rock(Vector2D(20 * j + 10, 20 * i + 10), 20, 20);
+						Rock* rock =  new Rock(Vector2D(20 * j + 10, 20 * i + 10), 20, 20);
 						rocks.push_back(rock);
 						break;
 					}

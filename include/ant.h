@@ -15,6 +15,8 @@ Document me :)
 #include "Circle.h"
 #include "randomiser.h"
 #include "TextureManager.h"
+#include "antEater.h"
+#include <CollisionsManager.h>
 
 using namespace std;
 
@@ -24,17 +26,17 @@ class Ant : public AABB, public sf::Drawable
 		Ant();
 		Ant(Vector2D passedPosition, int width, int height);
 		
-		void Update();
+		void Update(AntEater &passedAntEater, CollisionsManager &passedColMan);
 		void setMovable(bool bPassedMove);
 		void setDirection(Vector2D passedVector);
 		void setRadiusVisibility(bool passedVisible);
 		void setFood(bool bPassedFood);
 		void setColliding(bool bColliding);
 		void setFleeing(bool bFleeing);
-		void setFacingWall(bool bFacingWall);
+		void setFacingEater(bool bFacingEater);
 		bool isMoveable();
 		bool isColliding();
-		bool isFacingWall();
+		bool isFacingEater();
 		bool isFleeing();
 		bool radiusIsVisible();
 		bool getFood();
@@ -42,6 +44,9 @@ class Ant : public AABB, public sf::Drawable
 		Vector2D getStartPos();
 		Circle* getAntRadius();
 		
+		bool antEaterEats(AntEater &passedAntEater, CollisionsManager &passedColMan);
+		void facingEater(AntEater &passedAntEater, CollisionsManager &passedColMan);
+
 		//This function is used to move the rectangle and ant radius.
 		void moveVisualObjects(float xPos, float yPos);
 		int getNumber();
@@ -61,7 +66,7 @@ class Ant : public AABB, public sf::Drawable
 		bool m_bRadiusVisible;
 		bool m_bAntColliding;
 		bool m_bFleeing;
-		bool m_bFacingWall;
+		bool m_bFacingEater;
 		int m_iNumber;
 		Circle* antRadius; //previously in main
 		Vector2D m_vDirection;

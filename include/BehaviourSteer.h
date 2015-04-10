@@ -29,7 +29,7 @@ public:
 
 	void update(Ant &passedAnt1);
 
-	virtual void run(Ant &passedAnt1);
+	//virtual void run(Ant &passedAnt1);
 private:
 	Randomiser m_randomiser; //This is a random object used to create a random number.
 	

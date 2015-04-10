@@ -9,7 +9,7 @@ AntEater::AntEater()
 AntEater::AntEater(Vector2D passedPosition, int width, int height) : AABB(passedPosition, width, height)
 {
 	anteaterInnerRadius = new Circle(getPosition(), 125);
-	anteaterOuterRadius = new Circle(getPosition(), 150);
+	anteaterOuterRadius = new Circle(getPosition(), 160);
 	m_bRadiusVisible = true;
 	m_bCanMove = true;
 	Update();

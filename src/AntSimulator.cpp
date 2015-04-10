@@ -108,13 +108,15 @@ void AntSimulator::run()
 	back.assignMatrixValues(arrayMatrix, m_rocks, m_walls); //--Gethin Changes
 
 	std::vector<AABB*> obstacles;
-	for (std::vector<Wall>::iterator it = m_walls.begin(); it != m_walls.end(); ++it)
+	std::vector<Wall*>::iterator wit;
+	std::vector<Rock*>::iterator rit;
+	for (wit = m_walls.begin(); wit != m_walls.end(); ++wit)
 	{
-		obstacles.push_back(&(*it));
+		obstacles.push_back(*wit);
 	}
-	for (std::vector<Rock>::iterator it = m_rocks.begin(); it != m_rocks.end(); ++it)
+	for (rit = m_rocks.begin(); rit != m_rocks.end(); ++rit)
 	{
-		obstacles.push_back(&(*it));
+		obstacles.push_back(*rit);
 	}
 
 	// ==========================================================================================================
@@ -217,19 +219,29 @@ void AntSimulator::run()
 
 		//Move/collide Multiple Ants
 		int iAntCounter = 0;
-
+		int iObsCounter = 0;
 		for (m_Antit = m_ants.begin(); m_Antit != m_ants.end(); ++m_Antit)
 		{
 			++iAntCounter;
 			antSteer->move(*m_Antit);
 			for (std::vector<AABB*>::iterator it = obstacles.begin(); it != obstacles.end(); ++it)
 			{
+				++iObsCounter;
 				//emergency if we collide with an obstacle.
 				if(m_CollisionsManager->AABBtoAABBCollision(*m_Antit,**it))
 				{
 					m_Antit->setDirection(Vector2D(0,0));
 					m_CollisionsManager->correctPosition(*m_Antit);
 				}
+				if(m_CollisionsManager->AABBtoCircleCollision(**it,*m_antEaters.at(0).getAntEaterOuterRadius()))
+				{
+					m_antEaters.at(0).setColliding(true);
+				}
+				else if (iObsCounter == obstacles.size())
+				{
+					m_antEaters.at(0).setColliding(false);
+				}
+	
 				//If avoiding behaviour is on
 				if(isAvoiding)
 				{
@@ -239,8 +251,8 @@ void AntSimulator::run()
 				//If fleeing behaviour is on
 				if(isFleeing)
 				{
-					//If the ant is moving away from wall then we can only push.
-					if(!m_Antit->isFacingWall())
+					//If the ant is moving towards eater then we can only push.
+					if(!m_antEaters.at(0).isColliding())
 					{
 						//Ant is not colliding with a obstacle
 						if(!m_Antit->isColliding())
@@ -258,7 +270,7 @@ void AntSimulator::run()
 				//If following behaviour is on
 				if(isFollowing)
 				{
-					if(!m_Antit->isColliding() & !antGather->isGathering())
+					if(!m_Antit->isColliding())
 					{
 						if (iAntCounter != m_ants.size())
 						{
@@ -328,7 +340,7 @@ void AntSimulator::run()
 		//Move Multiple Ants
 		for (m_Antit = m_ants.begin(); m_Antit != m_ants.end(); ++m_Antit)
 		{
-			m_Antit->Update();
+			m_Antit->Update(m_antEaters.at(0),*m_CollisionsManager);
 			if (m_Antit->isMoveable())
 			{
 				m_Antit->setMovable(false);
@@ -357,15 +369,15 @@ void AntSimulator::render()
 	m_window.draw(m_background);
 
 	// Draw the walls
-	for (std::vector<Wall>::iterator it = m_walls.begin(); it != m_walls.end(); ++it)
+	for (std::vector<Wall*>::iterator it = m_walls.begin(); it != m_walls.end(); ++it)
 	{
-		m_window.draw(*it);
+		m_window.draw(**it);
 	}
 
 	// Draw rocks
-	for (std::vector<Rock>::iterator it = m_rocks.begin(); it != m_rocks.end(); ++it)
+	for (std::vector<Rock*>::iterator it = m_rocks.begin(); it != m_rocks.end(); ++it)
 	{
-		m_window.draw(*it);
+		m_window.draw(**it);
 	}
 
 	// Draw all ants

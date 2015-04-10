@@ -15,8 +15,8 @@ Ant::Ant(Vector2D passedPosition, int width, int height) : AABB(passedPosition, 
 	m_bHasFood = false;
 	m_bAntColliding = false;
 	m_bFleeing = false;
-	m_bFacingWall = false;
-	Update();
+	m_bFacingEater = false;
+	//Update();
 
 	float fWidth = (float)width;
 	float fHeight = (float)height;
@@ -28,7 +28,7 @@ Ant::Ant(Vector2D passedPosition, int width, int height) : AABB(passedPosition, 
 	m_sprite.setOrigin((fWidth / 2) / m_sprite.getScale().x, (fHeight / 2) / m_sprite.getScale().y);
 }
 
-void Ant::Update()
+void Ant::Update(AntEater &passedAntEater, CollisionsManager &passedColMan)
 {
 	m_fBottom = rectangle.getPosition().y + rectangle.getSize().y; //calculates the bottom edge
 	m_fLeft = rectangle.getPosition().x; //calculates the left edge
@@ -36,6 +36,12 @@ void Ant::Update()
 	m_fTop = rectangle.getPosition().y;//calculates the top edge
 	setMin();
 	setMax();
+	facingEater(passedAntEater,passedColMan);
+	if(antEaterEats(passedAntEater,passedColMan))
+	{
+		//death by anteater, send to hill
+		setPosition(getStartPos());
+	}
 }
 
 //This function was created to move the rectangle position and the ant radius position.
@@ -47,6 +53,31 @@ void Ant::moveVisualObjects(float xPos, float yPos)
 	m_sprite.setRotation(atan2(m_vDirection.getY(), m_vDirection.getX()) * (180 / 3.14159265) + 90);
 	rectangle.setPosition(xPos,yPos);
 	antRadius->setPosition(Vector2D(xPos,yPos));
+}
+
+void Ant::facingEater(AntEater &passedAntEater, CollisionsManager &passedColMan)
+{
+	if(getDirection().dotProduct(passedColMan.getNormal()) > 0)
+	{
+		setFacingEater(true);
+	}
+	else
+	{
+		setFacingEater(false);
+	}
+}
+
+bool Ant::antEaterEats(AntEater &passedEater, CollisionsManager &passedColMan)
+{
+	if(passedColMan.AABBtoAABBCollision(*this,passedEater))
+	{
+		
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 void Ant::setMovable(bool bPassedMove)
@@ -74,9 +105,9 @@ void Ant::setFleeing(bool bFleeing)
 	m_bFleeing = bFleeing;
 }
 
-void Ant::setFacingWall(bool bFacing)
+void Ant::setFacingEater(bool bFacing)
 {
-	m_bFacingWall = bFacing;
+	m_bFacingEater = bFacing;
 }
 
 
@@ -98,9 +129,9 @@ bool Ant::isFleeing()
 	else return false;
 }
 
-bool Ant::isFacingWall()
+bool Ant::isFacingEater()
 {
-	if(m_bFacingWall)
+	if(m_bFacingEater)
 	{
 		return true;
 	}

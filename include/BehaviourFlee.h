@@ -20,10 +20,10 @@ class BehaviourFlee : public Behaviour
 		BehaviourFlee();
 
 		bool antEaterInRadius(Ant &passedAnt1, AntEater &passedAntEater, CollisionsManager &passedColMan);
-		bool antEaterEats(Ant &passedAnt1, AntEater &passedAntEater, CollisionsManager &passedColMan);
+		
 		bool isColliding();
 		
-
+		void facingEater(Ant &passedAnt1, AntEater &passedAntEater, CollisionsManager &passedColMan);
 		void avoidEater(Ant &passedAnt1, AntEater &passedAntEater,CollisionsManager &passedColMan);
 		virtual void run(Ant &passedAnt1, AntEater &passedAntEater, CollisionsManager &passedColMan);
 

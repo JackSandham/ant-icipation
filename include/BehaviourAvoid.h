@@ -12,7 +12,7 @@ When an obstacle is in radius, avoid.
 #include <Background.h>
 #include <CollisionsManager.h>
 #include "BehaviourSteer.h"
-
+#include "antEater.h"
 class BehaviourAvoid : public Behaviour
 {
 	public:
@@ -20,7 +20,7 @@ class BehaviourAvoid : public Behaviour
 
 		bool obstacleInRadius(Ant &passedAnt1, AABB &passedBackObstacles, CollisionsManager &passedColMan);
 		
-
+		
 		void avoidObstacle(Ant &passedAnt1, AABB &passedBackObstacles,CollisionsManager &passedColMan);
 		virtual void run(Ant &passedAnt1, AABB &passedBackObstacles, CollisionsManager &passedColMan);
 

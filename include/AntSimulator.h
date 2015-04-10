@@ -88,8 +88,8 @@ class AntSimulator : public UIButtonListener, public AlarmListener, public UICom
 
 		// Vectors containing all objects present in the game world
 		std::vector<Ant> m_ants;
-		std::vector<Wall> m_walls;
-		std::vector<Rock> m_rocks;
+		std::vector<Wall*> m_walls;
+		std::vector<Rock*> m_rocks;
 		std::vector<AntEater> m_antEaters;
 		std::vector<Food> m_food;
 		AntHill* m_pAnthill;
