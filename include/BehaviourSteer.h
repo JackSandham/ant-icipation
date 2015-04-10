@@ -28,6 +28,8 @@ public:
 	void WallCollision(Ant &passedAnt1); //This function is used when the ant collides with a wall. This function was taken from the ant class.
 
 	void update(Ant &passedAnt1);
+
+	virtual void run(Ant &passedAnt1);
 private:
 	Randomiser m_randomiser; //This is a random object used to create a random number.
 	
