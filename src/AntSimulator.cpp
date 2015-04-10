@@ -184,6 +184,9 @@ void AntSimulator::run()
 				m_AntEaterit->moveVisualObjects(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY());		
 			}
 		}
+		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)){
+			m_window.close();
+		}
 
 		//Temp follow off switch
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
