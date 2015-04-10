@@ -248,7 +248,12 @@ void AntSimulator::run()
 				//If avoiding behaviour is on
 				if(isAvoiding)
 				{
-					antAvoid->run(*m_Antit,**it,*m_CollisionsManager);
+					antAvoid->run(*m_Antit,**it,*m_CollisionsManager, isSteering);
+				}
+
+				if(isSteering){
+					antSteer->run(*m_Antit);
+					isSteering = false;
 				}
 
 				//If fleeing behaviour is on
