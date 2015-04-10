@@ -44,7 +44,7 @@ class UIManager
 	private:
 		UIFrame m_RootComponent;
 		std::map<std::string, UIComponent*> m_UIComponents;
-		bool m_abLoadedUIs[7];
+		bool m_abLoadedUIs[2];
 };
 
 #endif

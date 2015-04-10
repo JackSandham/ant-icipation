@@ -8,19 +8,22 @@ AntEater::AntEater()
 
 AntEater::AntEater(Vector2D passedPosition, int width, int height) : AABB(passedPosition, width, height)
 {
-	
+	anteaterInnerRadius = new Circle(getPosition(), 125);
+	anteaterOuterRadius = new Circle(getPosition(), 150);
 	m_bRadiusVisible = true;
 	m_bCanMove = true;
 	Update();
+
+	float fWidth = (float)width;
+	float fHeight = (float)height;
+
+	TextureManager* tm = TextureManager::getInstance();
+	m_sprite.setTexture(*tm->getTexture("ant_eater"));
+	m_sprite.setScale(fWidth / tm->getTexture("ant_eater")->getSize().x, fHeight / tm->getTexture("ant_eater")->getSize().y);
+	m_sprite.setPosition(passedPosition.getX() + 300, passedPosition.getY() + 100);
+	m_sprite.setOrigin((fWidth / 2) / m_sprite.getScale().x, (fHeight / 2) / m_sprite.getScale().y);
 }
-AntEater::AntEater(Vector2D passedPosition, int width, int height, sf::Color passedColor) : AABB(passedPosition, width, height, passedColor)
-{
-	anteaterInnerRadius = new Circle(getPosition(), 125, sf::Color::Green);
-	anteaterOuterRadius = new Circle(getPosition(), 150, sf::Color::Yellow);
-	m_bRadiusVisible = true;
-	m_bCanMove = true;
-	Update();
-}
+
 void AntEater::Update()
 {
 	m_fBottom = rectangle.getPosition().y + rectangle.getSize().y;
@@ -33,7 +36,7 @@ void AntEater::Update()
 
 void AntEater::moveVisualObjects(float xPos, float yPos)
 {
-	rectangle.setPosition(xPos,yPos);
+	m_sprite.setPosition(xPos + 300, yPos + 100);
 	anteaterOuterRadius->setPosition(Vector2D(xPos, yPos));
 	anteaterInnerRadius->setPosition(Vector2D(xPos, yPos));
 }
@@ -81,16 +84,6 @@ Vector2D AntEater::getDirection()
 	return m_vDirection;
 }
 
-void AntEater::draw(sf::RenderTarget& target, sf::RenderStates states) const
-{
-	if (m_bRadiusVisible)
-	{
-		//target.draw(*anteaterInnerRadius);
-		//target.draw(*anteaterOuterRadius);
-		
-	}
-	target.draw(rectangle);
-}
 Circle* AntEater::getAntEaterOuterRadius()
 {
 	return anteaterOuterRadius;
@@ -111,5 +104,7 @@ bool AntEater::getFood()
 	return m_bHasFood;
 }
 
-
-
+void AntEater::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+	target.draw(m_sprite);
+}

@@ -3,69 +3,61 @@
 
 AntSimulator::AntSimulator()
 {
-	// Instantiate singleton resource managers. These should not be deconstructed for the lifetime of the program.
-	FontManager* m_pFontManager = FontManager::getInstance();
-	AudioManager* m_pAudioManager = AudioManager::getInstance();
-	TextureManager* m_pTextureManager = TextureManager::getInstance();
-	StringsManager* m_pStringsManager = StringsManager::getInstance();
+	// Instantiate singleton resource managers. These should not be deconstructed for the lifetime of the program
+	m_pFontManager = FontManager::getInstance();
+	m_pAudioManager = AudioManager::getInstance();
+	m_pTextureManager = TextureManager::getInstance();
+	m_pStringsManager = StringsManager::getInstance();
+
+	// Configure Alarms (AKA Timers)
+	AlarmList* al = AlarmList::getAlarmList();
+	al->setCheckFrequency(60);
+	al->addAlarmListener(this);
+	al->addAlarm(Alarm("food_spawner", 5000, true));
+	al->addAlarm(Alarm("ant_spawner", 3000, true));
+
+	// Load textures
+	m_pTextureManager->setWorkingDirectory("textures/");
+	m_pTextureManager->loadTexture("ant", "ant.png");
+	m_pTextureManager->loadTexture("wall", "wall.png");
+	m_pTextureManager->loadTexture("food", "food.png");
+	m_pTextureManager->loadTexture("rock", "rock.png");
+	m_pTextureManager->loadTexture("ant_eater", "ant_eater.png");
+	m_pTextureManager->loadTexture("wall", "wall.png");
+	m_pTextureManager->loadTexture("ant_hill", "ant_hill.png");
+	m_pTextureManager->loadTexture("background", "background.png");
+
+	// Configure background
+	m_pTextureManager->getTexture("background")->setRepeated(true);
+	m_background.setPosition(300, 100);
+	m_background.setTextureRect(sf::IntRect(0, 0, 900, 700));	
+	m_background.setTexture(*m_pTextureManager->getTexture("background"));
 
 	isFollowing = true;
 	isFleeing = true;
 	isAvoiding = true;
     isSteering = true;
 	isSeeking = true;
+
+	m_bWillSpawnAnt = false;
+	m_bWillSpawnFood = false;
+
 	//set pointers to NULL at start
-	m_RandomHillStartPos = NULL;
+	m_RandomHillStartPos = nullptr;
 }
-AntSimulator::~AntSimulator()
-{
-	if(m_RandomHillStartPos != NULL)
-	{
-		delete m_RandomHillStartPos;
-	}
-	m_RandomHillStartPos = NULL;
 
-	if(antFollow != NULL)
-	{
-		delete antFollow;
-	}
-	antFollow = NULL;
-
-	if(antAvoid != NULL)
-	{
-		delete antAvoid;
-	}
-	antAvoid = NULL;
-
-	if(antSteer != NULL){
-		delete antSteer;
-	}
-	antSteer = NULL;
-
-	if(antGather != NULL)
-	{
-		delete antGather;
-	}
-	antGather = NULL;
-
-	if(antFlee != NULL)
-	{
-		delete antFlee;
-	}
-	antFlee = NULL;
-
-	if(m_CollisionsManager != NULL)
-	{
-		delete m_CollisionsManager;
-	}
-
-	m_CollisionsManager = NULL;
-}
 void AntSimulator::buildUI()
 {
 	UIBuilder b(m_uiManager);
 	b.buildUI("user_interfaces/main_constructor.txt", this);
 	m_uiManager.setUILoaded(UIManager::UIs::MAIN, true);
+
+	m_uiManager.getUIComponentRef("imgCheckboxCollectFood")->addComponentListener(this);
+	m_uiManager.getUIComponentRef("imgCheckboxFollow")->addComponentListener(this);
+	m_uiManager.getUIComponentRef("imgCheckboxSteer")->addComponentListener(this);
+	m_uiManager.getUIComponentRef("imgCheckboxAvoid")->addComponentListener(this);
+	m_uiManager.getUIComponentRef("imgCheckboxSeek")->addComponentListener(this);
+	m_uiManager.getUIComponentRef("imgCheckboxFlee")->addComponentListener(this);
 }
 
 /** 
@@ -73,54 +65,37 @@ Do stuff.
 This function includes the game loop. */
 void AntSimulator::run()
 {
-	m_window.create(sf::VideoMode(1000, 1000, 32), "ALIEN ANT FARM");
+	// Initialise components
+	m_window.create(sf::VideoMode(1200, 800, 32), "ALIEN ANT FARM");
 	m_window.setFramerateLimit(60);
-	sf::Clock clock;//clock for updating frames
-	int iNumFood = 0;
-	int i = 0; //value for switch statement, 0 - 5 represent different states, to be tidied up x	
-	//bool bMovementCheck = false; //test turning movement on/off, simple true/false check within listener
-								//how does isMoveable function?
-
-	//Gethins Adjacency Matrix
-	MatrixController matrixControl; //--Gethin Changes
-	//Declaring an AdjacencyMatrix in the main code
-
-	AABB* hill = new Ant(Vector2D(500, 500), 100, 100, sf::Color::Green); //ant hill (spawn)
-	m_vectorOfAABB.push_back(*hill);
-	//antz
-	for(int x = 0;x<5;++x)
-	{
-		m_fRandomStartPosX = m_RandomStartPosX.getRandom(hill->getMin().getX(),hill->getMax().getX());
-		m_fRandomStartPosY = m_RandomStartPosY.getRandom(hill->getMin().getY(),hill->getMax().getY());
-		m_RandomHillStartPos = new Vector2D(m_fRandomStartPosX,m_fRandomStartPosY);
-		m_vectorOfAnts.push_back(Ant(*m_RandomHillStartPos, 18, 18, sf::Color::Red));
-		m_vectorOfAnts.at(x).setRadiusVisibility(false);
-	}
-	//anteater
-	m_vAntEaterSpawn = new Vector2D(800,800);
-	//m_vectorOfAntEaters.push_back(AntEater(*m_vAntEaterSpawn, 100, 100, sf::Color::Magenta));
-
-	AntEater* antEater1 = new AntEater(*m_vAntEaterSpawn, 100, 100, sf::Color::Magenta);
-	m_vectorOfAntEaters.push_back(*antEater1);
-
-
 	
 	antFollow = new BehaviourFollow();
 	antAvoid = new BehaviourAvoid();
 	antSteer = new BehaviourSteer();
 	antGather = new BehaviourGather();
 	antFlee = new BehaviourFlee();
-
-	//Tanveer's Shapes for testing collisions
-	//m_vectorOfCircles.push_back(Circle(sf::Vector2f(50,50), 50,sf::Color::Magenta)); //top left circle
-	//m_vectorOfCircles.push_back(Circle(sf::Vector2f(50,151), 50,sf::Color::Green)); //circle underneath other circle. chamge ypos to 150 for circle circle test
-	//m_vectorOfAABB.push_back(AABB(sf::Vector2f(126,50),50,50)); //first rectangle to the left of the circle. change xpos to 125 for circle aabb test
-	//m_vectorOfAABB.push_back(AABB(sf::Vector2f(177,50),50,50)); //rectangle to the right of the first rectangle. change xpos to 176 for aabb aabb test
-	//m_vectorOfOBB.push_back(OBB(sf::Vector2f(136,150),50,50,45)); //rotated aabb next to bottom circle. xpos to 135 for obb circle text
-
-
-	//Collision Manager for testing collisions
 	m_CollisionsManager = new CollisionsManager();
+
+	// Construct and attach the user interface to the window.
+	buildUI();
+
+	// ==========================================================================================
+
+	sf::Clock clock;
+	int iNumFood = 0;
+	int i = 0; //value for switch statement, 0 - 5 represent different states, to be tidied up x	
+
+	//Gethins Adjacency Matrix
+	MatrixController matrixControl; //--Gethin Changes
+	//Declaring an AdjacencyMatrix in the main code
+
+	m_pAnthill = new AntHill(Vector2D(400, 400), 100, 100);
+
+	m_vAntEaterSpawn = new Vector2D(600,600);
+	//m_vectorOfAntEaters.push_back(AntEater(*m_vAntEaterSpawn, 100, 100, sf::Color::Magenta));
+
+	AntEater* antEater1 = new AntEater(*m_vAntEaterSpawn, 30, 70);
+	m_antEaters.push_back(*antEater1);
 
 	Background back;
 	char arrayMatrix[GRIDX][GRIDY]; //--Gethin Changes
@@ -130,67 +105,46 @@ void AntSimulator::run()
 	matrixControl.constructMatrix(arrayMatrix);//--Gethin Changes
 	//Took the two functions that were here and put them inside the Adjacency Matrix class.
 
+	back.assignMatrixValues(arrayMatrix, m_rocks, m_walls); //--Gethin Changes
 
-	/*
-	Add all vectors to vector of shapes for drawing
-	*/
-	for (m_Antit = m_vectorOfAnts.begin(); m_Antit != m_vectorOfAnts.end(); ++m_Antit)
+	std::vector<AABB*> obstacles;
+	for (std::vector<Wall>::iterator it = m_walls.begin(); it != m_walls.end(); ++it)
 	{
-		//m_vectorOfShapes.push_back(&*m_Antit);
+		obstacles.push_back(&(*it));
 	}
-	for (m_AntEaterit = m_vectorOfAntEaters.begin(); m_AntEaterit != m_vectorOfAntEaters.end(); ++m_AntEaterit)
+	for (std::vector<Rock>::iterator it = m_rocks.begin(); it != m_rocks.end(); ++it)
 	{
-
-	}
-	for (m_Circleit = m_vectorOfCircles.begin(); m_Circleit != m_vectorOfCircles.end(); ++m_Circleit)
-	{
-		m_vectorOfShapes.push_back(&*m_Circleit);
-	}
-	for (m_AABBit = m_vectorOfAABB.begin(); m_AABBit != m_vectorOfAABB.end(); ++m_AABBit)
-	{
-		m_vectorOfShapes.push_back(&*m_AABBit);
-	}
-	for (m_OBBit = m_vectorOfOBB.begin(); m_OBBit != m_vectorOfOBB.end(); ++m_OBBit)
-	{
-		m_vectorOfShapes.push_back(&*m_OBBit);
+		obstacles.push_back(&(*it));
 	}
 
-	back.assignMatrixValues(arrayMatrix); //--Gethin Changes
-	//I removed the statement that was here and put it into the Background class and am calling it from there as well.
-
-
-
-	/*
-	Had to move all of this out of the game loop because every frame, more shapes were getting added to the vector
-	so the program was getting very laggy. now they are just added once and the program runs much smoother.
-	*/  // - Tanveer
-
-	std::vector<AABB*> obstacles = back.getObstacles();
-	std::vector<AABB*>::iterator obstaclesit;
-
-	std::vector<Food*> m_vectorOfFood = back.getFood();
-	std::vector<Food*>::iterator Foodit;
-
-	for (obstaclesit = obstacles.begin(); obstaclesit != obstacles.end(); ++obstaclesit)
+	// ==========================================================================================================
+	// Game loop begins here
+	while (m_window.isOpen())
 	{
-		m_vectorOfShapes.push_back(&**obstaclesit);// adds all the shapes in the adjacency matrix to the shapes vector
-	}
-
-	for (Foodit = m_vectorOfFood.begin(); Foodit != m_vectorOfFood.end(); ++Foodit)
-	{
-		m_vectorOfShapes.push_back(&**Foodit);// adds all the shapes in the adjacency matrix to the shapes vector
-	}
-
-	while (m_window.isOpen()) //game loop
-	{
-		sf::Event event;
-		//find out elapsed time
-		float fElapsedTime = clock.getElapsedTime().asSeconds();
-		while (m_window.pollEvent(event))
+		// This will cap the "logic" rate at 60 ticks per second. The logic and frame rate will match, so no processing power
+		// is wasted.
+		if (clock.getElapsedTime().asMilliseconds() < 17)
 		{
+			continue;
+		}
+
+		// ==========================================================================================================
+		// Start event checks
+		
+		sf::Event event;
+		while (m_window.pollEvent(event))
+		{	
 			if (event.type == sf::Event::Closed)
 			{
 				m_window.close();
+			}
+			else if (event.type == sf::Event::MouseButtonReleased)
+			{
+				m_uiManager.checkReleaseEvents(sf::Mouse::getPosition(m_window).x, sf::Mouse::getPosition(m_window).y);
+			}
+			else if (event.type == sf::Event::MouseButtonPressed)
+			{
+				m_uiManager.checkDepressEvents(sf::Mouse::getPosition(m_window).x, sf::Mouse::getPosition(m_window).y);
 			}
 		}
 
@@ -200,19 +154,15 @@ void AntSimulator::run()
 		//as a result the radii aren't moving nor is the AABB
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 		{
-			//if(bMovementCheck) 
+			for (m_AntEaterit = m_antEaters.begin(); m_AntEaterit != m_antEaters.end(); ++m_AntEaterit)
 			{
-				for (m_AntEaterit = m_vectorOfAntEaters.begin(); m_AntEaterit != m_vectorOfAntEaters.end(); ++m_AntEaterit)
-				{
-					m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY() - 0.7));
-					//m_AntEaterit->moveVisualObjects(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY());	//test to see if coords are actually being passed, and they are.				
-				}
+				m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX(), m_AntEaterit->getPosition().getY() - 0.7));
+				m_AntEaterit->moveVisualObjects(m_AntEaterit->getPosition().getX(), m_AntEaterit->getPosition().getY());
 			}
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 		{
-			
-			for (m_AntEaterit = m_vectorOfAntEaters.begin(); m_AntEaterit != m_vectorOfAntEaters.end(); ++m_AntEaterit)
+			for (m_AntEaterit = m_antEaters.begin(); m_AntEaterit != m_antEaters.end(); ++m_AntEaterit)
 			{
 				m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY() + 0.7));
 				m_AntEaterit->moveVisualObjects(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY());		
@@ -220,7 +170,7 @@ void AntSimulator::run()
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 		{
-			for (m_AntEaterit = m_vectorOfAntEaters.begin(); m_AntEaterit != m_vectorOfAntEaters.end(); ++m_AntEaterit)
+			for (m_AntEaterit = m_antEaters.begin(); m_AntEaterit != m_antEaters.end(); ++m_AntEaterit)
 			{
 				m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX() - 0.7 ,m_AntEaterit->getPosition().getY()));
 				m_AntEaterit->moveVisualObjects(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY());		
@@ -228,245 +178,155 @@ void AntSimulator::run()
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 		{			
-			for (m_AntEaterit = m_vectorOfAntEaters.begin(); m_AntEaterit != m_vectorOfAntEaters.end(); ++m_AntEaterit)
+			for (m_AntEaterit = m_antEaters.begin(); m_AntEaterit != m_antEaters.end(); ++m_AntEaterit)
 			{
 				m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX() + 0.7,m_AntEaterit->getPosition().getY()));
 				m_AntEaterit->moveVisualObjects(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY());		
 			}
 		}
 
-		
-
 		//Temp follow off switch
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
 		{
-			//i = 1;
-			
-			
 			isFollowing = false;
-		
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 		{
 			i = 2;
 		}
 
-		// ^ Q and E reset states to 1 and 2 for vague debugging reasons, needed to make sure switch worked
-		if (fElapsedTime>0.01)
+		// End event checks
+		// ==========================================================================================================
+		// Start logical updates
+
+		UIText* txt = dynamic_cast<UIText*>(m_uiManager.getUIComponentRef("txtAnts"));
+		txt->setString("Numbers of ants: " + std::to_string(m_ants.size()));
+
+		if (m_bWillSpawnAnt)
 		{
-			//Move/collide Multiple Ants
-			int iAntCounter = 0;
+			m_bWillSpawnAnt = false;
+			spawnAnt(400, 400);
+		}
+		if (m_bWillSpawnFood)
+		{
+			m_bWillSpawnFood = false;
+			double x = m_randomiser.getRandom(100, 800);
+			double y = m_randomiser.getRandom(100, 600);
+			spawnFood(x, y);
+		}
 
+		//Move/collide Multiple Ants
+		int iAntCounter = 0;
 
-
-			for (m_Antit = m_vectorOfAnts.begin(); m_Antit != m_vectorOfAnts.end(); ++m_Antit)
+		for (m_Antit = m_ants.begin(); m_Antit != m_ants.end(); ++m_Antit)
+		{
+			++iAntCounter;
+			antSteer->move(*m_Antit);
+			for (std::vector<AABB*>::iterator it = obstacles.begin(); it != obstacles.end(); ++it)
 			{
-				++iAntCounter;
-				antSteer->move(*m_Antit);
-
-
-				/*
-				Collision tests now iterate over vectors.
-				*/
-
-				//if Circle within radius
-				for (auto Circle : m_vectorOfCircles)
+				//emergency if we collide with an obstacle.
+				if(m_CollisionsManager->AABBtoAABBCollision(*m_Antit,**it))
 				{
-					if (m_CollisionsManager->CircletoCircleCollision(Circle, *m_Antit->getAntRadius()) == true)
-					{
-						//std::cout << "i collided" << endl; //aabb to circle collision text
-					}
+					m_Antit->setDirection(Vector2D(0,0));
+					m_CollisionsManager->correctPosition(*m_Antit);
+				}
+				//If avoiding behaviour is on
+				if(isAvoiding)
+				{
+					antAvoid->run(*m_Antit,**it,*m_CollisionsManager);
 				}
 
-
-
-				//if OBB within radius
-				for (auto OBB : m_vectorOfOBB)
+				//If fleeing behaviour is on
+				if(isFleeing)
 				{
-					if (m_CollisionsManager->OBBtoCircleCollision(OBB, *m_Antit->getAntRadius()) == true)
+					//If the ant is moving away from wall then we can only push.
+					if(!m_Antit->isFacingWall())
 					{
-						std::cout << "i collided" << endl; //obb to circle collision text
-
-					}
-				}
-
-			
-
-				//if aabb within radius
-				for (auto AABB : m_vectorOfAABB)
-				{
-					if (m_CollisionsManager->AABBtoCircleCollision(AABB, *m_Antit->getAntRadius()) == true)
-					{
-						//std::cout << "i collided" << endl; //aabb to circle collision text
-					}
-				}
-				/*
-
-				Run ant avoid through obstacles!
-
-				*/
-				for (obstaclesit = obstacles.begin(); obstaclesit != obstacles.end(); ++obstaclesit)
-				{
-					//emergency if we collide with an obstacle.
-					if(m_CollisionsManager->AABBtoAABBCollision(*m_Antit,**obstaclesit))
-					{
-						m_Antit->setDirection(Vector2D(0,0));
-						m_CollisionsManager->correctPosition(*m_Antit);
-					}
-					//If avoiding behaviour is on
-					if(isAvoiding)
-					{
-						antAvoid->run(*m_Antit,**obstaclesit,*m_CollisionsManager);
-					}
-
-					//If fleeing behaviour is on
-					if(isFleeing)
-					{
-						//If the ant is moving away from wall then we can only push.
-						if(!m_Antit->isFacingWall())
+						//Ant is not colliding with a obstacle
+						if(!m_Antit->isColliding())
 						{
-							//Ant is not colliding with a obstacle
-							if(!m_Antit->isColliding())
-							{
-								antFlee->run(*m_Antit,m_vectorOfAntEaters.at(0),*m_CollisionsManager);
-							}
+							antFlee->run(*m_Antit, m_antEaters.at(0),*m_CollisionsManager);
 						}
+					}
 					
-					}
 				}
-				//If we are not fleeing!
-				if(!m_Antit->isFleeing())
+			}
+			//If we are not fleeing!
+			if(!m_Antit->isFleeing())
+			{
+				//If there is no collision, then we can check for antfollow.
+				//If following behaviour is on
+				if(isFollowing)
 				{
-					//If there is no collision, then we can check for antfollow.
-					//If following behaviour is on
-					if(isFollowing)
+					if(!m_Antit->isColliding() & !antGather->isGathering())
 					{
-						if(!m_Antit->isColliding() & !antGather->isGathering())
+						if (iAntCounter != m_ants.size())
 						{
-
-							if (iAntCounter != m_vectorOfAnts.size())
-							{
-								antFollow->run(*m_Antit, m_vectorOfAnts.at(iAntCounter), *m_CollisionsManager);
-							}
-						}
-					}
-					/*
-					If we are not following, then change direction on col.
-					Will be changed with steer behaviour.
-					I.E will default to steer behaviour if not following?
-					*/
-				
-					//if seek on
-					if(isSeeking)
-					{
-						for (auto Food : m_vectorOfFood)
-						{
-							// this is the gather food behaviour. it has alot of statements that might not make much sense but il try to explain as best as possible
-							if(Food->getCollidable()==true)//if the food can be collided
-							{
-								if(m_CollisionsManager->CircletoCircleCollision(*Food->getFoodRadius(), *m_Antit->getAntRadius()) == true && Food->getHome()==false)//if the ant and food radius collide and																																	//if the ant is not at the ant hill
-								{
-									antGather->run(*m_Antit,*Food,*m_CollisionsManager);//the ant will move towards the food itseld
-								}
-
-							}
-							if((m_CollisionsManager->AABBtoAABBCollision(*m_Antit,*Food)==true) &&(Food->getCollidable()==true)&& Food->getHome()==false)//if the ant and food collide and the food is collidable																															//and the food is not at the ant hill
-							{
-								Food->setCollidable(false);//set the food to no longer be collidable
-								Food->setCollected(true);//make it so the food has been collected
-								m_Antit->setNumber(Food->getFoodNumber());
-								m_Antit->setFood(true);//the ant is now carrying food
-							}
-
-							if(Food->getCollected()==true && Food->getCollidable()==false && m_Antit->getFood()==true && m_Antit->getNumber()==Food->getFoodNumber())//if the food has been collected and its not colllidable																					  //and the ant has food
-							{
-								Food->setPosition(m_Antit->getPosition());//set the foods position to the ant
-								antGather->goHome(*m_Antit,*Food,*m_CollisionsManager,*hill);//make the ant start going to the ant hill
-							}
-
-							if((m_CollisionsManager->AABBtoAABBCollision(*m_Antit,*hill)==true) &&(Food->getHome()==false) && (Food->getCollected()==true)&& m_Antit->getNumber()==Food->getFoodNumber())//if the ant and the and hill collide																															//and the food is collected
-							{
-								Food->setPosition(hill->getPosition());//set the foods position to be at the ant hill
-								antSteer->randomDirection(*m_Antit);//choose a random direction for the ant to move
-								m_Antit->setFood(false);//ant no longer has food
-								Food->setHome(true);//set it so the food is at the ant hill
-								Food->setCollidable(true);//the the food to be collidable again (this just stops it from going into other loops, it cant actually collide)
-								iNumFood++;
-							}
+							antFollow->run(*m_Antit, m_ants.at(iAntCounter), *m_CollisionsManager);
 						}
 					}
 				}
-			
-		/*moved to behaviourflee!
-				if((m_CollisionsManager->AABBtoAABBCollision(*m_Antit, *antEater1)==true))
-				{
-					cout<<"Deleted Ant"<<endl;
-				}
-				if((m_CollisionsManager->AABBtoCircleCollision(*m_Antit, *antEater1->getAntEaterInnerRadius())==true) && (m_CollisionsManager->AABBtoCircleCollision(*m_Antit, *antEater1->getAntEaterOuterRadius())==true))
-				{
-					cout<<"Flee Harder"<<endl;
-				}
-				if((m_CollisionsManager->AABBtoCircleCollision(*m_Antit, *antEater1->getAntEaterOuterRadius())==true))
-				{
-					cout<<"Flee"<<endl;
-				}
-		*/
+				/*
+				If we are not following, then change direction on col.
+				Will be changed with steer behaviour.
+				I.E will default to steer behaviour if not following?
+				*/
 				
-			}
+				//if seek on
+				if(isSeeking)
+				{
+					for (Food food : m_food)
+					{
+						// this is the gather food behaviour. it has alot of statements that might not make much sense but il try to explain as best as possible
+						if(food.getCollidable()==true)//if the food can be collided
+						{
+							if(m_CollisionsManager->CircletoCircleCollision(*food.getFoodRadius(), *m_Antit->getAntRadius()) == true && food.getHome()==false)//if the ant and food radius collide and																																	//if the ant is not at the ant hill
+							{
+								antGather->run(*m_Antit, food, *m_CollisionsManager);//the ant will move towards the food itseld
+							}
+
+						}
+						if((m_CollisionsManager->AABBtoAABBCollision(*m_Antit, food)==true) &&(food.getCollidable()==true)&& food.getHome()==false)//if the ant and food collide and the food is collidable																															//and the food is not at the ant hill
+						{
+							food.setCollidable(false);//set the food to no longer be collidable
+							food.setCollected(true);//make it so the food has been collected
+							m_Antit->setNumber(food.getFoodNumber());
+							m_Antit->setFood(true);//the ant is now carrying food
+						}
+
+						if(food.getCollected()==true && food.getCollidable()==false && m_Antit->getFood()==true && m_Antit->getNumber()==food.getFoodNumber())//if the food has been collected and its not colllidable																					  //and the ant has food
+						{
+							food.setPosition(m_Antit->getPosition());//set the foods position to the ant
+							antGather->goHome(*m_Antit, food, *m_CollisionsManager, *m_pAnthill);//make the ant start going to the ant hill
+						}
+
+						if((m_CollisionsManager->AABBtoAABBCollision(*m_Antit, *m_pAnthill)==true) && (food.getHome()==false) && (food.getCollected()==true)&& m_Antit->getNumber()==food.getFoodNumber())//if the ant and the and hill collide																															//and the food is collected
+						{
+							food.setPosition(m_pAnthill->getPosition());//set the foods position to be at the ant hill
+							antSteer->randomDirection(*m_Antit);//choose a random direction for the ant to move
+							m_Antit->setFood(false);//ant no longer has food
+							food.setHome(true);//set it so the food is at the ant hill
+							food.setCollidable(true);//the the food to be collidable again (this just stops it from going into other loops, it cant actually collide)
+							iNumFood++;
+						}
+					}
+				}
+			}			
+		}
 				
-			if(iNumFood == 4){
-				cout<<"Game Over"<<endl;
-				//Disable movement 
-				isAvoiding = false;
-				isFleeing = false;
-				isFollowing = false;
-				isSeeking = false;
-				isSteering = false;
-			}
+		if(iNumFood == 4)
+		{
+			cout<<"Game Over"<<endl;
+			//Disable movement 
+			isAvoiding = false;
+			isFleeing = false;
+			isFollowing = false;
+			isSeeking = false;
+			isSteering = false;
+		}
 
-
-			clock.restart(); //restart the clock to update frames	
-		}
-		/*
-		if(ant1.Collision(ant2)) //for time being, used 'ant2' to represent a leaf
-		{
-		ant1.rect.setFillColor(sf::Color::Magenta); //this runs on the first loop round and changes i to 3... can't figure out why, probably simple fix
-		i = 3;
-		}
-		else if(ant1.Collision(hill)) // big green anthill
-		{
-		ant1.rect.setFillColor(sf::Color::Green);
-		i = 1;
-		}
-		else
-		{
-		ant1.rect.setFillColor(sf::Color::Red); // visual indicator of collision
-		}
-		
-		
-		switch(i) // state change statement
-		{
-		case 0:
-			//cout << "0"<< endl; break;// state 0 exists for a reason I think 
-		case 1:
-			//cout << "1"<< endl; break;//change game state to seek. incl avoid - I can't see a reason to seperate avoid from everything else. Perhaps if I implement avoid as "0" but that triggers alongside everything else? 
-										// either way seek becomes default, using value rather than switch default
-		case 2:
-			//cout << "2"<< endl; break;// change game state to follow - i = 2 if ant1.Collision(ant2followRadius), I'll leave that to tanveer
-		case 3:
-			//cout << "3"<< endl; break;//change game state to return - i = 3 if ant1.Collision(leaf) wee fella will return to the ant hill
-		case 4:
-			//cout << "4" << endl; break;//change game state to flee - i = 4 if ant1.Collision(antEaterRadius). Still unsure of how this will play out until the adjacency matrix is running. 
-										// can probably do something like making the ant move slightly faster than the anteaterso it escapes its field of view.
-		case 5:
-			//cout << "3 and 4" <<endl; break; //change game state to fleeing and returning. Depending on how "dynamic" fleeing might be this may be redundant as switch statements
-											//can cover multiple cases with one variable... something to mull over
-		default:
-			//cout << "Default"; //default game state, probably seek as well, it's just there in case anything breaks 
-		}
-		*/
 		//Move Multiple Ants
-		for (m_Antit = m_vectorOfAnts.begin(); m_Antit != m_vectorOfAnts.end(); ++m_Antit)
+		for (m_Antit = m_ants.begin(); m_Antit != m_ants.end(); ++m_Antit)
 		{
 			m_Antit->Update();
 			if (m_Antit->isMoveable())
@@ -476,14 +336,16 @@ void AntSimulator::run()
 			}
 			matrixControl.setAntPosInMatrix(&*m_Antit, arrayMatrix);//--Gethin Changes
 			//Put the function into the AdjacencyMatrix class and am calling it from there rather than it being a global function
-
 		}
-		for (m_AntEaterit = m_vectorOfAntEaters.begin(); m_AntEaterit != m_vectorOfAntEaters.end(); ++m_AntEaterit)
+
+		for (m_AntEaterit = m_antEaters.begin(); m_AntEaterit != m_antEaters.end(); ++m_AntEaterit)
 		{
 			m_AntEaterit->Update();
 		}
 
 		render();
+
+		clock.restart();
 	}
 }
 
@@ -491,24 +353,41 @@ void AntSimulator::run()
 Render the game. */
 void AntSimulator::render()
 {
-	m_window.clear(sf::Color::Black);
-	//back.drawBackground(Game); //disabled this because it makes it extremely laggy
+	m_window.clear(sf::Color::White);
+	m_window.draw(m_background);
 
-	//draw all shapes
-	for (auto shape : m_vectorOfShapes)
+	// Draw the walls
+	for (std::vector<Wall>::iterator it = m_walls.begin(); it != m_walls.end(); ++it)
 	{
-		m_window.draw(*shape);
-	}
-	for (m_Antit = m_vectorOfAnts.begin(); m_Antit != m_vectorOfAnts.end(); ++m_Antit)
-	{
-		m_window.draw(*m_Antit);//seperate for the moment.
-	}
-	for (m_AntEaterit = m_vectorOfAntEaters.begin(); m_AntEaterit != m_vectorOfAntEaters.end(); ++m_AntEaterit)
-	{
-		m_window.draw(*m_AntEaterit);
+		m_window.draw(*it);
 	}
 
+	// Draw rocks
+	for (std::vector<Rock>::iterator it = m_rocks.begin(); it != m_rocks.end(); ++it)
+	{
+		m_window.draw(*it);
+	}
 
+	// Draw all ants
+	for (std::vector<Ant>::iterator it = m_ants.begin(); it != m_ants.end(); ++it)
+	{
+		m_window.draw(*it);
+	}
+
+	// Draw the ant hill
+	m_window.draw(*m_pAnthill);
+
+	// Draw all food
+	for (std::vector<Food>::iterator it = m_food.begin(); it != m_food.end(); ++it)
+	{
+		m_window.draw(*it);
+	}
+
+	// Draw all ant-eaters
+	for (std::vector<AntEater>::iterator it = m_antEaters.begin(); it != m_antEaters.end(); ++it)
+	{
+		m_window.draw(*it);
+	}
 
 	// This line will draw the ENTIRE user interface.
 	m_window.draw(m_uiManager.getRootComponent());
@@ -519,27 +398,145 @@ void AntSimulator::render()
 Respond to buttons being depressed on the user interface. */
 void AntSimulator::buttonDepressed(std::string sButtonName)
 {
-	// Do nothing on depress. It looks weird.
+	// Do nothing. Intentional.
 }
 
 /** 
 Respond to buttons being released on the user interface. */
 void AntSimulator::buttonReleased(std::string sButtonName)
 {
-	if (sButtonName == "behaviour_follow")
-	{
-		
-	}
-	else if (sButtonName == "behaviour_seek")
-	{
+	// Do nothing. Intentional.
+}		
 
-	}
-	else if (sButtonName == "behaviour_flee")
+void AntSimulator::alarmExpired(AlarmEvent* e)
+{
+	if (e->getName() == "food_spawner")
 	{
-
+		m_bWillSpawnFood = true;
 	}
-	else if (sButtonName == "behaviour_move")
+	else if (e->getName() == "ant_spawner")
 	{
-
+		m_bWillSpawnAnt = true;
 	}
+}
+
+void AntSimulator::spawnFood(double xPos, double yPos)
+{
+	Food f(Vector2D(xPos, yPos), 20, 20);
+	m_food.push_back(f);
+}
+
+void AntSimulator::spawnAnt(double xPos, double yPos)
+{
+	Ant a(Vector2D(xPos, yPos), 20, 20);
+	a.setRadiusVisibility(false);
+	m_ants.push_back(a);
+}
+
+void AntSimulator::gameOver()
+{
+	// Code end state here
+}
+
+void AntSimulator::componentDepressed(std::string sComponentName)
+{
+	// Do nothing. Intentional.
+}
+
+void AntSimulator::componentReleased(std::string sComponentName)
+{
+	if (sComponentName == "imgCheckboxCollectFood")
+	{
+		UIComponent* u = m_uiManager.getUIComponentRef(sComponentName);
+		UIImage* i = dynamic_cast<UIImage*>(u);
+		isSeeking = !isSeeking;
+		if (isSeeking)
+		{
+			i->setTexture(m_pTextureManager->getTexture("checkbox_green"));
+		}
+		else
+		{
+			i->setTexture(m_pTextureManager->getTexture("checkbox_red"));
+		}
+	}
+	else if (sComponentName == "imgCheckboxFollow")
+	{
+		UIComponent* u = m_uiManager.getUIComponentRef(sComponentName);
+		UIImage* i = dynamic_cast<UIImage*>(u);
+		isFollowing = !isFollowing;
+		if (isFollowing)
+		{
+			i->setTexture(m_pTextureManager->getTexture("checkbox_green"));
+		}
+		else
+		{
+			i->setTexture(m_pTextureManager->getTexture("checkbox_red"));
+		}
+	}
+	else if (sComponentName == "imgCheckboxSteer")
+	{
+		UIComponent* u = m_uiManager.getUIComponentRef(sComponentName);
+		UIImage* i = dynamic_cast<UIImage*>(u);
+		isSteering = !isSteering;
+		if (isSteering)
+		{
+			i->setTexture(m_pTextureManager->getTexture("checkbox_green"));
+		}
+		else
+		{
+			i->setTexture(m_pTextureManager->getTexture("checkbox_red"));
+		}
+	}
+	else if (sComponentName == "imgCheckboxAvoid")
+	{
+		UIComponent* u = m_uiManager.getUIComponentRef(sComponentName);
+		UIImage* i = dynamic_cast<UIImage*>(u);
+		isAvoiding = !isAvoiding;
+		if (isAvoiding)
+		{
+			i->setTexture(m_pTextureManager->getTexture("checkbox_green"));
+		}
+		else
+		{
+			i->setTexture(m_pTextureManager->getTexture("checkbox_red"));
+		}
+	}
+	else if (sComponentName == "imgCheckboxSeek")
+	{
+		UIComponent* u = m_uiManager.getUIComponentRef(sComponentName);
+		UIImage* i = dynamic_cast<UIImage*>(u);
+		isSeeking = !isSeeking;
+		if (isSeeking)
+		{
+			i->setTexture(m_pTextureManager->getTexture("checkbox_green"));
+		}
+		else
+		{
+			i->setTexture(m_pTextureManager->getTexture("checkbox_red"));
+		}
+	}
+	else if (sComponentName == "imgCheckboxFlee")
+	{
+		UIComponent* u = m_uiManager.getUIComponentRef(sComponentName);
+		UIImage* i = dynamic_cast<UIImage*>(u);
+		isFleeing = !isFleeing;
+		if (isFleeing)
+		{
+			i->setTexture(m_pTextureManager->getTexture("checkbox_green"));
+		}
+		else
+		{
+			i->setTexture(m_pTextureManager->getTexture("checkbox_red"));
+		}
+	}
+}
+
+void AntSimulator::componentHovered(std::string sComponentName)
+{
+	// Do nothing. Intentional.
+}
+
+void AntSimulator::componentUnhovered(std::string sComponentName)
+{
+	// Do nothing. Intentional.
 }

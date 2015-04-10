@@ -2,7 +2,6 @@
 #define OBB_H
 
 #include "Shape.h"
-#include <SFML\Graphics.hpp>
 
 class OBB : public Shape
 {
@@ -12,8 +11,6 @@ class OBB : public Shape
 		float getHalfWidth();
 		float getHalfHeight();
 		float getAngle();
-
-		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 	protected:
 

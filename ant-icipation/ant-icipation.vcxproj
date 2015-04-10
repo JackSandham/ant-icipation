@@ -72,8 +72,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\include\AABB.h" />
+    <ClInclude Include="..\include\Alarm.h" />
+    <ClInclude Include="..\include\AlarmEvent.h" />
+    <ClInclude Include="..\include\AlarmList.h" />
+    <ClInclude Include="..\include\AlarmListener.h" />
+    <ClInclude Include="..\include\AlarmUtils.h" />
     <ClInclude Include="..\include\ant.h" />
     <ClInclude Include="..\include\antEater.h" />
+    <ClInclude Include="..\include\AntHill.h" />
     <ClInclude Include="..\include\AntSimulator.h" />
     <ClInclude Include="..\include\AudioManager.h" />
     <ClInclude Include="..\include\Background.h" />
@@ -91,6 +97,7 @@
     <ClInclude Include="..\include\MatrixController.h" />
     <ClInclude Include="..\include\OBB.h" />
     <ClInclude Include="..\include\Randomiser.h" />
+    <ClInclude Include="..\include\Rock.h" />
     <ClInclude Include="..\include\Shape.h" />
     <ClInclude Include="..\include\StringsManager.h" />
     <ClInclude Include="..\include\TextureManager.h" />
@@ -107,9 +114,15 @@
     <ClInclude Include="..\include\UIManager.h" />
     <ClInclude Include="..\include\UIText.h" />
     <ClInclude Include="..\include\Vector2D.h" />
+    <ClInclude Include="..\include\Wall.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\include\AntHill.cpp" />
     <ClCompile Include="..\src\AABB.cpp" />
+    <ClCompile Include="..\src\Alarm.cpp" />
+    <ClCompile Include="..\src\AlarmEvent.cpp" />
+    <ClCompile Include="..\src\AlarmList.cpp" />
+    <ClCompile Include="..\src\AlarmUtils.cpp" />
     <ClCompile Include="..\src\ant.cpp" />
     <ClCompile Include="..\src\AntEater.cpp" />
     <ClCompile Include="..\src\AntSimulator.cpp" />
@@ -130,6 +143,7 @@
     <ClCompile Include="..\src\MatrixController.cpp" />
     <ClCompile Include="..\src\OBB.cpp" />
     <ClCompile Include="..\src\Randomiser.cpp" />
+    <ClCompile Include="..\src\Rock.cpp" />
     <ClCompile Include="..\src\Shape.cpp" />
     <ClCompile Include="..\src\StringsManager.cpp" />
     <ClCompile Include="..\src\TextureManager.cpp" />
@@ -146,6 +160,7 @@
     <ClCompile Include="..\src\UIManager.cpp" />
     <ClCompile Include="..\src\UIText.cpp" />
     <ClCompile Include="..\src\Vector2D.cpp" />
+    <ClCompile Include="..\src\Wall.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

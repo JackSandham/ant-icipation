@@ -11,8 +11,8 @@ This class will be changed into a singleton as only one state of a Matrix Contro
 #ifndef MATRIXCONTROLLER
 #define MATRIXCONTROLLER
 
-#define GRIDX 50
-#define GRIDY 50
+#define GRIDX 45
+#define GRIDY 35
 
 #include "Vector2D.h" //Boo
 #include "ant.h"

@@ -11,8 +11,8 @@ Each tile has its own unique position, size and colour. The colour can be change
 #ifndef TILES_H
 #define TILES_H
 
-#define GRIDX 50 //--Gethin Changes
-#define GRIDY 50 //--Gethin Changes
+#define GRIDX 45 //--Gethin Changes
+#define GRIDY 35 //--Gethin Changes
 //I have made these variables so that it keeps the size of the grid consistent.
 //Unfortunatly I cant access the same variables as the ones set in the Adjacency Matrix
 

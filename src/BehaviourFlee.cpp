@@ -50,8 +50,6 @@ void BehaviourFlee::avoidEater(Ant &passedAnt1, AntEater &passedEater, Collision
 		passedAnt1.setDirection(m_vUnitDirection);
 		m_bAntColliding = true;
 		passedAnt1.setFleeing(true);
-	
-	
 }
 
 bool BehaviourFlee::isColliding()

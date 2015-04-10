@@ -1,15 +1,15 @@
 #ifndef AABB_H
 #define AABB_H
 
-#include "Shape.h"
 #include <SFML\Graphics.hpp>
+
+#include "Shape.h"
 
 class AABB : public Shape
 {
 	public:
 		AABB();
 		AABB(Vector2D position, float width, float height);
-		AABB(Vector2D position, float width, float height, sf::Color passedColor);
 	
 		void setMin();
 		void setMax();
@@ -18,10 +18,7 @@ class AABB : public Shape
 		float getHalfHeight();
 		Vector2D getMin();
 		Vector2D getMax();
-		sf::RectangleShape* getRectangle();
 	
-		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-
 	protected:
 		sf::RectangleShape rectangle;
 

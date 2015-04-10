@@ -9,7 +9,7 @@ Ant::Ant()
 Ant::Ant(Vector2D passedPosition, int width, int height) : AABB(passedPosition,  width,  height)
 {
 	m_vStartPos = passedPosition;
-	antRadius = new Circle(getPosition(), 75,sf::Color::Green);// ant detection radius
+	antRadius = new Circle(getPosition(), 75);// ant detection radius
 	m_bCanMove = true;
 	m_bRadiusVisible = true;
 	m_bHasFood = false;
@@ -17,18 +17,15 @@ Ant::Ant(Vector2D passedPosition, int width, int height) : AABB(passedPosition, 
 	m_bFleeing = false;
 	m_bFacingWall = false;
 	Update();
-}
 
-Ant::Ant(Vector2D passedPosition, int width, int height, sf::Color passedColor) : AABB(passedPosition,  width,  height,passedColor)
-{
-	m_vStartPos = passedPosition;
-	antRadius = new Circle(getPosition(), 75,sf::Color::Green);// ant detection radius
-	m_bCanMove = true;
-	m_bRadiusVisible = true;
-	m_bHasFood = false;
-	m_bFleeing = false;
-	m_bFacingWall = false;
-	Update();
+	float fWidth = (float)width;
+	float fHeight = (float)height;
+
+	TextureManager* tm = TextureManager::getInstance();
+	m_sprite.setTexture(*tm->getTexture("ant"));
+	m_sprite.setScale(fWidth / tm->getTexture("ant")->getSize().x, fHeight / tm->getTexture("ant")->getSize().y);
+	m_sprite.setPosition(passedPosition.getX() + 300, passedPosition.getY() + 100);
+	m_sprite.setOrigin((fWidth / 2) / m_sprite.getScale().x, (fHeight / 2) / m_sprite.getScale().y);
 }
 
 void Ant::Update()
@@ -44,7 +41,10 @@ void Ant::Update()
 //This function was created to move the rectangle position and the ant radius position.
 //This was needed as the rectangle object is protected and the circle radius object is private.
 //This means that they are only changed in this function.
-void Ant::moveVisualObjects(float xPos, float yPos){
+void Ant::moveVisualObjects(float xPos, float yPos)
+{
+	m_sprite.setPosition(xPos + 300, yPos + 100);
+	m_sprite.setRotation(atan2(m_vDirection.getY(), m_vDirection.getX()) * (180 / 3.14159265) + 90);
 	rectangle.setPosition(xPos,yPos);
 	antRadius->setPosition(Vector2D(xPos,yPos));
 }
@@ -127,15 +127,6 @@ Vector2D Ant::getStartPos()
 	return m_vStartPos;
 }
 
-void Ant::draw(sf::RenderTarget& target, sf::RenderStates states) const
-{
-	if (m_bRadiusVisible)
-	{
-		target.draw(*antRadius);
-	}
-	target.draw(rectangle);
-}
-
 Circle* Ant::getAntRadius()
 {
 	return antRadius;
@@ -157,4 +148,9 @@ int Ant::getNumber()
 void Ant::setNumber(int iPassedNumber)
 {
 	m_iNumber=iPassedNumber;
+}
+
+void Ant::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+	target.draw(m_sprite);
 }

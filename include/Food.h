@@ -5,20 +5,19 @@
 #include <SFML/Graphics.hpp>
 #include <cmath>
 #include <iostream>
+#include "TextureManager.h"
 #include "AABB.h"
 #include "Circle.h"
 
 using namespace std;
 
-class Food : public AABB
+class Food : public AABB, public sf::Drawable
 {
 	public:
 		Food();
-
-		Food(Vector2D passedPosition, int width, int height, sf::Color passedColor);
+		Food(Vector2D passedPosition, int width, int height);
 
 		Circle* getFoodRadius();
-		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 		//This function is used to move the rectangle and ant radius.
 		void moveVisualObjects(float xPos, float yPos);
 		bool radiusIsVisible();
@@ -32,6 +31,9 @@ class Food : public AABB
 		void Update();
 		int getFoodNumber();
 		void setFoodNumber(int iFoodNumber);
+
+		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
 	protected:
 
 	private:
@@ -48,6 +50,8 @@ class Food : public AABB
 
 		int m_iNumber;
 		Circle* foodRadius; //previously in main
+
+		sf::Sprite m_sprite;
 };
 #endif
 

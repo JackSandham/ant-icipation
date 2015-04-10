@@ -41,50 +41,63 @@ I have created a brand new class AdjacencyMatrix and have modified the Backgroun
 #include "UIManager.h"
 #include "UIBuilder.h"
 #include "UIButtonListener.h"
-
+#include "Wall.h"
+#include "AntHill.h"
+#include "Rock.h"
+#include "AlarmList.h"
+#include "AlarmListener.h"
+#include "Alarm.h"
 
 using namespace std;
 
-class AntSimulator : UIButtonListener
+class AntSimulator : public UIButtonListener, public AlarmListener, public UIComponentListener
 {
 	public:
 		AntSimulator();
-		~AntSimulator();
+
 		void run();
 		void render();
 		void buildUI();
-		void GameOver();
+		void gameOver();
+		void spawnFood(double xPos, double yPos);
+		void spawnAnt(double xPos, double yPos);
 
 		virtual void buttonDepressed(std::string sButtonName);
 		virtual void buttonReleased(std::string sButtonName);
+		virtual void alarmExpired(AlarmEvent* e);
+		virtual void componentDepressed(std::string sComponentName);
+		virtual void componentReleased(std::string sComponentName);
+		virtual void componentHovered(std::string sComponentName);
+		virtual void componentUnhovered(std::string sComponentName);
 
 	protected:
 
 	private:
-		sf::RenderWindow m_window;
 		UIManager m_uiManager;
+		sf::RenderWindow m_window;
+		sf::Sprite m_background;
+		Randomiser m_randomiser;
 
-		std::vector<Shape*> m_vectorOfShapes; //!< A pointer to shapes held in a vector
+		FontManager* m_pFontManager;
+		AudioManager* m_pAudioManager;
+		TextureManager* m_pTextureManager;
+		StringsManager* m_pStringsManager;
 
-		std::vector<Ant> m_vectorOfAnts;
+		bool m_bWillSpawnAnt;
+		bool m_bWillSpawnFood;
+
+		// Vectors containing all objects present in the game world
+		std::vector<Ant> m_ants;
+		std::vector<Wall> m_walls;
+		std::vector<Rock> m_rocks;
+		std::vector<AntEater> m_antEaters;
+		std::vector<Food> m_food;
+		AntHill* m_pAnthill;
+
 		std::vector<Ant>::iterator m_Antit; //!< iterator for this vector
-
-		std::vector<AntEater> m_vectorOfAntEaters;
 		std::vector<AntEater>::iterator m_AntEaterit;
 
-		std::vector<AABB> m_vectorOfAABB; //!< Holds AABB objects
-		std::vector<AABB>::iterator m_AABBit; //!< iterator for this vector
-
-		std::vector<OBB> m_vectorOfOBB; //!< Holds OBB objects
-		std::vector<OBB>::iterator m_OBBit; //!< iterator for this vector
-
-		std::vector<Circle> m_vectorOfCircles; //!< Holds OBB objects
-		std::vector<Circle>::iterator m_Circleit; //!< iterator for this vector
-
-		std::vector<Food> m_vectorOfFood;
 		std::vector<Food>::iterator m_Foodit;
-
-		std::vector<Behaviour*> m_behaviours;
 
 		Randomiser m_RandomStartPosX;
 		float m_fRandomStartPosX;
@@ -92,7 +105,6 @@ class AntSimulator : UIButtonListener
 		float m_fRandomStartPosY;
 		Vector2D* m_RandomHillStartPos;
 		Vector2D* m_vAntEaterSpawn;
-		
 		
 		bool isFollowing;
 		bool isFleeing;

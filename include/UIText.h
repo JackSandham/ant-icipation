@@ -22,6 +22,7 @@ class UIText : public UIComponent
 		void setFont(sf::Font* font);
 		void setColor(sf::Color color);
 		void setString(sf::String& str);
+		void setString(std::string str);
 		void setString(std::string* str);
 		void setAlignment(Alignment alignment);
 

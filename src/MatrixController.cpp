@@ -26,8 +26,8 @@ void MatrixController::setAntPosInMatrix(Ant* ant, char(&charArray)[GRIDX][GRIDY
 void MatrixController::constructMatrix(char(&arrayMatrix)[GRIDX][GRIDY]){
 	grid.open("../Maps/Map1.txt", ios_base::in);
 	if(grid.is_open()){
-			for(int i = 0; i < 50; i++){
-				for(int j = 0; j < 50; j++){
+		for (int i = 0; i < GRIDX; i++){
+			for (int j = 0; j < GRIDY; j++){
 					grid>>arrayMatrix[i][j];
 				}
 			}

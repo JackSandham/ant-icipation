@@ -7,21 +7,22 @@ Document me :)
 #ifndef ANT_H
 #define ANT_H
 
-#include "randomiser.h"
-#include <SFML/Graphics.hpp>
 #include <cmath>
 #include <iostream>
+#include <SFML/Graphics.hpp>
+
 #include "AABB.h"
 #include "Circle.h"
+#include "randomiser.h"
+#include "TextureManager.h"
 
 using namespace std;
 
-class Ant : public AABB
+class Ant : public AABB, public sf::Drawable
 {
 	public:
 		Ant();
 		Ant(Vector2D passedPosition, int width, int height);
-		Ant(Vector2D passedPosition, int width, int height, sf::Color passedColor);
 		
 		void Update();
 		void setMovable(bool bPassedMove);
@@ -40,12 +41,14 @@ class Ant : public AABB
 		Vector2D getDirection();
 		Vector2D getStartPos();
 		Circle* getAntRadius();
-		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+		
 		//This function is used to move the rectangle and ant radius.
 		void moveVisualObjects(float xPos, float yPos);
-
 		int getNumber();
 		void setNumber(int iPassedNumber);
+		
+		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
 	protected:
 
 	private:
@@ -63,6 +66,8 @@ class Ant : public AABB
 		Circle* antRadius; //previously in main
 		Vector2D m_vDirection;
 		Vector2D m_vStartPos;
+
+		sf::Sprite m_sprite;
 };
 #endif
 

@@ -61,6 +61,22 @@ void UIText::setString(std::string* str)
 Sets the string. All ` characters within the string are replaced with a new-line character.
 
 @param str The string. */
+void UIText::setString(std::string str)
+{
+	sf::String s = str;
+	int i;
+	while ((i = s.find('`')) != sf::String::InvalidPos)
+	{
+		s.erase(i);
+		s.insert(i, "\n");
+	}
+	m_Text.setString(s);
+}
+
+/**
+Sets the string. All ` characters within the string are replaced with a new-line character.
+
+@param str The string. */
 void UIText::setString(sf::String& str)
 {
 	int i;
