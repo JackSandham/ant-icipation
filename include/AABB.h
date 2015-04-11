@@ -21,12 +21,13 @@ class AABB : public Shape
 	
 	protected:
 		sf::RectangleShape rectangle;
+		Vector2D m_vMax;
+		Vector2D m_vMin;
 
 	private:
 		float m_fWidth;
 		float m_fHeight;
-		Vector2D m_vMax;
-		Vector2D m_vMin;
+		
 };
 
 #endif

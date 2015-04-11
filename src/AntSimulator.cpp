@@ -83,6 +83,7 @@ void AntSimulator::run()
 
 	sf::Clock clock;
 	int iNumFood = 0;
+	iFoodNumber=0;
 	int i = 0; //value for switch statement, 0 - 5 represent different states, to be tidied up x	
 
 	//Gethins Adjacency Matrix
@@ -90,6 +91,7 @@ void AntSimulator::run()
 	//Declaring an AdjacencyMatrix in the main code
 
 	m_pAnthill = new AntHill(Vector2D(400, 400), 100, 100);
+	m_pAnthill->setPosition(Vector2D(400, 400));
 
 	m_vAntEaterSpawn = new Vector2D(600,600);
 	//m_vectorOfAntEaters.push_back(AntEater(*m_vAntEaterSpawn, 100, 100, sf::Color::Magenta));
@@ -295,38 +297,40 @@ void AntSimulator::run()
 				//if seek on
 				if(isSeeking)
 				{
-					for (Food food : m_food)
+					for (Food* food : m_food)
 					{
 						// this is the gather food behaviour. it has alot of statements that might not make much sense but il try to explain as best as possible
-						if(food.getCollidable()==true)//if the food can be collided
+						if(food->getCollidable()==true)//if the food can be collided
 						{
-							if(m_CollisionsManager->CircletoCircleCollision(*food.getFoodRadius(), *m_Antit->getAntRadius()) == true && food.getHome()==false)//if the ant and food radius collide and																																	//if the ant is not at the ant hill
+							if(m_CollisionsManager->CircletoCircleCollision(*food->getFoodRadius(), *m_Antit->getAntRadius()) == true && food->getHome()==false && food->getCollected()==false)//if the ant and food radius collide and																																	//if the ant is not at the ant hill
 							{
-								antGather->run(*m_Antit, food, *m_CollisionsManager);//the ant will move towards the food itseld
+								antGather->run(*m_Antit, *food, *m_CollisionsManager);//the ant will move towards the food itseld
 							}
 
 						}
-						if((m_CollisionsManager->AABBtoAABBCollision(*m_Antit, food)==true) &&(food.getCollidable()==true)&& food.getHome()==false)//if the ant and food collide and the food is collidable																															//and the food is not at the ant hill
+						if((m_CollisionsManager->AABBtoAABBCollision(*m_Antit, *food)==true) &&(food->getCollidable()==true)&& food->getHome()==false)//if the ant and food collide and the food is collidable																															//and the food is not at the ant hill
 						{
-							food.setCollidable(false);//set the food to no longer be collidable
-							food.setCollected(true);//make it so the food has been collected
-							m_Antit->setNumber(food.getFoodNumber());
+							food->setCollidable(false);//set the food to no longer be collidable
+							food->setCollected(true);//make it so the food has been collected
+							m_Antit->setNumber(food->getFoodNumber());
 							m_Antit->setFood(true);//the ant is now carrying food
 						}
 
-						if(food.getCollected()==true && food.getCollidable()==false && m_Antit->getFood()==true && m_Antit->getNumber()==food.getFoodNumber())//if the food has been collected and its not colllidable																					  //and the ant has food
+						if(food->getCollected()==true && food->getCollidable()==false && m_Antit->getFood()==true && m_Antit->getNumber()==food->getFoodNumber())//if the food has been collected and its not colllidable																					  //and the ant has food
 						{
-							food.setPosition(m_Antit->getPosition());//set the foods position to the ant
-							antGather->goHome(*m_Antit, food, *m_CollisionsManager, *m_pAnthill);//make the ant start going to the ant hill
+							food->moveVisualObjects(m_Antit->getPosition().getX(),m_Antit->getPosition().getY());
+							food->setPosition(m_Antit->getPosition());//set the foods position to the ant
+							antGather->goHome(*m_Antit, *food, *m_CollisionsManager, *m_pAnthill);//make the ant start going to the ant hill
 						}
 
-						if((m_CollisionsManager->AABBtoAABBCollision(*m_Antit, *m_pAnthill)==true) && (food.getHome()==false) && (food.getCollected()==true)&& m_Antit->getNumber()==food.getFoodNumber())//if the ant and the and hill collide																															//and the food is collected
+						if((m_CollisionsManager->AABBtoAABBCollision(*m_Antit, *m_pAnthill)==true) && (food->getHome()==false) && (food->getCollected()==true)&& m_Antit->getNumber()==food->getFoodNumber())//if the ant and the and hill collide																															//and the food is collected
 						{
-							food.setPosition(m_pAnthill->getPosition());//set the foods position to be at the ant hill
+							food->setPosition(m_pAnthill->getPosition());//set the foods position to be at the ant hill
+							food->moveVisualObjects(m_pAnthill->getPosition().getX(), m_pAnthill->getPosition().getY());
 							antSteer->randomDirection(*m_Antit);//choose a random direction for the ant to move
 							m_Antit->setFood(false);//ant no longer has food
-							food.setHome(true);//set it so the food is at the ant hill
-							food.setCollidable(true);//the the food to be collidable again (this just stops it from going into other loops, it cant actually collide)
+							food->setHome(true);//set it so the food is at the ant hill
+							food->setCollidable(true);//the the food to be collidable again (this just stops it from going into other loops, it cant actually collide)
 							iNumFood++;
 						}
 					}
@@ -334,7 +338,7 @@ void AntSimulator::run()
 			}			
 		}
 				
-		if(iNumFood == 4)
+		/*if(iNumFood == 4)
 		{
 			cout<<"Game Over"<<endl;
 			//Disable movement 
@@ -343,7 +347,7 @@ void AntSimulator::run()
 			isFollowing = false;
 			isSeeking = false;
 			isSteering = false;
-		}
+		}*/ //removed this because were not doing all food collected as an end state anymore
 
 		//Move Multiple Ants
 		for (m_Antit = m_ants.begin(); m_Antit != m_ants.end(); ++m_Antit)
@@ -398,9 +402,9 @@ void AntSimulator::render()
 	m_window.draw(*m_pAnthill);
 
 	// Draw all food
-	for (std::vector<Food>::iterator it = m_food.begin(); it != m_food.end(); ++it)
+	for (std::vector<Food*>::iterator it = m_food.begin(); it != m_food.end(); ++it)
 	{
-		m_window.draw(*it);
+		m_window.draw(**it);
 	}
 
 	// Draw all ant-eaters
@@ -442,8 +446,10 @@ void AntSimulator::alarmExpired(AlarmEvent* e)
 
 void AntSimulator::spawnFood(double xPos, double yPos)
 {
-	Food f(Vector2D(xPos, yPos), 20, 20);
+	Food* f = new Food(Vector2D(xPos, yPos), 20, 20);
+	f->setFoodNumber(iFoodNumber);
 	m_food.push_back(f);
+	iFoodNumber++;
 }
 
 void AntSimulator::spawnAnt(double xPos, double yPos)

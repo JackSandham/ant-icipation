@@ -91,13 +91,13 @@ class AntSimulator : public UIButtonListener, public AlarmListener, public UICom
 		std::vector<Wall*> m_walls;
 		std::vector<Rock*> m_rocks;
 		std::vector<AntEater> m_antEaters;
-		std::vector<Food> m_food;
+		std::vector<Food*> m_food;
 		AntHill* m_pAnthill;
 
 		std::vector<Ant>::iterator m_Antit; //!< iterator for this vector
 		std::vector<AntEater>::iterator m_AntEaterit;
 
-		std::vector<Food>::iterator m_Foodit;
+		std::vector<Food*>::iterator m_Foodit;
 
 		Randomiser m_RandomStartPosX;
 		float m_fRandomStartPosX;
@@ -112,6 +112,8 @@ class AntSimulator : public UIButtonListener, public AlarmListener, public UICom
 		bool isSteering;
 		bool isSeeking;
 		
+		int iFoodNumber;
+
 		BehaviourFollow* antFollow;
 		BehaviourAvoid* antAvoid;
 		BehaviourSteer* antSteer;

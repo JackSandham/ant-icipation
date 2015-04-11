@@ -33,6 +33,12 @@ void Food::Update()
 	m_fTop = rectangle.getPosition().y;//calculates the top edge
 }
 
+void Food::moveVisualObjects(float xPos, float yPos)
+{
+	m_sprite.setPosition(xPos + 300, yPos + 100);
+	rectangle.setPosition(xPos,yPos);
+}
+
 void Food::setRadiusVisibility(bool bPassedVisibility)
 {
 	m_bRadiusVisible = bPassedVisibility;

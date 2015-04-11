@@ -21,6 +21,8 @@ class AntHill : public AABB, public sf::Drawable
 		float m_fY;
 		float m_fWidth;
 		float m_fHeight;
+		float m_fMax;
+		float m_fMin;
 		sf::Sprite m_sprite;
 };
 

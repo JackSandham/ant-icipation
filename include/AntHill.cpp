@@ -8,13 +8,13 @@ AntHill::AntHill()
 	m_fHeight = 50;
 }
 
-AntHill::AntHill(Vector2D vPosition, float fWidth, float fHeight)
+AntHill::AntHill(Vector2D vPosition, float fWidth, float fHeight) : AABB(vPosition,  fWidth,  fHeight)
 {
 	m_fX = vPosition.getX();
 	m_fY = vPosition.getY();
 	m_fWidth = fWidth;
 	m_fHeight = fHeight;
-
+	
 	TextureManager* tm = TextureManager::getInstance();
 	m_sprite.setTexture(*tm->getTexture("ant_hill"));
 	m_sprite.setScale(fWidth / tm->getTexture("ant_hill")->getSize().x, fHeight / tm->getTexture("ant_hill")->getSize().y);

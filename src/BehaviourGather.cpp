@@ -68,14 +68,14 @@ void BehaviourGather::gatherFood(Ant &passedAnt1, Food &passedFood,CollisionsMan
 	}
 }
 
-void BehaviourGather::goHome(Ant &passedAnt1, Food &passedFood,CollisionsManager &passedColMan, AABB &antHill)
+void BehaviourGather::goHome(Ant &passedAnt1, Food &passedFood,CollisionsManager &passedColMan, AntHill &antHill)
 {
 	Vector2D vec = Vector2D(antHill.getPosition() - passedAnt1.getPosition());
 	float xPos = vec.getX()/vec.getMagnitude();
 	float yPos = vec.getY()/vec.getMagnitude();
 
-	vec.setX(xPos);
-	vec.setY(yPos);
+	vec.setX(-xPos);
+	vec.setY(-yPos);
 
 	float mag = vec.getMagnitude();
 
