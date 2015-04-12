@@ -30,10 +30,6 @@ Ant::Ant(Vector2D passedPosition, int width, int height) : AABB(passedPosition, 
 
 void Ant::Update(AntEater &passedAntEater, CollisionsManager &passedColMan)
 {
-	m_fBottom = rectangle.getPosition().y + rectangle.getSize().y; //calculates the bottom edge
-	m_fLeft = rectangle.getPosition().x; //calculates the left edge
-	m_fRight = rectangle.getPosition().x + rectangle.getSize().x;//calculates the right edge
-	m_fTop = rectangle.getPosition().y;//calculates the top edge
 	setMin();
 	setMax();
 	facingEater(passedAntEater,passedColMan);
@@ -71,7 +67,6 @@ bool Ant::antEaterEats(AntEater &passedEater, CollisionsManager &passedColMan)
 {
 	if(passedColMan.AABBtoAABBCollision(*this,passedEater))
 	{
-		
 		return true;
 	}
 	else
@@ -109,7 +104,6 @@ void Ant::setFacingEater(bool bFacing)
 {
 	m_bFacingEater = bFacing;
 }
-
 
 bool Ant::isColliding()
 {

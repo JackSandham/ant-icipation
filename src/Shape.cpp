@@ -10,7 +10,7 @@ void Shape::setPosition(Vector2D pos)
 	m_vPosition = pos;
 }
 
-Vector2D Shape::getPosition()
+Vector2D& Shape::getPosition()
 {
 	return m_vPosition;
 }

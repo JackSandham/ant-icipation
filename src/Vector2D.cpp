@@ -38,6 +38,13 @@ void Vector2D::setValues(float x, float y){
 	m_faDataValues[1] = y;
 }
 
+void Vector2D::normalise()
+{
+	float mag = getMagnitude();
+	m_faDataValues[0] = m_faDataValues[0] / mag;
+	m_faDataValues[1] = m_faDataValues[1] / mag;
+}
+
 //! This function is used to get the X value.
 float Vector2D::getX() const{
 	return m_faDataValues[0];

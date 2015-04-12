@@ -9,7 +9,7 @@ class Shape
 		Shape();
 
 		void setPosition(Vector2D pos);
-		Vector2D getPosition();
+		Vector2D& getPosition();
 		float getXPosition();
 		float getYPosition();
 

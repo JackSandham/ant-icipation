@@ -8,12 +8,13 @@ watch this space
 #ifndef ANTEATER_H
 #define ANTEATER_H
 
-#include "randomiser.h"
-#include <SFML/Graphics.hpp>
 #include <cmath>
 #include <iostream>
+#include <SFML/Graphics.hpp>
+
 #include "AABB.h"
 #include "Circle.h"
+#include "randomiser.h"
 #include "TextureManager.h"
 
 using namespace std;
@@ -24,14 +25,13 @@ class AntEater : public AABB, public sf::Drawable
 		AntEater();
 		AntEater(Vector2D passedPosition, int width, int height);
 
-		void Update();
+		void update();
 	
 		void setMovable(bool bPassedMove);
 		void setDirection(Vector2D passedVector);
 		void setRadiusVisibility(bool passedVisible);
 		void setFood(float bPassedFood);
 		void setColliding(bool bColliding);
-		void setRotation(float fPassedRot);
 		bool isMoveable();
 		bool isColliding();
 		bool radiusIsVisible();
@@ -40,24 +40,29 @@ class AntEater : public AABB, public sf::Drawable
 		Circle* getAntEaterOuterRadius();
 		Circle* getAntEaterInnerRadius();
 		//This function is used to move the rectangle and ant radius.
-		void moveVisualObjects(float xPos, float yPos);		
-		
+		void moveVisualObjects(float xPos, float yPos);	
+
+		void wander();
+		float getDetectionRadius() const;	
+		float distanceTo(Vector2D vPos);
+		void moveTowards(Vector2D vPos);
+		void changeTargetPosition();
+
 		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 	protected:
 
 	private:
-		float m_fBottom;
-		float m_fLeft; 
-		float m_fRight; 
-		float m_fTop;
 		bool m_bCanMove;
 		bool m_bHasFood;
 		bool m_bRadiusVisible;
 		bool m_bAntColliding;
+		float m_fDetectionRadius;
 		Circle* anteaterInnerRadius; 
 		Circle* anteaterOuterRadius;
 		Vector2D m_vDirection;
+		Vector2D m_vTargetPosition;
+		Randomiser m_randomiser;
 		sf::Sprite m_sprite; 
 };
 

@@ -57,10 +57,6 @@ class Ant : public AABB, public sf::Drawable
 	protected:
 
 	private:
-		float m_fBottom;
-		float m_fLeft; 
-		float m_fRight; 
-		float m_fTop;
 		bool m_bCanMove;
 		bool m_bHasFood;
 		bool m_bRadiusVisible;

@@ -26,6 +26,7 @@ public:
 	Vector2D operator*(const Vector2D& other) const; //!< This function is used to multiply two Vector2Ds together.
 	Vector2D operator*(const float scalar) const; //!< This function is used to scale the Vector2D. 
 	Vector2D operator/(const Vector2D& other); //!< This function is used to divide the Vector2D by another.
+	void normalise();
 };
 
 #endif

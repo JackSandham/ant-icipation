@@ -14,7 +14,7 @@ AntSimulator::AntSimulator()
 	al->setCheckFrequency(60);
 	al->addAlarmListener(this);
 	al->addAlarm(Alarm("food_spawner", 5000, true));
-	al->addAlarm(Alarm("ant_spawner", 3000, true));
+	al->addAlarm(Alarm("ant_spawner", 1000, true));
 
 	// Load textures
 	m_pTextureManager->setWorkingDirectory("textures/");
@@ -96,7 +96,7 @@ void AntSimulator::run()
 	m_vAntEaterSpawn = new Vector2D(600,600);
 	//m_vectorOfAntEaters.push_back(AntEater(*m_vAntEaterSpawn, 100, 100, sf::Color::Magenta));
 
-	AntEater* antEater1 = new AntEater(*m_vAntEaterSpawn, 30, 70);
+	AntEater* antEater1 = new AntEater(*m_vAntEaterSpawn, 40, 80);
 	m_antEaters.push_back(*antEater1);
 
 	Background back;
@@ -161,7 +161,6 @@ void AntSimulator::run()
 			for (m_AntEaterit = m_antEaters.begin(); m_AntEaterit != m_antEaters.end(); ++m_AntEaterit)
 			{
 				m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX(), m_AntEaterit->getPosition().getY() - 0.7));
-				m_AntEaterit->setRotation(0.0);
 				m_AntEaterit->moveVisualObjects(m_AntEaterit->getPosition().getX(), m_AntEaterit->getPosition().getY());
 			}
 		}
@@ -170,7 +169,6 @@ void AntSimulator::run()
 			for (m_AntEaterit = m_antEaters.begin(); m_AntEaterit != m_antEaters.end(); ++m_AntEaterit)
 			{
 				m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY() + 0.7));
-				m_AntEaterit->setRotation(180.0);
 				m_AntEaterit->moveVisualObjects(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY());		
 			}
 		}
@@ -179,7 +177,6 @@ void AntSimulator::run()
 			for (m_AntEaterit = m_antEaters.begin(); m_AntEaterit != m_antEaters.end(); ++m_AntEaterit)
 			{
 				m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX() - 0.7 ,m_AntEaterit->getPosition().getY()));
-				m_AntEaterit->setRotation(270.0);
 				m_AntEaterit->moveVisualObjects(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY());		
 			}
 		}
@@ -188,7 +185,6 @@ void AntSimulator::run()
 			for (m_AntEaterit = m_antEaters.begin(); m_AntEaterit != m_antEaters.end(); ++m_AntEaterit)
 			{
 				m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX() + 0.7,m_AntEaterit->getPosition().getY()));
-				m_AntEaterit->setRotation(90.0);
 				m_AntEaterit->moveVisualObjects(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY());		
 			}
 		}
@@ -366,10 +362,46 @@ void AntSimulator::run()
 			//Put the function into the AdjacencyMatrix class and am calling it from there rather than it being a global function
 		}
 
+		// ==============================================================================================
+		// Start anteater logic
 		for (m_AntEaterit = m_antEaters.begin(); m_AntEaterit != m_antEaters.end(); ++m_AntEaterit)
 		{
-			m_AntEaterit->Update();
+			m_AntEaterit->update();
+
+			// Search for a nearby ant.
+			// When these values are 10000, they are equivalent to "no ant found"
+			float distanceToNearestAnt = 10000;
+			Vector2D targetPos(0, 0);
+			float temp = 10000;
+			for (std::vector<Ant>::iterator it = m_ants.begin(); it != m_ants.end(); ++it)
+			{
+				temp = m_AntEaterit->distanceTo((*it).getPosition());
+				if (temp < distanceToNearestAnt)
+				{
+					distanceToNearestAnt = temp;
+					targetPos = (*it).getPosition();
+				}
+			}
+
+			// If there was an Ant, move towards it. Otherwise, continue wandering.
+			if (distanceToNearestAnt < m_AntEaterit->getDetectionRadius())
+			{
+				m_AntEaterit->moveTowards(targetPos);
+			}
+			else
+			{
+				m_AntEaterit->wander();
+			}
+
+			// Perform collision detection and resolution againt the map hill
+			if (m_CollisionsManager->AABBtoAABBCollision(*m_AntEaterit, *m_pAnthill))
+			{
+				m_CollisionsManager->correctPosition(*m_AntEaterit);
+			}
 		}
+
+		// End anteater logic
+		// ==============================================================================================
 
 		render();
 
@@ -402,14 +434,13 @@ void AntSimulator::render()
 		m_window.draw(*it);
 	}
 
-	// Draw the ant hill
-	m_window.draw(*m_pAnthill);
-
 	// Draw all food
 	for (std::vector<Food*>::iterator it = m_food.begin(); it != m_food.end(); ++it)
 	{
 		m_window.draw(**it);
 	}
+	// Draw the ant hill
+	m_window.draw(*m_pAnthill);
 
 	// Draw all ant-eaters
 	for (std::vector<AntEater>::iterator it = m_antEaters.begin(); it != m_antEaters.end(); ++it)
@@ -440,11 +471,22 @@ void AntSimulator::alarmExpired(AlarmEvent* e)
 {
 	if (e->getName() == "food_spawner")
 	{
-		m_bWillSpawnFood = true;
+		// Maximum of 10 food to prevent lag and clutter
+		if (m_food.size() < 10)
+		{
+			m_bWillSpawnFood = true;
+		}
 	}
 	else if (e->getName() == "ant_spawner")
 	{
-		m_bWillSpawnAnt = true;
+		// Maximum of 30 ants to prevent lag
+		AlarmList* al = AlarmList::getAlarmList(); 
+		long currentDuration = al->getAlarm("ant_spawner")->getDuration();
+		al->getAlarm("ant_spawner")->extendDuration(m_randomiser.getRandom(-(currentDuration - 1000), 7000 - currentDuration));
+		if (m_ants.size() < 30)
+		{
+			m_bWillSpawnAnt = true;
+		}
 	}
 }
 

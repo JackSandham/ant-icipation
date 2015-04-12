@@ -8,11 +8,11 @@ AntEater::AntEater()
 
 AntEater::AntEater(Vector2D passedPosition, int width, int height) : AABB(passedPosition, width, height)
 {
+	m_fDetectionRadius = 160;
 	anteaterInnerRadius = new Circle(getPosition(), 125);
-	anteaterOuterRadius = new Circle(getPosition(), 160);
+	anteaterOuterRadius = new Circle(getPosition(), m_fDetectionRadius);
 	m_bRadiusVisible = true;
 	m_bCanMove = true;
-	Update();
 
 	float fWidth = (float)width;
 	float fHeight = (float)height;
@@ -22,14 +22,12 @@ AntEater::AntEater(Vector2D passedPosition, int width, int height) : AABB(passed
 	m_sprite.setScale(fWidth / tm->getTexture("ant_eater")->getSize().x, fHeight / tm->getTexture("ant_eater")->getSize().y);
 	m_sprite.setPosition(passedPosition.getX() + 300, passedPosition.getY() + 100);
 	m_sprite.setOrigin((fWidth / 2) / m_sprite.getScale().x, (fHeight / 2) / m_sprite.getScale().y);
+
+	changeTargetPosition();
 }
 
-void AntEater::Update()
+void AntEater::update()
 {
-	m_fBottom = rectangle.getPosition().y + rectangle.getSize().y;
-	m_fLeft = rectangle.getPosition().x;
-	m_fRight = rectangle.getPosition().x + rectangle.getSize().x;
-	m_fTop = rectangle.getPosition().y;
 	setMin();
 	setMax();
 }
@@ -37,16 +35,12 @@ void AntEater::Update()
 void AntEater::moveVisualObjects(float xPos, float yPos)
 {
 	m_sprite.setPosition(xPos + 300, yPos + 100);
+	float rotation = atan2(m_vDirection.getY(), m_vDirection.getX()) * (180 / 3.14159265) + 90;
+	m_sprite.setRotation(rotation);
+	rectangle.setRotation(rotation);
 	anteaterOuterRadius->setPosition(Vector2D(xPos, yPos));
 	anteaterInnerRadius->setPosition(Vector2D(xPos, yPos));
 }
-
-void AntEater::setRotation(float fPassedRot)
-{
-	rectangle.setRotation(fPassedRot);
-	m_sprite.setRotation(fPassedRot);
-}
-
 
 void AntEater::setMovable(bool bPassedMove)
 {
@@ -109,6 +103,53 @@ Circle* AntEater::getAntEaterInnerRadius()
 bool AntEater::getFood()
 {
 	return m_bHasFood;
+}
+
+void AntEater::wander()
+{
+	// Note that 20 units is fairly arbitrary. The value can just be changed until it "feels" right
+	if (distanceTo(m_vTargetPosition) < 20)
+	{
+		changeTargetPosition();
+	}
+	else
+	{
+		moveTowards(m_vTargetPosition);
+	}
+}
+
+float AntEater::getDetectionRadius() const
+{
+	return m_fDetectionRadius;
+}
+
+float AntEater::distanceTo(Vector2D vPos)
+{
+	float dX = vPos.getX() - getPosition().getX();
+	float dY = vPos.getY() - getPosition().getY();
+	return std::sqrt((dX * dX) + (dY * dY));
+}
+
+void AntEater::moveTowards(Vector2D vPos)
+{
+	float dX = vPos.getX() - getPosition().getX();
+	float dY = vPos.getY() - getPosition().getY();
+	m_vDirection = Vector2D(dX, dY);
+	m_vDirection.normalise();
+	
+	Vector2D newPos = getPosition();
+	newPos.setX(newPos.getX() + (m_vDirection.getX() * 1));
+	newPos.setY(newPos.getY() + (m_vDirection.getY() * 1));
+
+	setPosition(newPos);
+	moveVisualObjects(newPos.getX(), newPos.getY());
+}
+
+void AntEater::changeTargetPosition()
+{
+	m_vTargetPosition = Vector2D(0, 0);
+	m_vTargetPosition.setX(m_randomiser.getRandom(200, 1300));
+	m_vTargetPosition.setY(m_randomiser.getRandom(0, 900));	
 }
 
 void AntEater::draw(sf::RenderTarget& target, sf::RenderStates states) const

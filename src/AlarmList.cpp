@@ -165,9 +165,13 @@ void AlarmList::checkAlarms(long iTimeNow)
 	}
 
 	// Avoiding invalidating the iterator above by performing removals here instead.
-	for (std::vector<std::vector<Alarm>::iterator>::iterator it = m_removals.begin(); it != m_removals.end(); ++it)
+	for (int i = 0; i < m_removals.size(); i++)
 	{
-		m_alarms.erase(*it);
+		for (std::vector<std::vector<Alarm>::iterator>::iterator it = m_removals.begin(); it != m_removals.end(); ++it)
+		{
+			m_alarms.erase(*it);
+			continue;
+		}
 	}
 	m_removals.clear();
 }
