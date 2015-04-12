@@ -41,6 +41,13 @@ void AntEater::moveVisualObjects(float xPos, float yPos)
 	anteaterInnerRadius->setPosition(Vector2D(xPos, yPos));
 }
 
+void AntEater::setRotation(float fPassedRot)
+{
+	rectangle.setRotation(fPassedRot);
+	m_sprite.setRotation(fPassedRot);
+}
+
+
 void AntEater::setMovable(bool bPassedMove)
 {
 	m_bCanMove = bPassedMove;
@@ -94,10 +101,10 @@ Circle* AntEater::getAntEaterInnerRadius()
 	return anteaterInnerRadius;
 }
 
-void AntEater::setFood(bool bPassedFood)
+/*void AntEater::setFood(bool bPassedFood)
 {
 	m_bHasFood=bPassedFood;
-}
+}*/
 
 bool AntEater::getFood()
 {

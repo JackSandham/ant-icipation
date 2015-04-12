@@ -29,8 +29,9 @@ class AntEater : public AABB, public sf::Drawable
 		void setMovable(bool bPassedMove);
 		void setDirection(Vector2D passedVector);
 		void setRadiusVisibility(bool passedVisible);
-		void setFood(bool bPassedFood);
+		void setFood(float bPassedFood);
 		void setColliding(bool bColliding);
+		void setRotation(float fPassedRot);
 		bool isMoveable();
 		bool isColliding();
 		bool radiusIsVisible();

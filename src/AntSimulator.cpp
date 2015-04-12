@@ -161,6 +161,7 @@ void AntSimulator::run()
 			for (m_AntEaterit = m_antEaters.begin(); m_AntEaterit != m_antEaters.end(); ++m_AntEaterit)
 			{
 				m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX(), m_AntEaterit->getPosition().getY() - 0.7));
+				m_AntEaterit->setRotation(0.0);
 				m_AntEaterit->moveVisualObjects(m_AntEaterit->getPosition().getX(), m_AntEaterit->getPosition().getY());
 			}
 		}
@@ -169,6 +170,7 @@ void AntSimulator::run()
 			for (m_AntEaterit = m_antEaters.begin(); m_AntEaterit != m_antEaters.end(); ++m_AntEaterit)
 			{
 				m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY() + 0.7));
+				m_AntEaterit->setRotation(180.0);
 				m_AntEaterit->moveVisualObjects(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY());		
 			}
 		}
@@ -177,6 +179,7 @@ void AntSimulator::run()
 			for (m_AntEaterit = m_antEaters.begin(); m_AntEaterit != m_antEaters.end(); ++m_AntEaterit)
 			{
 				m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX() - 0.7 ,m_AntEaterit->getPosition().getY()));
+				m_AntEaterit->setRotation(270.0);
 				m_AntEaterit->moveVisualObjects(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY());		
 			}
 		}
@@ -185,6 +188,7 @@ void AntSimulator::run()
 			for (m_AntEaterit = m_antEaters.begin(); m_AntEaterit != m_antEaters.end(); ++m_AntEaterit)
 			{
 				m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX() + 0.7,m_AntEaterit->getPosition().getY()));
+				m_AntEaterit->setRotation(90.0);
 				m_AntEaterit->moveVisualObjects(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY());		
 			}
 		}
