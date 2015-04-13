@@ -8,8 +8,8 @@ AntEater::AntEater()
 
 AntEater::AntEater(Vector2D passedPosition, int width, int height) : AABB(passedPosition, width, height)
 {
-	m_fDetectionRadius = 160;
-	anteaterInnerRadius = new Circle(getPosition(), 125);
+	m_fDetectionRadius = 140;
+	anteaterInnerRadius = new Circle(getPosition(), 80);
 	anteaterOuterRadius = new Circle(getPosition(), m_fDetectionRadius);
 	m_bRadiusVisible = true;
 	m_bCanMove = true;
@@ -153,8 +153,8 @@ void AntEater::moveTowards(Vector2D vPos)
 void AntEater::changeTargetPosition()
 {
 	m_vTargetPosition = Vector2D(0, 0);
-	m_vTargetPosition.setX(m_randomiser.getRandom(250, 1150));
-	m_vTargetPosition.setY(m_randomiser.getRandom(50, 850));	
+	m_vTargetPosition.setX(m_randomiser.getRandom(250, 900));
+	m_vTargetPosition.setY(m_randomiser.getRandom(50, 650));	
 }
 
 void AntEater::draw(sf::RenderTarget& target, sf::RenderStates states) const

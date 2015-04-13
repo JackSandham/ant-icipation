@@ -265,7 +265,7 @@ void AntSimulator::run()
 				//If fleeing behaviour is on
 				if(isFleeing)
 				{
-					//If the ant is moving towards eater then we can only push.
+					//If the ant is in range of anteater outer radius
 					if(!m_antEaters.at(0).isColliding())
 					{
 						//Ant is not colliding with a obstacle
@@ -337,6 +337,7 @@ void AntSimulator::run()
 							food->setCollidable(true);//the the food to be collidable again (this just stops it from going into other loops, it cant actually collide)
 							iNumFood++;
 						}
+						
 					}
 				}
 			}			
@@ -371,7 +372,9 @@ void AntSimulator::run()
 		{
 			for (int i = 0; i < m_ants.size(); ++i)
 			{
-				if (m_CollisionsManager->AABBtoAABBCollision(m_ants.at(i), *it_eater))
+			
+				
+			    if (m_CollisionsManager->AABBtoAABBCollision(m_ants.at(i), *it_eater))
 				{
 					m_ants.erase(m_ants.begin() + i);
 					i--;
@@ -400,9 +403,17 @@ void AntSimulator::run()
 					targetPos = (*it).getPosition();
 				}
 			}
-
+			// Perform collision detection and resolution againt the map hill
+				
+			if (m_CollisionsManager->AABBtoCircleCollision(*m_pAnthill,*m_AntEaterit->getAntEaterInnerRadius()))
+			{
+				m_AntEaterit->setDirection(m_AntEaterit->getDirection()*-1);
+				
+				m_AntEaterit->wander();
+					
+			}
 			// If there was an Ant, move towards it. Otherwise, continue wandering.
-			if (distanceToNearestAnt < m_AntEaterit->getDetectionRadius())
+			else if (distanceToNearestAnt < m_AntEaterit->getDetectionRadius())
 			{
 				m_AntEaterit->moveTowards(targetPos);
 			}
@@ -411,11 +422,7 @@ void AntSimulator::run()
 				m_AntEaterit->wander();
 			}
 
-			// Perform collision detection and resolution againt the map hill
-			if (m_CollisionsManager->AABBtoAABBCollision(*m_AntEaterit, *m_pAnthill))
-			{
-				m_CollisionsManager->correctPosition(*m_AntEaterit);
-			}
+			
 		}
 
 		// End anteater logic
