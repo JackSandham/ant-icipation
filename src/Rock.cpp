@@ -8,7 +8,7 @@ Rock::Rock()
 	m_fHeight = 50;
 }
 
-Rock::Rock(Vector2D vPosition, float fWidth, float fHeight)
+Rock::Rock(Vector2D vPosition, float fWidth, float fHeight)  : AABB(vPosition,  fWidth,  fHeight)
 {
 	m_fX = vPosition.getX();
 	m_fY = vPosition.getY();

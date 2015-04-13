@@ -1,20 +1,10 @@
-﻿Build started 12/04/2015 13:51:31.
-     1>Project "E:\Work\GitHub\ant-icipation\ant-icipation\ant-icipation.vcxproj" on node 2 (Build target(s)).
+﻿Build started 13/04/2015 09:44:31.
+     1>Project "C:\Users\Jack Sandham\Google Drive\University\Year2\AI_IMAT2800\VS2012\ant-icipation\ant-icipation\ant-icipation.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         D:\Software\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D SFML_STATIC /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt ..\src\AntSimulator.cpp
-         AntSimulator.cpp
-     1>e:\work\github\ant-icipation\include\alarmutils.h(29): warning C4305: 'initializing' : truncation from '__int64' to 'const long'
-     1>e:\work\github\ant-icipation\include\alarmutils.h(29): warning C4309: 'initializing' : truncation of constant value
-     1>e:\work\github\ant-icipation\src\antsimulator.cpp(147): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>e:\work\github\ant-icipation\src\antsimulator.cpp(151): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>e:\work\github\ant-icipation\src\antsimulator.cpp(163): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>e:\work\github\ant-icipation\src\antsimulator.cpp(172): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>e:\work\github\ant-icipation\src\antsimulator.cpp(181): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>e:\work\github\ant-icipation\src\antsimulator.cpp(190): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>e:\work\github\ant-icipation\src\antsimulator.cpp(453): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>e:\work\github\ant-icipation\src\antsimulator.cpp(461): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D SFML_STATIC /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt ..\src\Rock.cpp
+         Rock.cpp
        Link:
-         D:\Software\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\Work\GitHub\ant-icipation\Debug\ant-icipation.exe" /INCREMENTAL /NOLOGO "sfml-main-d.lib" "sfml-system-s-d.lib" "sfml-graphics-s-d.lib" "sfml-window-s-d.lib" "sfml-audio-s-d.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"E:\Work\GitHub\ant-icipation\Debug\ant-icipation.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\Work\GitHub\ant-icipation\Debug\ant-icipation.lib" /MACHINE:X86 Debug\AntHill.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Jack Sandham\Google Drive\University\Year2\AI_IMAT2800\VS2012\ant-icipation\Debug\ant-icipation.exe" /INCREMENTAL /NOLOGO "sfml-main-d.lib" "sfml-system-s-d.lib" "sfml-graphics-s-d.lib" "sfml-window-s-d.lib" "sfml-audio-s-d.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Jack Sandham\Google Drive\University\Year2\AI_IMAT2800\VS2012\ant-icipation\Debug\ant-icipation.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Jack Sandham\Google Drive\University\Year2\AI_IMAT2800\VS2012\ant-icipation\Debug\ant-icipation.lib" /MACHINE:X86 Debug\AntHill.obj
          Debug\AABB.obj
          Debug\Alarm.obj
          Debug\AlarmEvent.obj
@@ -58,9 +48,9 @@
          Debug\UIText.obj
          Debug\Vector2D.obj
          Debug\Wall.obj
-         ant-icipation.vcxproj -> E:\Work\GitHub\ant-icipation\Debug\ant-icipation.exe
-     1>Done Building Project "E:\Work\GitHub\ant-icipation\ant-icipation\ant-icipation.vcxproj" (Build target(s)).
+         ant-icipation.vcxproj -> C:\Users\Jack Sandham\Google Drive\University\Year2\AI_IMAT2800\VS2012\ant-icipation\Debug\ant-icipation.exe
+     1>Done Building Project "C:\Users\Jack Sandham\Google Drive\University\Year2\AI_IMAT2800\VS2012\ant-icipation\ant-icipation\ant-icipation.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:01.64
+Time Elapsed 00:00:01.31
