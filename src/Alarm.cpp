@@ -6,6 +6,7 @@ Alarm::Alarm(std::string sName, long iDuration, bool bAutoRestart)
 	m_iDuration = iDuration;
 	m_bAutoRestart = bAutoRestart;
 	m_iExpireCount = 0;
+	m_bPaused = false;
 }
 
 void Alarm::setAutoRestart(bool bAutoRestart)

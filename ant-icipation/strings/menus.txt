@@ -12,11 +12,15 @@
 #
 # ==================================================================
 title                           Ant-icipation
-collect_food                    Collect food
-follow                          Follow
-steer                           Steer
-avoid                           Avoid
-seek                            Seek
 flee                            Flee
-ants_active                     Number of ants active:   0
-ants_eaten                      Number of ants eaten:   0
+seek                            Seek
+avoid                           Avoid
+follow                          Follow
+wander                          Wander
+steer                           Steer
+move                            Move
+ants_alive                      Ants alive:   0
+ants_eaten                      Ants eaten:   0
+food_alive                      Food: 0
+food_gathered                   Food gathered: 0
+anteater_hunger                 Anteater status: Hungry

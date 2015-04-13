@@ -10,11 +10,11 @@ AntSimulator::AntSimulator()
 	m_pStringsManager = StringsManager::getInstance();
 
 	// Configure Alarms (AKA Timers)
-	AlarmList* al = AlarmList::getAlarmList();
-	al->setCheckFrequency(60);
-	al->addAlarmListener(this);
-	al->addAlarm(Alarm("food_spawner", 5000, true));
-	al->addAlarm(Alarm("ant_spawner", 1000, true));
+	m_pAlarmList = AlarmList::getAlarmList();
+	m_pAlarmList->setCheckFrequency(60);
+	m_pAlarmList->addAlarmListener(this);
+	m_pAlarmList->addAlarm(Alarm("food_spawner", 5000, true));
+	m_pAlarmList->addAlarm(Alarm("ant_spawner", 1000, true));
 
 	// Load textures
 	m_pTextureManager->setWorkingDirectory("textures/");
@@ -45,6 +45,14 @@ AntSimulator::AntSimulator()
 	m_iAntsEaten = 0;
 	m_iFoodCollected = 0;
 	m_bAnteaterAIEnabled = true;
+
+	m_bFleeEnabled = true;
+	m_bSeekEnabled = true;
+	m_bAvoidEnabled = true;
+	m_bFollowEnabled = true;
+	m_bWanderEnabled = true;
+	m_bSteerEnabled = true;
+	m_bMoveEnabled = true;
 }
 
 void AntSimulator::buildUI()
@@ -53,12 +61,13 @@ void AntSimulator::buildUI()
 	b.buildUI("user_interfaces/main_constructor.txt", this);
 	m_uiManager.setUILoaded(UIManager::UIs::MAIN, true);
 
-	m_uiManager.getUIComponentRef("imgCheckboxCollectFood")->addComponentListener(this);
-	m_uiManager.getUIComponentRef("imgCheckboxFollow")->addComponentListener(this);
-	m_uiManager.getUIComponentRef("imgCheckboxSteer")->addComponentListener(this);
-	m_uiManager.getUIComponentRef("imgCheckboxAvoid")->addComponentListener(this);
-	m_uiManager.getUIComponentRef("imgCheckboxSeek")->addComponentListener(this);
 	m_uiManager.getUIComponentRef("imgCheckboxFlee")->addComponentListener(this);
+	m_uiManager.getUIComponentRef("imgCheckboxSeek")->addComponentListener(this);
+	m_uiManager.getUIComponentRef("imgCheckboxAvoid")->addComponentListener(this);
+	m_uiManager.getUIComponentRef("imgCheckboxFollow")->addComponentListener(this);
+	m_uiManager.getUIComponentRef("imgCheckboxWander")->addComponentListener(this);
+	m_uiManager.getUIComponentRef("imgCheckboxSteer")->addComponentListener(this);
+	m_uiManager.getUIComponentRef("imgCheckboxMove")->addComponentListener(this);
 }
 
 /** 
@@ -178,10 +187,23 @@ void AntSimulator::run()
 		// ==========================================================================================================
 		// Start logical updates
 
-		UIText* txt = dynamic_cast<UIText*>(m_uiManager.getUIComponentRef("txtAnts"));
-		txt->setString("Numbers of ants: " + std::to_string(m_ants.size()));
+		UIText* txt = dynamic_cast<UIText*>(m_uiManager.getUIComponentRef("txtAntsAlive"));
+		txt->setString("Ants alive: " + std::to_string(m_ants.size()));
 		txt = dynamic_cast<UIText*>(m_uiManager.getUIComponentRef("txtAntsEaten"));
-		txt->setString("Numbers of ants eaten: " + std::to_string(m_iAntsEaten));
+		txt->setString("Ants eaten: " + std::to_string(m_iAntsEaten));
+		txt = dynamic_cast<UIText*>(m_uiManager.getUIComponentRef("txtFoodAlive"));
+		txt->setString("Food: " + std::to_string(m_food.size()));
+		txt = dynamic_cast<UIText*>(m_uiManager.getUIComponentRef("txtFoodGathered"));
+		txt->setString("Food gathered: " + std::to_string(m_iFoodCollected));
+		txt = dynamic_cast<UIText*>(m_uiManager.getUIComponentRef("txtAnteaterHunger"));
+		if (m_antEaters.at(0)->isHungry())
+		{		
+			txt->setString("Anteater status: Hungry");
+		}
+		else
+		{
+			txt->setString("Anteater status: Full");
+		}
 
 		if (m_bWillSpawnAnt)
 		{
@@ -370,36 +392,39 @@ void AntSimulator::run()
 
 		// ==============================================================================================
 		// Start anteater logic
-		for (m_AntEaterit = m_antEaters.begin(); m_AntEaterit != m_antEaters.end(); ++m_AntEaterit)
+		if (m_bAnteaterAIEnabled)
 		{
-			(*m_AntEaterit)->update();
-
-			// When these values are 10000, they are equivalent to "no ant found"
-			float distanceToNearestAnt = 10000;
-			Vector2D targetPos(0, 0);
-			float temp = 10000;
-			if ((*m_AntEaterit)->isHungry())
+			for (m_AntEaterit = m_antEaters.begin(); m_AntEaterit != m_antEaters.end(); ++m_AntEaterit)
 			{
-				// Search for a nearby ant.
-				for (std::vector<Ant>::iterator it = m_ants.begin(); it != m_ants.end(); ++it)
+				(*m_AntEaterit)->update();
+
+				// When these values are 10000, they are equivalent to "no ant found"
+				float distanceToNearestAnt = 10000;
+				Vector2D targetPos(0, 0);
+				float temp = 10000;
+				if ((*m_AntEaterit)->isHungry())
 				{
-					temp = (*m_AntEaterit)->distanceTo((*it).getPosition());
-					if (temp < distanceToNearestAnt)
+					// Search for a nearby ant.
+					for (std::vector<Ant>::iterator it = m_ants.begin(); it != m_ants.end(); ++it)
 					{
-						distanceToNearestAnt = temp;
-						targetPos = (*it).getPosition();
+						temp = (*m_AntEaterit)->distanceTo((*it).getPosition());
+						if (temp < distanceToNearestAnt)
+						{
+							distanceToNearestAnt = temp;
+							targetPos = (*it).getPosition();
+						}
 					}
 				}
-			}
 
-			// If there was an Ant, move towards it. Otherwise, continue wandering.
-			if (distanceToNearestAnt < (*m_AntEaterit)->getDetectionRadius())
-			{
-				(*m_AntEaterit)->moveTowards(targetPos);
-			}
-			else
-			{
-				(*m_AntEaterit)->wander();
+				// If there was an Ant, move towards it. Otherwise, continue wandering.
+				if (distanceToNearestAnt < (*m_AntEaterit)->getDetectionRadius())
+				{
+					(*m_AntEaterit)->moveTowards(targetPos);
+				}
+				else
+				{
+					(*m_AntEaterit)->wander();
+				}
 			}
 		}
 
@@ -480,19 +505,19 @@ void AntSimulator::alarmExpired(AlarmEvent* e)
 {
 	if (e->getName() == "food_spawner")
 	{
-		// Maximum of 10 food to prevent lag and clutter
-		if (m_food.size() < 10)
+		// Maximum of 8 food to prevent lag and clutter
+		if (m_food.size() <= 8)
 		{
 			m_bWillSpawnFood = true;
 		}
 	}
 	else if (e->getName() == "ant_spawner")
 	{
-		// Maximum of 30 ants to prevent lag
+		// Maximum of 25 ants to prevent lag
 		AlarmList* al = AlarmList::getAlarmList(); 
 		long currentDuration = al->getAlarm("ant_spawner")->getDuration();
 		al->getAlarm("ant_spawner")->extendDuration(m_randomiser.getRandom(-(currentDuration - 1000), 7000 - currentDuration));
-		if (m_ants.size() < 30)
+		if (m_ants.size() <= 25)
 		{
 			m_bWillSpawnAnt = true;
 		}
@@ -524,54 +549,12 @@ void AntSimulator::componentDepressed(std::string sComponentName)
 
 void AntSimulator::componentReleased(std::string sComponentName)
 {
-	if (sComponentName == "imgCheckboxCollectFood")
+	if (sComponentName == "imgCheckboxFlee")
 	{
 		UIComponent* u = m_uiManager.getUIComponentRef(sComponentName);
 		UIImage* i = dynamic_cast<UIImage*>(u);
-		isSeeking = !isSeeking;
-		if (isSeeking)
-		{
-			i->setTexture(m_pTextureManager->getTexture("checkbox_green"));
-		}
-		else
-		{
-			i->setTexture(m_pTextureManager->getTexture("checkbox_red"));
-		}
-	}
-	else if (sComponentName == "imgCheckboxFollow")
-	{
-		UIComponent* u = m_uiManager.getUIComponentRef(sComponentName);
-		UIImage* i = dynamic_cast<UIImage*>(u);
-		isFollowing = !isFollowing;
-		if (isFollowing)
-		{
-			i->setTexture(m_pTextureManager->getTexture("checkbox_green"));
-		}
-		else
-		{
-			i->setTexture(m_pTextureManager->getTexture("checkbox_red"));
-		}
-	}
-	else if (sComponentName == "imgCheckboxSteer")
-	{
-		UIComponent* u = m_uiManager.getUIComponentRef(sComponentName);
-		UIImage* i = dynamic_cast<UIImage*>(u);
-		isSteering = !isSteering;
-		if (isSteering)
-		{
-			i->setTexture(m_pTextureManager->getTexture("checkbox_green"));
-		}
-		else
-		{
-			i->setTexture(m_pTextureManager->getTexture("checkbox_red"));
-		}
-	}
-	else if (sComponentName == "imgCheckboxAvoid")
-	{
-		UIComponent* u = m_uiManager.getUIComponentRef(sComponentName);
-		UIImage* i = dynamic_cast<UIImage*>(u);
-		isAvoiding = !isAvoiding;
-		if (isAvoiding)
+		m_bFleeEnabled = !m_bFleeEnabled;
+		if (m_bFleeEnabled)
 		{
 			i->setTexture(m_pTextureManager->getTexture("checkbox_green"));
 		}
@@ -584,8 +567,8 @@ void AntSimulator::componentReleased(std::string sComponentName)
 	{
 		UIComponent* u = m_uiManager.getUIComponentRef(sComponentName);
 		UIImage* i = dynamic_cast<UIImage*>(u);
-		isSeeking = !isSeeking;
-		if (isSeeking)
+		m_bSeekEnabled = !m_bSeekEnabled;
+		if (m_bSeekEnabled)
 		{
 			i->setTexture(m_pTextureManager->getTexture("checkbox_green"));
 		}
@@ -594,12 +577,68 @@ void AntSimulator::componentReleased(std::string sComponentName)
 			i->setTexture(m_pTextureManager->getTexture("checkbox_red"));
 		}
 	}
-	else if (sComponentName == "imgCheckboxFlee")
+	else if (sComponentName == "imgCheckboxAvoid")
 	{
 		UIComponent* u = m_uiManager.getUIComponentRef(sComponentName);
 		UIImage* i = dynamic_cast<UIImage*>(u);
-		isFleeing = !isFleeing;
-		if (isFleeing)
+		m_bAvoidEnabled = !m_bAvoidEnabled;
+		if (m_bAvoidEnabled)
+		{
+			i->setTexture(m_pTextureManager->getTexture("checkbox_green"));
+		}
+		else
+		{
+			i->setTexture(m_pTextureManager->getTexture("checkbox_red"));
+		}
+	}
+	else if (sComponentName == "imgCheckboxFollow")
+	{
+		UIComponent* u = m_uiManager.getUIComponentRef(sComponentName);
+		UIImage* i = dynamic_cast<UIImage*>(u);
+		m_bFollowEnabled = !m_bFollowEnabled;
+		if (m_bFollowEnabled)
+		{
+			i->setTexture(m_pTextureManager->getTexture("checkbox_green"));
+		}
+		else
+		{
+			i->setTexture(m_pTextureManager->getTexture("checkbox_red"));
+		}
+	}
+	else if (sComponentName == "imgCheckboxWander")
+	{
+		UIComponent* u = m_uiManager.getUIComponentRef(sComponentName);
+		UIImage* i = dynamic_cast<UIImage*>(u);
+		m_bWanderEnabled = !m_bWanderEnabled;
+		if (m_bWanderEnabled)
+		{
+			i->setTexture(m_pTextureManager->getTexture("checkbox_green"));
+		}
+		else
+		{
+			i->setTexture(m_pTextureManager->getTexture("checkbox_red"));
+		}
+	}
+	else if (sComponentName == "imgCheckboxSteer")
+	{
+		UIComponent* u = m_uiManager.getUIComponentRef(sComponentName);
+		UIImage* i = dynamic_cast<UIImage*>(u);
+		m_bSteerEnabled = !m_bSteerEnabled;
+		if (m_bSteerEnabled)
+		{
+			i->setTexture(m_pTextureManager->getTexture("checkbox_green"));
+		}
+		else
+		{
+			i->setTexture(m_pTextureManager->getTexture("checkbox_red"));
+		}
+	}
+	else if (sComponentName == "imgCheckboxMove")
+	{
+		UIComponent* u = m_uiManager.getUIComponentRef(sComponentName);
+		UIImage* i = dynamic_cast<UIImage*>(u);
+		m_bMoveEnabled = !m_bMoveEnabled;
+		if (m_bMoveEnabled)
 		{
 			i->setTexture(m_pTextureManager->getTexture("checkbox_green"));
 		}

@@ -1,7 +1,6 @@
 #include "antEater.h"
 #include <stdlib.h>
 #include <Windows.h>
-#include <iostream>
 
 AntEater::AntEater()
 {
@@ -41,8 +40,6 @@ void AntEater::update()
 {
 	setMin();
 	setMax();
-
-	std::cout << "hunger level: " << std::to_string(m_iHungerLevel) << std::endl;
 }
 
 void AntEater::moveVisualObjects(float xPos, float yPos)

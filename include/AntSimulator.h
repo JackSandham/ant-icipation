@@ -82,6 +82,7 @@ class AntSimulator : public UIButtonListener, public AlarmListener, public UICom
 		AudioManager* m_pAudioManager;
 		TextureManager* m_pTextureManager;
 		StringsManager* m_pStringsManager;
+		AlarmList* m_pAlarmList;
 
 		bool m_bWillSpawnAnt;
 		bool m_bWillSpawnFood;
@@ -116,6 +117,14 @@ class AntSimulator : public UIButtonListener, public AlarmListener, public UICom
 		bool isSteering;
 		bool isSeeking;
 		
+		bool m_bFleeEnabled;
+		bool m_bSeekEnabled;
+		bool m_bAvoidEnabled;
+		bool m_bFollowEnabled;
+		bool m_bWanderEnabled;
+		bool m_bSteerEnabled;
+		bool m_bMoveEnabled;
+
 		int iFoodNumber;
 
 		BehaviourFollow* antFollow;
