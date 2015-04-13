@@ -55,7 +55,6 @@ void Background::assignMatrixValues(char(&charArray)[GRIDX][GRIDY], std::vector<
 						// This is now redundant due to food automatically spawning over time (And also does not work). It would ideally 
 					    // be replaced with another type of obstacle, such as a bush.
 						Food* food = new Food(Vector2D(20*j+10,20*i+10), 20, 20);
-						food->setFoodNumber(l+1);
 						l++;
 						m_vectorOfFood.push_back(food);
 						break;

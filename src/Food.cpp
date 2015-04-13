@@ -9,11 +9,8 @@ Food::Food()
 Food::Food(Vector2D passedPosition, int width, int height) : AABB(passedPosition,  width,  height)
 {
 	foodRadius = new Circle(getPosition(), 50);// foods detection radius
-	m_bRadiusVisible = true;
-	m_bCollidable =true;
-	m_bIsCollected =false;
-	m_bIsHome=false;
-	Update();
+	m_bCollidable = true;
+	m_bIsCollected = false;
 
 	float fWidth = (float)width;
 	float fHeight = (float)height;
@@ -25,28 +22,11 @@ Food::Food(Vector2D passedPosition, int width, int height) : AABB(passedPosition
 	m_sprite.setOrigin((fWidth / 2) / m_sprite.getScale().x, (fHeight / 2) / m_sprite.getScale().y);
 }
 
-void Food::Update()
+void Food::setPosition(Vector2D pos)
 {
-	m_fBottom = rectangle.getPosition().y + rectangle.getSize().y; //calculates the bottom edge
-	m_fLeft = rectangle.getPosition().x; //calculates the left edge
-	m_fRight = rectangle.getPosition().x + rectangle.getSize().x;//calculates the right edge
-	m_fTop = rectangle.getPosition().y;//calculates the top edge
-}
-
-void Food::moveVisualObjects(float xPos, float yPos)
-{
-	m_sprite.setPosition(xPos + 300, yPos + 100);
-	rectangle.setPosition(xPos,yPos);
-}
-
-void Food::setRadiusVisibility(bool bPassedVisibility)
-{
-	m_bRadiusVisible = bPassedVisibility;
-}
-
-bool Food::radiusIsVisible()
-{
-	return m_bRadiusVisible;
+	m_vPosition = pos;
+	m_sprite.setPosition(pos.getX() + 300, pos.getY() + 100);
+	rectangle.setPosition(pos.getX(), pos.getY());
 }
 
 Circle* Food::getFoodRadius()
@@ -54,7 +34,7 @@ Circle* Food::getFoodRadius()
 	return foodRadius;
 }
 
-bool Food::getCollidable()
+bool Food::isCollidable()
 {
 	return m_bCollidable;
 }
@@ -64,34 +44,11 @@ void Food::setCollidable(bool bPassedCollidable)
 	m_bCollidable = bPassedCollidable;
 }
 
-void Food::setCollected(bool bPassedCollected)
+float Food::distanceTo(Vector2D vPos)
 {
-	m_bIsCollected=bPassedCollected;
-}
-
-bool Food::getCollected()
-{
-	return m_bIsCollected;
-}
-
-void Food::setHome(bool bPassedHome)
-{
-	m_bIsHome=bPassedHome;
-}
-
-bool Food::getHome()
-{
-	return m_bIsHome;
-}
-
-int Food::getFoodNumber()
-{
-	return m_iNumber;
-}
-
-void Food::setFoodNumber(int iFoodNumber)
-{
-	m_iNumber=iFoodNumber;
+	float dX = vPos.getX() - getPosition().getX();
+	float dY = vPos.getY() - getPosition().getY();
+	return std::sqrt((dX * dX) + (dY * dY));
 }
 
 void Food::draw(sf::RenderTarget& target, sf::RenderStates states) const

@@ -8,7 +8,7 @@ class Shape
 	public:
 		Shape();
 
-		void setPosition(Vector2D pos);
+		virtual void setPosition(Vector2D pos);
 		Vector2D& getPosition();
 		float getXPosition();
 		float getYPosition();

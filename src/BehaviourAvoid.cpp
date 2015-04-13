@@ -7,11 +7,11 @@ BehaviourAvoid::BehaviourAvoid() : Behaviour("AVOID")
 }
 
 //require ants and collisionmanager.
-void BehaviourAvoid::run(Ant &passedAnt1, AABB &passedBackObstacles, CollisionsManager &passedColMan, bool &temp)
+void BehaviourAvoid::run(Ant &passedAnt1, AABB &passedBackObstacles, CollisionsManager &passedColMan, BehaviourSteer &passedSteerBehaviour)
 {
 	if(obstacleInRadius(passedAnt1,passedBackObstacles,passedColMan))
 	{
-		avoidObstacle(passedAnt1,passedBackObstacles,passedColMan, temp);
+		avoidObstacle(passedAnt1,passedBackObstacles,passedColMan, passedSteerBehaviour);
 		passedAnt1.setColliding(true);
 	}
 	
@@ -25,7 +25,7 @@ bool BehaviourAvoid::obstacleInRadius(Ant &passedAnt1, AABB &passedBackObstacles
 
 
 
-void BehaviourAvoid::avoidObstacle(Ant &passedAnt1, AABB &passedBackObstacles, CollisionsManager &passedColMan, bool &temp)
+void BehaviourAvoid::avoidObstacle(Ant &passedAnt1, AABB &passedBackObstacles, CollisionsManager &passedColMan, BehaviourSteer &passedSteerBehaviour)
 {
 	if(passedAnt1.getDirection().dotProduct(passedColMan.getNormal()) <0)
 	{
@@ -34,7 +34,7 @@ void BehaviourAvoid::avoidObstacle(Ant &passedAnt1, AABB &passedBackObstacles, C
 		/*steerBehaviour.WallCollision(passedAnt1);*/
 		/*steerBehaviour.run(passedAnt1);*/
 		//steerBehaviour.enable();
-		temp = true;
+		passedSteerBehaviour.enable();
 	}
 	else
 	{

@@ -27,7 +27,6 @@ void BehaviourSteer::move(Ant &passedAnt1){
 
 	//moves the ant based on the direction of the numers generated
 
-	passedAnt1.moveVisualObjects(passedAnt1.getXPosition(),passedAnt1.getYPosition());
 }
 
 void BehaviourSteer::moveup(Ant &passedAnt1){

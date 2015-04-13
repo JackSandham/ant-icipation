@@ -21,8 +21,8 @@ class BehaviourAvoid : public Behaviour
 		bool obstacleInRadius(Ant &passedAnt1, AABB &passedBackObstacles, CollisionsManager &passedColMan);
 		
 		
-		void avoidObstacle(Ant &passedAnt1, AABB &passedBackObstacles,CollisionsManager &passedColMan, bool &temp);
-		virtual void run(Ant &passedAnt1, AABB &passedBackObstacles, CollisionsManager &passedColMan, bool &temp);
+		void avoidObstacle(Ant &passedAnt1, AABB &passedBackObstacles,CollisionsManager &passedColMan, BehaviourSteer &passedSteerBehaviour);
+		virtual void run(Ant &passedAnt1, AABB &passedBackObstacles, CollisionsManager &passedColMan, BehaviourSteer &passedSteerBehaviour);
 
 	protected:
 

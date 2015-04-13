@@ -12,7 +12,8 @@ Ant::Ant(Vector2D passedPosition, int width, int height) : AABB(passedPosition, 
 	antRadius = new Circle(getPosition(), 75);// ant detection radius
 	m_bCanMove = true;
 	m_bRadiusVisible = true;
-	m_bHasFood = false;
+	m_bIsCarryingFood = false;
+	m_pFood = nullptr;
 	m_bAntColliding = false;
 	m_bFleeing = false;
 	m_bFacingEater = false;
@@ -28,24 +29,25 @@ Ant::Ant(Vector2D passedPosition, int width, int height) : AABB(passedPosition, 
 	m_sprite.setOrigin((fWidth / 2) / m_sprite.getScale().x, (fHeight / 2) / m_sprite.getScale().y);
 }
 
-void Ant::Update(AntEater &passedAntEater, CollisionsManager &passedColMan)
+void Ant::update(AntEater &passedAntEater, CollisionsManager &passedColMan)
 {
 	setMin();
 	setMax();
 	facingEater(passedAntEater,passedColMan);
 
-	// Death of ants no longer handled here. Check the game loop in AntSimulator.
+	if (isCarryingFood())
+	{
+		m_pFood->setPosition(getPosition());
+	}
 }
 
-//This function was created to move the rectangle position and the ant radius position.
-//This was needed as the rectangle object is protected and the circle radius object is private.
-//This means that they are only changed in this function.
-void Ant::moveVisualObjects(float xPos, float yPos)
+void Ant::setPosition(Vector2D pos)
 {
-	m_sprite.setPosition(xPos + 300, yPos + 100);
+	m_vPosition = pos;
+	m_sprite.setPosition(pos.getX() + 300, pos.getY() + 100);
 	m_sprite.setRotation(atan2(m_vDirection.getY(), m_vDirection.getX()) * (180 / 3.14159265) + 90);
-	rectangle.setPosition(xPos,yPos);
-	antRadius->setPosition(Vector2D(xPos,yPos));
+	rectangle.setPosition(pos.getX(), pos.getY());
+	antRadius->setPosition(Vector2D(pos.getX(), pos.getY()));
 }
 
 void Ant::facingEater(AntEater &passedAntEater, CollisionsManager &passedColMan)
@@ -142,16 +144,6 @@ Circle* Ant::getAntRadius()
 	return antRadius;
 }
 
-void Ant::setFood(bool bPassedFood)
-{
-	m_bHasFood=bPassedFood;
-}
-
-bool Ant::getFood()
-{
-	return m_bHasFood;
-}
-
 int Ant::getNumber()
 {
 	return m_iNumber;
@@ -165,4 +157,52 @@ void Ant::setNumber(int iPassedNumber)
 void Ant::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(m_sprite);
+}
+
+Food* Ant::getFood()
+{
+	return m_pFood;
+}
+
+void Ant::moveTowards(Vector2D vPos)
+{
+	float dX = vPos.getX() - getPosition().getX();
+	float dY = vPos.getY() - getPosition().getY();
+	m_vDirection = Vector2D(dX, dY);
+	m_vDirection.normalise();
+
+	Vector2D newPos = getPosition();
+	newPos.setX(newPos.getX() + (m_vDirection.getX() * 0.65));
+	newPos.setY(newPos.getY() + (m_vDirection.getY() * 0.65));
+
+	setPosition(newPos);
+}
+
+float Ant::getFoodDetectionRadius()
+{
+	return 100;
+}
+
+float Ant::getCollectionRange()
+{
+	return 10;
+}
+
+void Ant::assignFood(Food* f)
+{
+	f->setCollidable(false);
+	m_pFood = f;
+	m_bIsCarryingFood = true;
+}
+
+bool Ant::isCarryingFood()
+{
+	return m_bIsCarryingFood;
+}
+
+void Ant::dropFood()
+{
+	m_pFood->setCollidable(true);
+	m_pFood = nullptr;
+	m_bIsCarryingFood = false;
 }

@@ -16,10 +16,12 @@ watch this space
 #include "Circle.h"
 #include "randomiser.h"
 #include "TextureManager.h"
+#include "Alarm.h"
+#include "AlarmList.h"
 
 using namespace std;
 
-class AntEater : public AABB, public sf::Drawable
+class AntEater : public AABB, public sf::Drawable, public AlarmListener
 {
 	public:
 		AntEater();
@@ -47,12 +49,16 @@ class AntEater : public AABB, public sf::Drawable
 		float distanceTo(Vector2D vPos);
 		void moveTowards(Vector2D vPos);
 		void changeTargetPosition();
+		void antEaten();
+		bool isHungry();
 
+		void alarmExpired(AlarmEvent* e);
 		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 	protected:
 
 	private:
+		int m_iHungerLevel;
 		bool m_bCanMove;
 		bool m_bHasFood;
 		bool m_bRadiusVisible;

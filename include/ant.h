@@ -17,6 +17,7 @@ Document me :)
 #include "TextureManager.h"
 #include "antEater.h"
 #include <CollisionsManager.h>
+#include "Food.h"
 
 using namespace std;
 
@@ -26,7 +27,7 @@ class Ant : public AABB, public sf::Drawable
 		Ant();
 		Ant(Vector2D passedPosition, int width, int height);
 		
-		void Update(AntEater &passedAntEater, CollisionsManager &passedColMan);
+		void update(AntEater &passedAntEater, CollisionsManager &passedColMan);
 		void setMovable(bool bPassedMove);
 		void setDirection(Vector2D passedVector);
 		void setRadiusVisibility(bool passedVisible);
@@ -39,7 +40,6 @@ class Ant : public AABB, public sf::Drawable
 		bool isFacingEater();
 		bool isFleeing();
 		bool radiusIsVisible();
-		bool getFood();
 		Vector2D getDirection();
 		Vector2D getStartPos();
 		Circle* getAntRadius();
@@ -47,18 +47,26 @@ class Ant : public AABB, public sf::Drawable
 		bool antEaterEats(AntEater &passedAntEater, CollisionsManager &passedColMan);
 		void facingEater(AntEater &passedAntEater, CollisionsManager &passedColMan);
 
-		//This function is used to move the rectangle and ant radius.
-		void moveVisualObjects(float xPos, float yPos);
 		int getNumber();
 		void setNumber(int iPassedNumber);
-		
+
+		Food* getFood();
+		void moveTowards(Vector2D vPos);
+		float getFoodDetectionRadius();
+		float getCollectionRange();
+		void assignFood(Food* f);
+		bool isCarryingFood();
+		void dropFood();
+
+		void setPosition(Vector2D pos);
 		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 	protected:
 
 	private:
+		Food* m_pFood;
+		bool m_bIsCarryingFood;
 		bool m_bCanMove;
-		bool m_bHasFood;
 		bool m_bRadiusVisible;
 		bool m_bAntColliding;
 		bool m_bFleeing;

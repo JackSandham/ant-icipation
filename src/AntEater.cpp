@@ -1,6 +1,7 @@
 #include "antEater.h"
 #include <stdlib.h>
 #include <Windows.h>
+#include <iostream>
 
 AntEater::AntEater()
 {
@@ -28,12 +29,20 @@ AntEater::AntEater(Vector2D passedPosition, int width, int height) : AABB(passed
 	m_spriteVisionRadius.setOrigin((m_fDetectionRadius) / m_spriteVisionRadius.getScale().x, (m_fDetectionRadius) / m_spriteVisionRadius.getScale().y);
 
 	changeTargetPosition();
+
+	m_iHungerLevel = 0;
+
+	AlarmList* al = AlarmList::getAlarmList();
+	al->addAlarmListener(this);
+	al->addAlarm(Alarm("hunger_depletion", 8500, true));
 }
 
 void AntEater::update()
 {
 	setMin();
 	setMax();
+
+	std::cout << "hunger level: " << std::to_string(m_iHungerLevel) << std::endl;
 }
 
 void AntEater::moveVisualObjects(float xPos, float yPos)
@@ -100,11 +109,6 @@ Circle* AntEater::getAntEaterInnerRadius()
 	return anteaterInnerRadius;
 }
 
-/*void AntEater::setFood(bool bPassedFood)
-{
-	m_bHasFood=bPassedFood;
-}*/
-
 bool AntEater::getFood()
 {
 	return m_bHasFood;
@@ -143,8 +147,8 @@ void AntEater::moveTowards(Vector2D vPos)
 	m_vDirection.normalise();
 	
 	Vector2D newPos = getPosition();
-	newPos.setX(newPos.getX() + (m_vDirection.getX() * 1.35));
-	newPos.setY(newPos.getY() + (m_vDirection.getY() * 1.35));
+	newPos.setX(newPos.getX() + (m_vDirection.getX() * 1.45));
+	newPos.setY(newPos.getY() + (m_vDirection.getY() * 1.45));
 
 	setPosition(newPos);
 	moveVisualObjects(newPos.getX(), newPos.getY());
@@ -153,7 +157,7 @@ void AntEater::moveTowards(Vector2D vPos)
 void AntEater::changeTargetPosition()
 {
 	m_vTargetPosition = Vector2D(0, 0);
-	m_vTargetPosition.setX(m_randomiser.getRandom(250, 900));
+	m_vTargetPosition.setX(m_randomiser.getRandom(50, 850));
 	m_vTargetPosition.setY(m_randomiser.getRandom(50, 650));	
 }
 
@@ -161,4 +165,29 @@ void AntEater::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(m_spriteVisionRadius);
 	target.draw(m_sprite);
+}
+
+void AntEater::alarmExpired(AlarmEvent* e)
+{
+	if (e->getName() == "hunger_depletion")
+	{
+		m_iHungerLevel += 3;
+	}
+}
+
+void AntEater::antEaten()
+{
+	m_iHungerLevel -= 2;
+}
+
+bool AntEater::isHungry()
+{
+	if (m_iHungerLevel > 0)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }

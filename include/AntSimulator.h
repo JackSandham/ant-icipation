@@ -85,19 +85,21 @@ class AntSimulator : public UIButtonListener, public AlarmListener, public UICom
 
 		bool m_bWillSpawnAnt;
 		bool m_bWillSpawnFood;
+		bool m_bAnteaterAIEnabled;
 
 		int m_iAntsEaten;
+		int m_iFoodCollected;
 
 		// Vectors containing all objects present in the game world
 		std::vector<Ant> m_ants;
 		std::vector<Wall*> m_walls;
 		std::vector<Rock*> m_rocks;
-		std::vector<AntEater> m_antEaters;
+		std::vector<AntEater*> m_antEaters;
 		std::vector<Food*> m_food;
 		AntHill* m_pAnthill;
 
 		std::vector<Ant>::iterator m_Antit; //!< iterator for this vector
-		std::vector<AntEater>::iterator m_AntEaterit;
+		std::vector<AntEater*>::iterator m_AntEaterit;
 
 		std::vector<Food*>::iterator m_Foodit;
 

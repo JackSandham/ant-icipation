@@ -13,7 +13,7 @@ class AABB : public Shape
 	
 		void setMin();
 		void setMax();
-		void setPosition(Vector2D passedVector);
+		virtual void setPosition(Vector2D passedVector);
 		float getHalfWidth();
 		float getHalfHeight();
 		Vector2D getMin();

@@ -43,9 +43,8 @@ AntSimulator::AntSimulator()
 	m_bWillSpawnAnt = false;
 	m_bWillSpawnFood = false;
 	m_iAntsEaten = 0;
-
-	//set pointers to NULL at start
-	m_RandomHillStartPos = nullptr;
+	m_iFoodCollected = 0;
+	m_bAnteaterAIEnabled = true;
 }
 
 void AntSimulator::buildUI()
@@ -99,7 +98,7 @@ void AntSimulator::run()
 	//m_vectorOfAntEaters.push_back(AntEater(*m_vAntEaterSpawn, 100, 100, sf::Color::Magenta));
 
 	AntEater* antEater1 = new AntEater(*m_vAntEaterSpawn, 40, 80);
-	m_antEaters.push_back(*antEater1);
+	m_antEaters.push_back(antEater1);
 
 	Background back;
 	char arrayMatrix[GRIDX][GRIDY]; //--Gethin Changes
@@ -152,46 +151,17 @@ void AntSimulator::run()
 			{
 				m_uiManager.checkDepressEvents(sf::Mouse::getPosition(m_window).x, sf::Mouse::getPosition(m_window).y);
 			}
-		}
-
-		//Movement for AntEater. Uses generic SFML bindings.
-		//Problems - calling moveVisualObjects doesn't work repeatedly. I can use setPosition on the vector to move the anteater
-		//but not the moveVisualObjects. Anyone able to chime in? I'm sure the code I've gotten is fine, but I'm just missing something.
-		//as a result the radii aren't moving nor is the AABB
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-		{
-			for (m_AntEaterit = m_antEaters.begin(); m_AntEaterit != m_antEaters.end(); ++m_AntEaterit)
+			else if (event.type == sf::Event::KeyPressed)
 			{
-				m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX(), m_AntEaterit->getPosition().getY() - 0.7));
-				m_AntEaterit->moveVisualObjects(m_AntEaterit->getPosition().getX(), m_AntEaterit->getPosition().getY());
+				if (event.key.code == sf::Keyboard::Escape)
+				{
+					m_window.close();
+				}
+				else if (event.key.code == sf::Keyboard::Space)
+				{
+					m_bAnteaterAIEnabled = !m_bAnteaterAIEnabled;
+				}
 			}
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-		{
-			for (m_AntEaterit = m_antEaters.begin(); m_AntEaterit != m_antEaters.end(); ++m_AntEaterit)
-			{
-				m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY() + 0.7));
-				m_AntEaterit->moveVisualObjects(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY());		
-			}
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-		{
-			for (m_AntEaterit = m_antEaters.begin(); m_AntEaterit != m_antEaters.end(); ++m_AntEaterit)
-			{
-				m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX() - 0.7 ,m_AntEaterit->getPosition().getY()));
-				m_AntEaterit->moveVisualObjects(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY());		
-			}
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-		{			
-			for (m_AntEaterit = m_antEaters.begin(); m_AntEaterit != m_antEaters.end(); ++m_AntEaterit)
-			{
-				m_AntEaterit->setPosition(Vector2D(m_AntEaterit->getPosition().getX() + 0.7,m_AntEaterit->getPosition().getY()));
-				m_AntEaterit->moveVisualObjects(m_AntEaterit->getPosition().getX(),m_AntEaterit->getPosition().getY());		
-			}
-		}
-		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)){
-			m_window.close();
 		}
 
 		//Temp follow off switch
@@ -242,36 +212,37 @@ void AntSimulator::run()
 					m_Antit->setDirection(Vector2D(0,0));
 					m_CollisionsManager->correctPosition(*m_Antit);
 				}
-				if(m_CollisionsManager->AABBtoCircleCollision(**it,*m_antEaters.at(0).getAntEaterOuterRadius()))
+				if(m_CollisionsManager->AABBtoCircleCollision(**it, *(m_antEaters.at(0))->getAntEaterOuterRadius()))
 				{
-					m_antEaters.at(0).setColliding(true);
+					m_antEaters.at(0)->setColliding(true);
 				}
 				else if (iObsCounter == obstacles.size())
 				{
-					m_antEaters.at(0).setColliding(false);
+					m_antEaters.at(0)->setColliding(false);
 				}
 	
 				//If avoiding behaviour is on
+				
 				if(isAvoiding)
 				{
-					antAvoid->run(*m_Antit,**it,*m_CollisionsManager, isSteering);
+					antAvoid->run(*m_Antit,**it,*m_CollisionsManager, *antSteer);
+					if(isSteering && antSteer->isEnabled())
+					{
+						antSteer->run(*m_Antit);
+						antSteer->disable();
+					}
 				}
-
-				if(isSteering){
-					antSteer->run(*m_Antit);
-					isSteering = false;
-				}
-
+				
 				//If fleeing behaviour is on
 				if(isFleeing)
 				{
-					//If the ant is in range of anteater outer radius
-					if(!m_antEaters.at(0).isColliding())
+					//If the ant is moving towards eater then we can only push.
+					if(!m_antEaters.at(0)->isColliding())
 					{
 						//Ant is not colliding with a obstacle
 						if(!m_Antit->isColliding())
 						{
-							antFlee->run(*m_Antit, m_antEaters.at(0),*m_CollisionsManager);
+							antFlee->run(*m_Antit, *m_antEaters.at(0),*m_CollisionsManager);
 						}
 					}
 					
@@ -298,66 +269,77 @@ void AntSimulator::run()
 				I.E will default to steer behaviour if not following?
 				*/
 				
-				//if seek on
+				// =======================================================================================================
+				// "Seeking" behaviour. The seeking behaviour references the ability for ants 
+				// to find, collect and deliver food to the ant hill.
 				if(isSeeking)
 				{
-					for (Food* food : m_food)
+					if (m_Antit->isCarryingFood())
 					{
-						// this is the gather food behaviour. it has alot of statements that might not make much sense but il try to explain as best as possible
-						if(food->getCollidable()==true)//if the food can be collided
+						if (m_CollisionsManager->AABBtoAABBCollision(*m_Antit, *m_pAnthill))
 						{
-							if(m_CollisionsManager->CircletoCircleCollision(*food->getFoodRadius(), *m_Antit->getAntRadius()) == true && food->getHome()==false && food->getCollected()==false)//if the ant and food radius collide and																																	//if the ant is not at the ant hill
+							Food* f = m_Antit->getFood();
+							m_Antit->dropFood();
+							m_iFoodCollected++;
+
+							for (int i = 0; i < m_food.size(); ++i)
 							{
-								antGather->run(*m_Antit, *food, *m_CollisionsManager);//the ant will move towards the food itseld
+								if (f == m_food.at(i))
+								{
+									m_food.erase(m_food.begin() + i);
+								}
 							}
-
-						}
-						if((m_CollisionsManager->AABBtoAABBCollision(*m_Antit, *food)==true) &&(food->getCollidable()==true)&& food->getHome()==false)//if the ant and food collide and the food is collidable																															//and the food is not at the ant hill
-						{
-							food->setCollidable(false);//set the food to no longer be collidable
-							food->setCollected(true);//make it so the food has been collected
-							m_Antit->setNumber(food->getFoodNumber());
-							m_Antit->setFood(true);//the ant is now carrying food
 						}
 
-						if(food->getCollected()==true && food->getCollidable()==false && m_Antit->getFood()==true && m_Antit->getNumber()==food->getFoodNumber())//if the food has been collected and its not colllidable																					  //and the ant has food
+						m_Antit->moveTowards(m_pAnthill->getPosition());	
+					}
+					else
+					{
+						// Search for nearby food
+						// When these values are 10000, they are equivalent to "no food found"
+						float distanceToNearestFood = 10000;
+						Vector2D targetPos(0, 0);
+						Food* f;
+						float temp = 10000;
+						for (std::vector<Food*>::iterator it = m_food.begin(); it != m_food.end(); ++it)
 						{
-							food->moveVisualObjects(m_Antit->getPosition().getX(),m_Antit->getPosition().getY());
-							food->setPosition(m_Antit->getPosition());//set the foods position to the ant
-							antGather->goHome(*m_Antit, *food, *m_CollisionsManager, *m_pAnthill);//make the ant start going to the ant hill
+							if ((*it)->isCollidable())
+							{
+								temp = (*it)->distanceTo(m_Antit->getPosition());
+								if (temp < distanceToNearestFood)
+								{
+									distanceToNearestFood = temp;
+									targetPos = (*it)->getPosition();
+									f = *it;
+								}
+							}
 						}
 
-						if((m_CollisionsManager->AABBtoAABBCollision(*m_Antit, *m_pAnthill)==true) && (food->getHome()==false) && (food->getCollected()==true)&& m_Antit->getNumber()==food->getFoodNumber())//if the ant and the and hill collide																															//and the food is collected
+						// If a piece of food was found, check whether we are close enough to pick it up
+						if (distanceToNearestFood < m_Antit->getCollectionRange())
 						{
-							food->setPosition(m_pAnthill->getPosition());//set the foods position to be at the ant hill
-							food->moveVisualObjects(m_pAnthill->getPosition().getX(), m_pAnthill->getPosition().getY());
-							antSteer->randomDirection(*m_Antit);//choose a random direction for the ant to move
-							m_Antit->setFood(false);//ant no longer has food
-							food->setHome(true);//set it so the food is at the ant hill
-							food->setCollidable(true);//the the food to be collidable again (this just stops it from going into other loops, it cant actually collide)
-							iNumFood++;
+							m_Antit->assignFood(f);
 						}
-						
+						// If we couldnt pick it up, check if we are in range to "sense" it and move towards it.
+						else if (distanceToNearestFood < m_Antit->getFoodDetectionRadius())
+						{
+							m_Antit->moveTowards(targetPos);
+						}
+						else
+						{
+							// No action is taken, the food was too far away.
+						}
 					}
 				}
+
+				// =======================================================================================================
 			}			
 		}
-				
-		/*if(iNumFood == 4)
-		{
-			cout<<"Game Over"<<endl;
-			//Disable movement 
-			isAvoiding = false;
-			isFleeing = false;
-			isFollowing = false;
-			isSeeking = false;
-			isSteering = false;
-		}*/ //removed this because were not doing all food collected as an end state anymore
 
 		//Move Multiple Ants
 		for (m_Antit = m_ants.begin(); m_Antit != m_ants.end(); ++m_Antit)
 		{
-			m_Antit->Update(m_antEaters.at(0),*m_CollisionsManager);
+			m_Antit->update(*m_antEaters.at(0),*m_CollisionsManager);
 			if (m_Antit->isMoveable())
 			{
 				m_Antit->setMovable(false);
@@ -368,17 +350,20 @@ void AntSimulator::run()
 		}
 
 		// Check collision between the ants and the anteater. If an ant is caught, it is deleted.
-		for (std::vector<AntEater>::iterator it_eater = m_antEaters.begin(); it_eater != m_antEaters.end(); ++it_eater)
+		for (std::vector<AntEater*>::iterator it_eater = m_antEaters.begin(); it_eater != m_antEaters.end(); ++it_eater)
 		{
 			for (int i = 0; i < m_ants.size(); ++i)
 			{
-			
-				
-			    if (m_CollisionsManager->AABBtoAABBCollision(m_ants.at(i), *it_eater))
+				if (m_CollisionsManager->AABBtoAABBCollision(m_ants.at(i), **it_eater))
 				{
+					if (m_ants.at(i).isCarryingFood())
+					{
+						m_ants.at(i).dropFood();
+					}
 					m_ants.erase(m_ants.begin() + i);
 					i--;
 					m_iAntsEaten++;
+					(*it_eater)->antEaten();
 				}
 			}
 		}
@@ -387,46 +372,45 @@ void AntSimulator::run()
 		// Start anteater logic
 		for (m_AntEaterit = m_antEaters.begin(); m_AntEaterit != m_antEaters.end(); ++m_AntEaterit)
 		{
-			m_AntEaterit->update();
+			(*m_AntEaterit)->update();
 
-			// Search for a nearby ant.
 			// When these values are 10000, they are equivalent to "no ant found"
 			float distanceToNearestAnt = 10000;
 			Vector2D targetPos(0, 0);
 			float temp = 10000;
-			for (std::vector<Ant>::iterator it = m_ants.begin(); it != m_ants.end(); ++it)
+			if ((*m_AntEaterit)->isHungry())
 			{
-				temp = m_AntEaterit->distanceTo((*it).getPosition());
-				if (temp < distanceToNearestAnt)
+				// Search for a nearby ant.
+				for (std::vector<Ant>::iterator it = m_ants.begin(); it != m_ants.end(); ++it)
 				{
-					distanceToNearestAnt = temp;
-					targetPos = (*it).getPosition();
+					temp = (*m_AntEaterit)->distanceTo((*it).getPosition());
+					if (temp < distanceToNearestAnt)
+					{
+						distanceToNearestAnt = temp;
+						targetPos = (*it).getPosition();
+					}
 				}
 			}
-			// Perform collision detection and resolution againt the map hill
-				
-			if (m_CollisionsManager->AABBtoCircleCollision(*m_pAnthill,*m_AntEaterit->getAntEaterInnerRadius()))
-			{
-				m_AntEaterit->setDirection(m_AntEaterit->getDirection()*-1);
-				
-				m_AntEaterit->wander();
-					
-			}
+
 			// If there was an Ant, move towards it. Otherwise, continue wandering.
-			else if (distanceToNearestAnt < m_AntEaterit->getDetectionRadius())
+			if (distanceToNearestAnt < (*m_AntEaterit)->getDetectionRadius())
 			{
-				m_AntEaterit->moveTowards(targetPos);
+				(*m_AntEaterit)->moveTowards(targetPos);
 			}
 			else
 			{
-				m_AntEaterit->wander();
+				(*m_AntEaterit)->wander();
 			}
-
-			
 		}
 
 		// End anteater logic
 		// ==============================================================================================
+
+		if(m_iAntsEaten >= 200)
+		{
+			system("pause");
+			m_window.close();
+		}
 
 		render();
 
@@ -468,9 +452,9 @@ void AntSimulator::render()
 	m_window.draw(*m_pAnthill);
 
 	// Draw all ant-eaters
-	for (std::vector<AntEater>::iterator it = m_antEaters.begin(); it != m_antEaters.end(); ++it)
+	for (std::vector<AntEater*>::iterator it = m_antEaters.begin(); it != m_antEaters.end(); ++it)
 	{
-		m_window.draw(*it);
+		m_window.draw(**it);
 	}
 
 	// This line will draw the ENTIRE user interface.
@@ -518,9 +502,7 @@ void AntSimulator::alarmExpired(AlarmEvent* e)
 void AntSimulator::spawnFood(double xPos, double yPos)
 {
 	Food* f = new Food(Vector2D(xPos, yPos), 20, 20);
-	f->setFoodNumber(iFoodNumber);
 	m_food.push_back(f);
-	iFoodNumber++;
 }
 
 void AntSimulator::spawnAnt(double xPos, double yPos)
