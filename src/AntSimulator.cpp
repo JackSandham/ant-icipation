@@ -26,6 +26,7 @@ AntSimulator::AntSimulator()
 	m_pTextureManager->loadTexture("wall", "wall.png");
 	m_pTextureManager->loadTexture("ant_hill", "ant_hill.png");
 	m_pTextureManager->loadTexture("background", "background.png");
+	m_pTextureManager->loadTexture("vision_radius", "vision_radius.png");
 
 	// Configure background
 	m_pTextureManager->getTexture("background")->setRepeated(true);
@@ -41,6 +42,7 @@ AntSimulator::AntSimulator()
 
 	m_bWillSpawnAnt = false;
 	m_bWillSpawnFood = false;
+	m_iAntsEaten = 0;
 
 	//set pointers to NULL at start
 	m_RandomHillStartPos = nullptr;
@@ -208,6 +210,8 @@ void AntSimulator::run()
 
 		UIText* txt = dynamic_cast<UIText*>(m_uiManager.getUIComponentRef("txtAnts"));
 		txt->setString("Numbers of ants: " + std::to_string(m_ants.size()));
+		txt = dynamic_cast<UIText*>(m_uiManager.getUIComponentRef("txtAntsEaten"));
+		txt->setString("Numbers of ants eaten: " + std::to_string(m_iAntsEaten));
 
 		if (m_bWillSpawnAnt)
 		{
@@ -360,6 +364,20 @@ void AntSimulator::run()
 			}
 			matrixControl.setAntPosInMatrix(&*m_Antit, arrayMatrix);//--Gethin Changes
 			//Put the function into the AdjacencyMatrix class and am calling it from there rather than it being a global function
+		}
+
+		// Check collision between the ants and the anteater. If an ant is caught, it is deleted.
+		for (std::vector<AntEater>::iterator it_eater = m_antEaters.begin(); it_eater != m_antEaters.end(); ++it_eater)
+		{
+			for (int i = 0; i < m_ants.size(); ++i)
+			{
+				if (m_CollisionsManager->AABBtoAABBCollision(m_ants.at(i), *it_eater))
+				{
+					m_ants.erase(m_ants.begin() + i);
+					i--;
+					m_iAntsEaten++;
+				}
+			}
 		}
 
 		// ==============================================================================================

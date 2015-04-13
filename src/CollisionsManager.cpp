@@ -46,7 +46,7 @@ bool CollisionsManager::AABBtoCircleCollision(AABB &aabb,Circle &circle)
 }
 
 
-bool CollisionsManager::AABBtoAABBCollision(AABB &aabb,AABB &aabb2)
+bool CollisionsManager::AABBtoAABBCollision(AABB& aabb, AABB& aabb2)
 {
 	Vector2D tempVec = aabb.getPosition()-aabb2.getPosition();
 	m_fFinalDistance = tempVec.getMagnitude()-aabb.getHalfHeight();

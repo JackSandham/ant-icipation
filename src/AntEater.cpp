@@ -23,6 +23,10 @@ AntEater::AntEater(Vector2D passedPosition, int width, int height) : AABB(passed
 	m_sprite.setPosition(passedPosition.getX() + 300, passedPosition.getY() + 100);
 	m_sprite.setOrigin((fWidth / 2) / m_sprite.getScale().x, (fHeight / 2) / m_sprite.getScale().y);
 
+	m_spriteVisionRadius.setTexture(*tm->getTexture("vision_radius"));
+	m_spriteVisionRadius.setScale((m_fDetectionRadius*2) / tm->getTexture("vision_radius")->getSize().x, (m_fDetectionRadius*2) / tm->getTexture("vision_radius")->getSize().y);
+	m_spriteVisionRadius.setOrigin((m_fDetectionRadius) / m_spriteVisionRadius.getScale().x, (m_fDetectionRadius) / m_spriteVisionRadius.getScale().y);
+
 	changeTargetPosition();
 }
 
@@ -40,6 +44,7 @@ void AntEater::moveVisualObjects(float xPos, float yPos)
 	rectangle.setRotation(rotation);
 	anteaterOuterRadius->setPosition(Vector2D(xPos, yPos));
 	anteaterInnerRadius->setPosition(Vector2D(xPos, yPos));
+	m_spriteVisionRadius.setPosition(xPos + 300, yPos + 100);
 }
 
 void AntEater::setMovable(bool bPassedMove)
@@ -108,7 +113,7 @@ bool AntEater::getFood()
 void AntEater::wander()
 {
 	// Note that 20 units is fairly arbitrary. The value can just be changed until it "feels" right
-	if (distanceTo(m_vTargetPosition) < 20)
+	if (distanceTo(m_vTargetPosition) < 10)
 	{
 		changeTargetPosition();
 	}
@@ -138,8 +143,8 @@ void AntEater::moveTowards(Vector2D vPos)
 	m_vDirection.normalise();
 	
 	Vector2D newPos = getPosition();
-	newPos.setX(newPos.getX() + (m_vDirection.getX() * 1));
-	newPos.setY(newPos.getY() + (m_vDirection.getY() * 1));
+	newPos.setX(newPos.getX() + (m_vDirection.getX() * 1.35));
+	newPos.setY(newPos.getY() + (m_vDirection.getY() * 1.35));
 
 	setPosition(newPos);
 	moveVisualObjects(newPos.getX(), newPos.getY());
@@ -148,11 +153,12 @@ void AntEater::moveTowards(Vector2D vPos)
 void AntEater::changeTargetPosition()
 {
 	m_vTargetPosition = Vector2D(0, 0);
-	m_vTargetPosition.setX(m_randomiser.getRandom(200, 1300));
-	m_vTargetPosition.setY(m_randomiser.getRandom(0, 900));	
+	m_vTargetPosition.setX(m_randomiser.getRandom(250, 1150));
+	m_vTargetPosition.setY(m_randomiser.getRandom(50, 850));	
 }
 
 void AntEater::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
+	target.draw(m_spriteVisionRadius);
 	target.draw(m_sprite);
 }

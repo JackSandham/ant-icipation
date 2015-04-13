@@ -33,11 +33,8 @@ void Ant::Update(AntEater &passedAntEater, CollisionsManager &passedColMan)
 	setMin();
 	setMax();
 	facingEater(passedAntEater,passedColMan);
-	if(antEaterEats(passedAntEater,passedColMan))
-	{
-		//death by anteater, send to hill
-		setPosition(getStartPos());
-	}
+
+	// Death of ants no longer handled here. Check the game loop in AntSimulator.
 }
 
 //This function was created to move the rectangle position and the ant radius position.
@@ -60,18 +57,6 @@ void Ant::facingEater(AntEater &passedAntEater, CollisionsManager &passedColMan)
 	else
 	{
 		setFacingEater(false);
-	}
-}
-
-bool Ant::antEaterEats(AntEater &passedEater, CollisionsManager &passedColMan)
-{
-	if(passedColMan.AABBtoAABBCollision(*this,passedEater))
-	{
-		return true;
-	}
-	else
-	{
-		return false;
 	}
 }
 
@@ -166,10 +151,12 @@ bool Ant::getFood()
 {
 	return m_bHasFood;
 }
+
 int Ant::getNumber()
 {
 	return m_iNumber;
 }
+
 void Ant::setNumber(int iPassedNumber)
 {
 	m_iNumber=iPassedNumber;

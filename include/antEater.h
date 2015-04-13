@@ -63,7 +63,8 @@ class AntEater : public AABB, public sf::Drawable
 		Vector2D m_vDirection;
 		Vector2D m_vTargetPosition;
 		Randomiser m_randomiser;
-		sf::Sprite m_sprite; 
+		sf::Sprite m_sprite;
+		sf::Sprite m_spriteVisionRadius;
 };
 
 
