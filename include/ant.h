@@ -47,16 +47,18 @@ class Ant : public AABB, public sf::Drawable
 		bool antEaterEats(AntEater &passedAntEater, CollisionsManager &passedColMan);
 		void facingEater(AntEater &passedAntEater, CollisionsManager &passedColMan);
 
-		int getNumber();
-		void setNumber(int iPassedNumber);
-
 		Food* getFood();
-		void moveTowards(Vector2D vPos);
 		float getFoodDetectionRadius();
 		float getCollectionRange();
 		void assignFood(Food* f);
 		bool isCarryingFood();
-		void dropFood();
+		void dropFood(); 
+		void wander();
+		void moveTowards(Vector2D vPos);
+		void changeTargetPosition();
+		void move();
+		void steer();
+		float distanceTo(Vector2D vPos);
 
 		void setPosition(Vector2D pos);
 		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
@@ -64,6 +66,7 @@ class Ant : public AABB, public sf::Drawable
 	protected:
 
 	private:
+		Vector2D m_vTargetPosition;
 		Food* m_pFood;
 		bool m_bIsCarryingFood;
 		bool m_bCanMove;
@@ -75,6 +78,7 @@ class Ant : public AABB, public sf::Drawable
 		Circle* antRadius; //previously in main
 		Vector2D m_vDirection;
 		Vector2D m_vStartPos;
+		Randomiser m_randomiser;
 
 		sf::Sprite m_sprite;
 };

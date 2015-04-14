@@ -218,66 +218,169 @@ void AntSimulator::run()
 			spawnFood(x, y);
 		}
 
-		//Move/collide Multiple Ants
+		////Move/collide Multiple Ants
 		int iAntCounter = 0;
 		int iObsCounter = 0;
 		for (m_Antit = m_ants.begin(); m_Antit != m_ants.end(); ++m_Antit)
 		{
-			++iAntCounter;
-			antSteer->move(*m_Antit);
-			for (std::vector<AABB*>::iterator it = obstacles.begin(); it != obstacles.end(); ++it)
-			{
-				++iObsCounter;
-				//emergency if we collide with an obstacle.
-				if(m_CollisionsManager->AABBtoAABBCollision(*m_Antit,**it))
-				{
-					m_Antit->setDirection(Vector2D(0,0));
-					m_CollisionsManager->correctPosition(*m_Antit);
-				}
-				if(m_CollisionsManager->AABBtoCircleCollision(**it, *(m_antEaters.at(0))->getAntEaterOuterRadius()))
-				{
-					m_antEaters.at(0)->setColliding(true);
-				}
-				else if (iObsCounter == obstacles.size())
-				{
-					m_antEaters.at(0)->setColliding(false);
-				}
+			//++iAntCounter;
+			//antSteer->move(*m_Antit);
+			//for (std::vector<AABB*>::iterator it = obstacles.begin(); it != obstacles.end(); ++it)
+			//{
+			//	++iObsCounter;
+			//	//emergency if we collide with an obstacle.
+			//	if(m_CollisionsManager->AABBtoAABBCollision(*m_Antit,**it))
+			//	{
+			//		m_Antit->setDirection(Vector2D(0,0));
+			//		m_CollisionsManager->correctPosition(*m_Antit);
+			//	}
+			//	if(m_CollisionsManager->AABBtoCircleCollision(**it, *(m_antEaters.at(0))->getAntEaterOuterRadius()))
+			//	{
+			//		m_antEaters.at(0)->setColliding(true);
+			//	}
+			//	else if (iObsCounter == obstacles.size())
+			//	{
+			//		m_antEaters.at(0)->setColliding(false);
+			//	}
 	
-				//If avoiding behaviour is on
-				
-				if(isAvoiding)
+			//	//If avoiding behaviour is on
+			//	
+			//	if(isAvoiding)
+			//	{
+			//		antAvoid->run(*m_Antit,**it,*m_CollisionsManager, *antSteer);
+			//		if(isSteering && antSteer->isEnabled())
+			//		{
+			//			antSteer->run(*m_Antit);
+			//			antSteer->disable();
+			//		}
+			//	}
+			//	
+			//	//If fleeing behaviour is on
+			//	if(isFleeing)
+			//	{
+			//		//If the ant is moving towards eater then we can only push.
+			//		if(!m_antEaters.at(0)->isColliding())
+			//		{
+			//			//Ant is not colliding with a obstacle
+			//			if(!m_Antit->isColliding())
+			//			{
+			//				antFlee->run(*m_Antit, *m_antEaters.at(0),*m_CollisionsManager);
+			//			}
+			//		}
+			//		
+			//	}
+			//}
+			////If we are not fleeing!
+			//if(!m_Antit->isFleeing())
+			//{
+			//	//If there is no collision, then we can check for antfollow.
+			//	//If following behaviour is on
+			//	if(isFollowing)
+			//	{
+			//		if(!m_Antit->isColliding())
+			//		{
+			//			if (iAntCounter != m_ants.size())
+			//			{
+			//				antFollow->run(*m_Antit, m_ants.at(iAntCounter), *m_CollisionsManager);
+			//			}
+			//		}
+			//	}
+			//	/*
+			//	If we are not following, then change direction on col.
+			//	Will be changed with steer behaviour.
+			//	I.E will default to steer behaviour if not following?
+			//	*/
+			//	// =======================================================================================================
+			//}			
+		
+			if (m_bFleeEnabled && m_bSteerEnabled && m_bMoveEnabled)
+			{
+				if (m_antEaters.at(0)->distanceTo(m_Antit->getPosition()) < m_antEaters.at(0)->getDetectionRadius())
 				{
-					antAvoid->run(*m_Antit,**it,*m_CollisionsManager, *antSteer);
-					if(isSteering && antSteer->isEnabled())
-					{
-						antSteer->run(*m_Antit);
-						antSteer->disable();
-					}
-				}
-				
-				//If fleeing behaviour is on
-				if(isFleeing)
-				{
-					//If the ant is moving towards eater then we can only push.
-					if(!m_antEaters.at(0)->isColliding())
-					{
-						//Ant is not colliding with a obstacle
-						if(!m_Antit->isColliding())
-						{
-							antFlee->run(*m_Antit, *m_antEaters.at(0),*m_CollisionsManager);
-						}
-					}
-					
+					Vector2D target = m_Antit->getPosition();
+					target = target - m_antEaters.at(0)->getPosition();
+					target = target + m_Antit->getPosition();
+					m_Antit->moveTowards(target);
+					continue;
 				}
 			}
-			//If we are not fleeing!
-			if(!m_Antit->isFleeing())
+			if (m_bSeekEnabled && m_bSteerEnabled && m_bMoveEnabled)
 			{
-				//If there is no collision, then we can check for antfollow.
-				//If following behaviour is on
-				if(isFollowing)
+				if (m_Antit->isCarryingFood())
 				{
-					if(!m_Antit->isColliding())
+					if (m_CollisionsManager->AABBtoAABBCollision(*m_Antit, *m_pAnthill))
+					{
+						Food* f = m_Antit->getFood();
+						m_Antit->dropFood();
+						m_iFoodCollected++;
+
+						for (int i = 0; i < m_food.size(); ++i)
+						{
+							if (f == m_food.at(i))
+							{
+								m_food.erase(m_food.begin() + i);
+							}
+						}
+					}
+
+					m_Antit->moveTowards(m_pAnthill->getPosition());
+					continue;
+				}
+				else
+				{
+					// Search for nearby food
+					// When these values are 10000, they are equivalent to "no food found"
+					float distanceToNearestFood = 10000;
+					Vector2D targetPos(0, 0);
+					Food* f;
+					float temp = 10000;
+					for (std::vector<Food*>::iterator it = m_food.begin(); it != m_food.end(); ++it)
+					{
+						if ((*it)->isCollidable())
+						{
+							temp = (*it)->distanceTo(m_Antit->getPosition());
+							if (temp < distanceToNearestFood)
+							{
+								distanceToNearestFood = temp;
+								targetPos = (*it)->getPosition();
+								f = *it;
+							}
+						}
+					}
+
+					// If a piece of food was found, check whether we are close enough to pick it up
+					if (distanceToNearestFood < m_Antit->getCollectionRange())
+					{
+						m_Antit->assignFood(f);
+						continue;
+					}
+					// If we couldnt pick it up, check if we are in range to "sense" it and move towards it.
+					else if (distanceToNearestFood < m_Antit->getFoodDetectionRadius())
+					{
+						m_Antit->moveTowards(targetPos);
+						continue;
+					}
+					else
+					{
+						// No action is taken, continue to next behaviour
+					}
+				}
+			}
+			if (m_bAvoidEnabled && m_bSteerEnabled && m_bMoveEnabled)
+			{
+				for (std::vector<AABB*>::iterator it = obstacles.begin(); it != obstacles.end(); ++it)
+				{
+					antAvoid->run(*m_Antit, **it, *m_CollisionsManager, *antSteer);
+				}
+				continue;
+			}
+			if (m_bFollowEnabled && m_bSteerEnabled && m_bMoveEnabled)
+			{
+				int iAntCounter = 0;	
+				for (std::vector<AABB*>::iterator it = obstacles.begin(); it != obstacles.end(); ++it)
+				{
+					++iAntCounter;
+					if (!m_Antit->isColliding())
 					{
 						if (iAntCounter != m_ants.size())
 						{
@@ -285,77 +388,24 @@ void AntSimulator::run()
 						}
 					}
 				}
-				/*
-				If we are not following, then change direction on col.
-				Will be changed with steer behaviour.
-				I.E will default to steer behaviour if not following?
-				*/
-				
-				// =======================================================================================================
-				// "Seeking" behaviour. The seeking behaviour references the ability for ants 
-				// to find, collect and deliver food to the ant hill.
-				if(isSeeking)
-				{
-					if (m_Antit->isCarryingFood())
-					{
-						if (m_CollisionsManager->AABBtoAABBCollision(*m_Antit, *m_pAnthill))
-						{
-							Food* f = m_Antit->getFood();
-							m_Antit->dropFood();
-							m_iFoodCollected++;
-
-							for (int i = 0; i < m_food.size(); ++i)
-							{
-								if (f == m_food.at(i))
-								{
-									m_food.erase(m_food.begin() + i);
-								}
-							}
-						}
-
-						m_Antit->moveTowards(m_pAnthill->getPosition());	
-					}
-					else
-					{
-						// Search for nearby food
-						// When these values are 10000, they are equivalent to "no food found"
-						float distanceToNearestFood = 10000;
-						Vector2D targetPos(0, 0);
-						Food* f;
-						float temp = 10000;
-						for (std::vector<Food*>::iterator it = m_food.begin(); it != m_food.end(); ++it)
-						{
-							if ((*it)->isCollidable())
-							{
-								temp = (*it)->distanceTo(m_Antit->getPosition());
-								if (temp < distanceToNearestFood)
-								{
-									distanceToNearestFood = temp;
-									targetPos = (*it)->getPosition();
-									f = *it;
-								}
-							}
-						}
-
-						// If a piece of food was found, check whether we are close enough to pick it up
-						if (distanceToNearestFood < m_Antit->getCollectionRange())
-						{
-							m_Antit->assignFood(f);
-						}
-						// If we couldnt pick it up, check if we are in range to "sense" it and move towards it.
-						else if (distanceToNearestFood < m_Antit->getFoodDetectionRadius())
-						{
-							m_Antit->moveTowards(targetPos);
-						}
-						else
-						{
-							// No action is taken, the food was too far away.
-						}
-					}
-				}
-
-				// =======================================================================================================
-			}			
+				continue;
+			}
+			if (m_bWanderEnabled && m_bSteerEnabled && m_bMoveEnabled)
+			{
+				m_Antit->wander();
+				continue;
+			}
+			if (m_bSteerEnabled && m_bMoveEnabled)
+			{
+				m_Antit->steer();
+				m_Antit->move();
+				continue;
+			}
+			if (m_bMoveEnabled)
+			{
+				m_Antit->move();
+				continue;
+			}
 		}
 
 		//Move Multiple Ants
@@ -371,7 +421,7 @@ void AntSimulator::run()
 			//Put the function into the AdjacencyMatrix class and am calling it from there rather than it being a global function
 		}
 
-		// Check collision between the ants and the anteater. If an ant is caught, it is deleted.
+		// Check collision between the ants and the anteater. If an ant is caught, it is killed (deleted).
 		for (std::vector<AntEater*>::iterator it_eater = m_antEaters.begin(); it_eater != m_antEaters.end(); ++it_eater)
 		{
 			for (int i = 0; i < m_ants.size(); ++i)

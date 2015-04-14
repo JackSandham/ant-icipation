@@ -1,4 +1,4 @@
-﻿Build started 14/04/2015 00:56:02.
+﻿Build started 14/04/2015 08:39:23.
      1>Project "C:\Users\Nathan\Documents\GitHub\ant-icipation\ant-icipation\ant-icipation.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D SFML_STATIC /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt ..\src\AntSimulator.cpp
@@ -7,12 +7,12 @@
      1>c:\users\nathan\documents\github\ant-icipation\include\alarmutils.h(29): warning C4309: 'initializing' : truncation of constant value
      1>c:\users\nathan\documents\github\ant-icipation\src\antsimulator.cpp(157): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
      1>c:\users\nathan\documents\github\ant-icipation\src\antsimulator.cpp(161): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\nathan\documents\github\ant-icipation\src\antsimulator.cpp(307): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\nathan\documents\github\ant-icipation\src\antsimulator.cpp(377): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\nathan\documents\github\ant-icipation\src\antsimulator.cpp(519): warning C4244: 'argument' : conversion from 'long' to 'float', possible loss of data
-     1>c:\users\nathan\documents\github\ant-icipation\src\antsimulator.cpp(519): warning C4244: 'argument' : conversion from 'float' to 'long', possible loss of data
-     1>c:\users\nathan\documents\github\ant-icipation\src\antsimulator.cpp(529): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\nathan\documents\github\ant-icipation\src\antsimulator.cpp(535): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\nathan\documents\github\ant-icipation\src\antsimulator.cpp(317): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\nathan\documents\github\ant-icipation\src\antsimulator.cpp(427): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\nathan\documents\github\ant-icipation\src\antsimulator.cpp(569): warning C4244: 'argument' : conversion from 'long' to 'float', possible loss of data
+     1>c:\users\nathan\documents\github\ant-icipation\src\antsimulator.cpp(569): warning C4244: 'argument' : conversion from 'float' to 'long', possible loss of data
+     1>c:\users\nathan\documents\github\ant-icipation\src\antsimulator.cpp(579): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\nathan\documents\github\ant-icipation\src\antsimulator.cpp(585): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Nathan\Documents\GitHub\ant-icipation\Debug\ant-icipation.exe" /INCREMENTAL /NOLOGO "sfml-main-d.lib" "sfml-system-s-d.lib" "sfml-graphics-s-d.lib" "sfml-window-s-d.lib" "sfml-audio-s-d.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Nathan\Documents\GitHub\ant-icipation\Debug\ant-icipation.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Nathan\Documents\GitHub\ant-icipation\Debug\ant-icipation.lib" /MACHINE:X86 Debug\AntHill.obj
          Debug\AABB.obj
@@ -63,4 +63,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.91
+Time Elapsed 00:00:01.82

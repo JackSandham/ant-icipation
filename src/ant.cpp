@@ -27,6 +27,8 @@ Ant::Ant(Vector2D passedPosition, int width, int height) : AABB(passedPosition, 
 	m_sprite.setScale(fWidth / tm->getTexture("ant")->getSize().x, fHeight / tm->getTexture("ant")->getSize().y);
 	m_sprite.setPosition(passedPosition.getX() + 300, passedPosition.getY() + 100);
 	m_sprite.setOrigin((fWidth / 2) / m_sprite.getScale().x, (fHeight / 2) / m_sprite.getScale().y);
+
+	changeTargetPosition();
 }
 
 void Ant::update(AntEater &passedAntEater, CollisionsManager &passedColMan)
@@ -144,16 +146,6 @@ Circle* Ant::getAntRadius()
 	return antRadius;
 }
 
-int Ant::getNumber()
-{
-	return m_iNumber;
-}
-
-void Ant::setNumber(int iPassedNumber)
-{
-	m_iNumber=iPassedNumber;
-}
-
 void Ant::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(m_sprite);
@@ -162,20 +154,6 @@ void Ant::draw(sf::RenderTarget& target, sf::RenderStates states) const
 Food* Ant::getFood()
 {
 	return m_pFood;
-}
-
-void Ant::moveTowards(Vector2D vPos)
-{
-	float dX = vPos.getX() - getPosition().getX();
-	float dY = vPos.getY() - getPosition().getY();
-	m_vDirection = Vector2D(dX, dY);
-	m_vDirection.normalise();
-
-	Vector2D newPos = getPosition();
-	newPos.setX(newPos.getX() + (m_vDirection.getX() * 0.65));
-	newPos.setY(newPos.getY() + (m_vDirection.getY() * 0.65));
-
-	setPosition(newPos);
 }
 
 float Ant::getFoodDetectionRadius()
@@ -205,4 +183,61 @@ void Ant::dropFood()
 	m_pFood->setCollidable(true);
 	m_pFood = nullptr;
 	m_bIsCarryingFood = false;
+}
+
+void Ant::wander()
+{
+	// Note that 4 units is fairly arbitrary. The value can just be changed until it "feels" right
+	if (distanceTo(m_vTargetPosition) < 4)
+	{
+		changeTargetPosition();
+	}
+	else
+	{
+		moveTowards(m_vTargetPosition);
+	}
+}
+
+void Ant::moveTowards(Vector2D vPos)
+{
+	float dX = vPos.getX() - getPosition().getX();
+	float dY = vPos.getY() - getPosition().getY();
+	m_vDirection = Vector2D(dX, dY);
+	m_vDirection.normalise();
+
+	Vector2D newPos = getPosition();
+	newPos.setX(newPos.getX() + (m_vDirection.getX() * 0.55));
+	newPos.setY(newPos.getY() + (m_vDirection.getY() * 0.55));
+
+	setPosition(newPos);
+}
+
+void Ant::move()
+{
+	Vector2D newPos = getPosition();
+	newPos.setX(newPos.getX() + (m_vDirection.getX() * 0.55));
+	newPos.setY(newPos.getY() + (m_vDirection.getY() * 0.55));
+
+	setPosition(newPos);
+}
+
+void Ant::steer()
+{
+	m_vDirection.setX(m_randomiser.getRandom(-1, 1));
+	m_vDirection.setY(m_randomiser.getRandom(-1, 1));
+	setPosition(getPosition());
+}
+
+void Ant::changeTargetPosition()
+{
+	m_vTargetPosition = Vector2D(0, 0);
+	m_vTargetPosition.setX(m_randomiser.getRandom(50, 850));
+	m_vTargetPosition.setY(m_randomiser.getRandom(50, 650));
+}
+
+float Ant::distanceTo(Vector2D vPos)
+{
+	float dX = vPos.getX() - getPosition().getX();
+	float dY = vPos.getY() - getPosition().getY();
+	return std::sqrt((dX * dX) + (dY * dY));
 }

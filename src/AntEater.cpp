@@ -113,7 +113,7 @@ bool AntEater::getFood()
 
 void AntEater::wander()
 {
-	// Note that 20 units is fairly arbitrary. The value can just be changed until it "feels" right
+	// Note that 10 units is fairly arbitrary. The value can just be changed until it "feels" right
 	if (distanceTo(m_vTargetPosition) < 10)
 	{
 		changeTargetPosition();
@@ -144,8 +144,8 @@ void AntEater::moveTowards(Vector2D vPos)
 	m_vDirection.normalise();
 	
 	Vector2D newPos = getPosition();
-	newPos.setX(newPos.getX() + (m_vDirection.getX() * 1.45));
-	newPos.setY(newPos.getY() + (m_vDirection.getY() * 1.45));
+	newPos.setX(newPos.getX() + (m_vDirection.getX() * 1.35));
+	newPos.setY(newPos.getY() + (m_vDirection.getY() * 1.35));
 
 	setPosition(newPos);
 	moveVisualObjects(newPos.getX(), newPos.getY());
